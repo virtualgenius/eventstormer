@@ -33,7 +33,8 @@ const PHASE_TO_STICKIES: Record<string, Array<{ kind: string; label: string }>> 
 
 export const FacilitationPalette: React.FC = () => {
   const board = useBoardStore((s) => s.board);
-  const addSticky = useBoardStore((s) => s.addSticky);
+  const activeTool = useBoardStore((s) => s.activeTool);
+  const setActiveTool = useBoardStore((s) => s.setActiveTool);
   const setPhase = useBoardStore((s) => s.setPhase);
 
   const items = PHASE_TO_STICKIES[board.phase] ?? [];
@@ -44,15 +45,13 @@ export const FacilitationPalette: React.FC = () => {
         {items.map((item) => (
           <button
             key={item.kind}
-            onClick={() =>
-              addSticky({
-                kind: item.kind as any,
-                text: item.label,
-                x: 200,
-                y: 200
-              })
+            onClick={() => setActiveTool(item.kind)}
+            className={
+              "rounded-lg px-3 py-1 text-sm " +
+              (activeTool === item.kind
+                ? "bg-slate-900 text-white"
+                : "bg-slate-100 dark:bg-slate-800 hover:bg-slate-200")
             }
-            className="rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-1 text-sm hover:bg-slate-200"
           >
             {item.label}
           </button>

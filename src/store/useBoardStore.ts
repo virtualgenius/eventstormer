@@ -13,7 +13,9 @@ const now = () => new Date().toISOString();
 
 interface BoardState {
   board: Board;
+  activeTool: string | null;
   setPhase: (phase: FacilitationPhase) => void;
+  setActiveTool: (tool: string | null) => void;
   addSticky: (partial: Omit<BaseSticky, "id" | "createdAt" | "updatedAt">) => void;
   addVertical: (x: number, label?: string) => void;
   addLane: (y: number, label?: string) => void;
@@ -33,10 +35,13 @@ export const useBoardStore = create<BoardState>((set) => ({
     updatedAt: now(),
     phase: "events"
   },
+  activeTool: null,
   setPhase: (phase) =>
     set((state) => ({
       board: { ...state.board, phase, updatedAt: now() }
     })),
+  setActiveTool: (tool) =>
+    set({ activeTool: tool }),
   addSticky: (partial) =>
     set((state) => ({
       board: {

@@ -1,13 +1,111 @@
-import React from "react";
+import React, { useRef } from "react";
+import { TransformWrapper, TransformComponent, useTransformContext } from "react-zoom-pan-pinch";
 import { useBoardStore } from "@/store/useBoardStore";
 import { Sticky } from "./Sticky";
+import type { StickyKind } from "@/types/domain";
+import { cn } from "@/lib/utils";
 
-export const Canvas: React.FC = () => {
+interface CanvasContentProps {
+  setTransform: (newPositionX: number, newPositionY: number, newScale: number, animationTime?: number) => void;
+}
+
+const CanvasContent: React.FC<CanvasContentProps> = ({ setTransform }) => {
   const board = useBoardStore((s) => s.board);
+  const activeTool = useBoardStore((s) => s.activeTool);
+  const addSticky = useBoardStore((s) => s.addSticky);
+  const setActiveTool = useBoardStore((s) => s.setActiveTool);
   const updateSticky = useBoardStore((s) => s.updateSticky);
+  const { transformState } = useTransformContext();
+  const [isRightDragging, setIsRightDragging] = React.useState(false);
+  const rightDragStart = useRef({ x: 0, y: 0, panX: 0, panY: 0 });
+
+  const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!activeTool) return;
+    if ((e.target as HTMLElement).closest('[data-sticky]')) return;
+
+    // The transform wrapper applies: translate(positionX, positionY) scale(scale)
+    // So to get canvas coordinates from screen coordinates:
+    // 1. Get click position relative to the wrapper
+    // 2. Subtract the pan offset (because canvas is translated)
+    // 3. Divide by scale (because canvas is scaled)
+
+    const wrapperRect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - wrapperRect.left;
+    const clickY = e.clientY - wrapperRect.top;
+
+    // Convert from viewport coordinates to canvas coordinates
+    const canvasX = (clickX - transformState.positionX) / transformState.scale;
+    const canvasY = (clickY - transformState.positionY) / transformState.scale;
+
+    // Center the sticky under the cursor (sticky is 120x120)
+    const STICKY_SIZE = 120;
+    const x = canvasX - STICKY_SIZE / 2;
+    const y = canvasY - STICKY_SIZE / 2;
+
+    addSticky({
+      kind: activeTool as StickyKind,
+      text: "",
+      x,
+      y
+    });
+    setActiveTool(null);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Ignore if clicking on sticky
+    if ((e.target as HTMLElement).closest('[data-sticky]')) return;
+
+    // Right-click to pan
+    if (e.button === 2) {
+      setIsRightDragging(true);
+      rightDragStart.current = {
+        x: e.clientX,
+        y: e.clientY,
+        panX: transformState.positionX,
+        panY: transformState.positionY
+      };
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
+  React.useEffect(() => {
+    if (!isRightDragging) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const dx = e.clientX - rightDragStart.current.x;
+      const dy = e.clientY - rightDragStart.current.y;
+
+      const newX = rightDragStart.current.panX + dx;
+      const newY = rightDragStart.current.panY + dy;
+
+      setTransform(newX, newY, transformState.scale, 0);
+    };
+
+    const handleMouseUp = () => {
+      setIsRightDragging(false);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isRightDragging, transformState.scale, setTransform]);
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-slate-50 dark:bg-slate-900">
+    <div
+      className={cn(
+        "relative h-[3000px] w-[5000px]",
+        activeTool ? "cursor-crosshair" : isRightDragging ? "cursor-grabbing" : "cursor-default"
+      )}
+      onClick={handleCanvasClick}
+      onMouseDown={handleMouseDown}
+      onContextMenu={(e) => e.preventDefault()}
+    >
       {/* vertical lines */}
       {board.verticals.map((v) => (
         <div key={v.id}>
@@ -68,8 +166,35 @@ export const Canvas: React.FC = () => {
           key={s.id}
           sticky={s}
           onChange={(text) => updateSticky(s.id, { text })}
+          scale={transformState.scale}
         />
       ))}
+    </div>
+  );
+};
+
+export const Canvas: React.FC = () => {
+  return (
+    <div className="relative h-full w-full overflow-hidden bg-slate-50 dark:bg-slate-900">
+      <TransformWrapper
+        initialScale={1}
+        minScale={0.25}
+        maxScale={4}
+        limitToBounds={false}
+        centerOnInit={false}
+        wheel={{ smoothStep: 0.01 }}
+        panning={{ disabled: true }}
+        doubleClick={{ disabled: true }}
+      >
+        {({ setTransform }) => (
+          <TransformComponent
+            wrapperClass="!w-full !h-full"
+            contentClass="!w-full !h-full"
+          >
+            <CanvasContent setTransform={setTransform} />
+          </TransformComponent>
+        )}
+      </TransformWrapper>
     </div>
   );
 };
