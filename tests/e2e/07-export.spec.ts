@@ -1,8 +1,14 @@
 import { test, expect } from '@playwright/test';
 import { CanvasPage } from '../pages/CanvasPage';
 import { enableDebugMode } from '../utils/debug';
+import { clearBoard } from '../utils/store';
 import * as fs from 'fs';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 test.describe('PNG Export', () => {
   let canvasPage: CanvasPage;
@@ -11,6 +17,8 @@ test.describe('PNG Export', () => {
     await enableDebugMode(page);
     canvasPage = new CanvasPage(page);
     await canvasPage.goto();
+    await clearBoard(page);
+    await page.waitForTimeout(500);
   });
 
   test('should have export button visible', async ({ page }) => {
@@ -18,11 +26,11 @@ test.describe('PNG Export', () => {
   });
 
   test('should download PNG file when export button clicked', async ({ page }) => {
-    // Create some stickies first
+    // Create some event stickies first
     await canvasPage.createStickyAt('event', 300, 200);
-    await page.waitForTimeout(200);
-    await canvasPage.createStickyAt('hotspot', 500, 200);
-    await page.waitForTimeout(200);
+    await page.waitForTimeout(500);
+    await canvasPage.createStickyAt('event', 500, 200);
+    await page.waitForTimeout(500);
 
     // Click export and wait for download
     const download = await canvasPage.waitForDownload();

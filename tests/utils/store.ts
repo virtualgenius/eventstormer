@@ -88,3 +88,20 @@ export async function clearBoard(page: Page): Promise<void> {
     }
   });
 }
+
+/**
+ * Set the facilitation phase
+ */
+export async function setPhase(page: Page, phase: string): Promise<void> {
+  await page.evaluate((p) => {
+    const store = (window as any).__testStore;
+    if (store) {
+      store.setState({
+        board: {
+          ...store.getState().board,
+          phase: p
+        }
+      });
+    }
+  }, phase);
+}
