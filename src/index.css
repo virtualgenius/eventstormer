@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --orange: #f97316;
+  --hotspot: #ef4444;
+  --actor: #fde68a;
+  --system: #e9d5ff;
+  --opportunity: #bbf7d0;
+  --glossary: #e2e8f0;
+}
+
+body, #root {
+  height: 100%;
+}
