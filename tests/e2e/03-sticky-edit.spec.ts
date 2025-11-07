@@ -1,31 +1,27 @@
 import { test, expect } from '@playwright/test';
 import { CanvasPage } from '../pages/CanvasPage';
-import { enableDebugMode, ConsoleLogCapture } from '../utils/debug';
+import { enableDebugMode } from '../utils/debug';
+import { clearBoard, getStickies } from '../utils/store';
 
 test.describe('Sticky Text Editing', () => {
   let canvasPage: CanvasPage;
-  let consoleCapture: ConsoleLogCapture;
 
   test.beforeEach(async ({ page }) => {
     await enableDebugMode(page);
-    consoleCapture = new ConsoleLogCapture(page);
     canvasPage = new CanvasPage(page);
     await canvasPage.goto();
+    await clearBoard(page);
+    await page.waitForTimeout(500);
   });
 
   test('should enter edit mode on double-click', async ({ page }) => {
     // Create sticky
     await canvasPage.createStickyAt('event', 300, 200);
-    await page.waitForTimeout(300);
-
-    consoleCapture.clear();
+    await page.waitForTimeout(500);
 
     // Double-click sticky (center at 360, 260)
     await canvasPage.doubleClickCanvasAt(360, 260);
-
-    // Verify edit mode log
-    const editLog = await consoleCapture.waitForLog(/\[KonvaSticky\] Double-clicked \(entering edit mode\)/);
-    expect(editLog).toBeTruthy();
+    await page.waitForTimeout(200);
 
     // Verify textarea appears
     const textarea = page.locator('textarea').first();
@@ -35,56 +31,49 @@ test.describe('Sticky Text Editing', () => {
   test('should save text on blur', async ({ page }) => {
     // Create sticky
     await canvasPage.createStickyAt('event', 300, 200);
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(500);
+
+    const stickyBefore = (await getStickies(page))[0];
 
     // Enter edit mode
     await canvasPage.doubleClickCanvasAt(360, 260);
     await page.waitForTimeout(200);
-
-    consoleCapture.clear();
 
     // Type text
     await canvasPage.typeIntoActiveSticky('User logged in');
 
     // Click away to blur
     await canvasPage.clickAway();
+    await page.waitForTimeout(300);
 
-    // Verify edit completed log
-    const editCompleteLog = await consoleCapture.waitForLog(/\[KonvaSticky\] Edit completed \(blur\)/);
-    expect(editCompleteLog).toBeTruthy();
-    expect(editCompleteLog).toContain('User logged in');
-
-    // Verify store update log
-    const storeLog = await consoleCapture.waitForLog(/\[Store\] Updating sticky.*Text:/);
-    expect(storeLog).toBeTruthy();
-    expect(storeLog).toContain('User logged in');
+    // Verify text updated in store
+    const stickyAfter = (await getStickies(page))[0];
+    expect(stickyAfter.text).toBe('User logged in');
+    expect(stickyAfter.id).toBe(stickyBefore.id);
   });
 
   test('should cancel edit on Escape key', async ({ page }) => {
-    // Create sticky
+    // Create sticky with initial text
     await canvasPage.createStickyAt('event', 300, 200);
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(500);
+
+    const stickyBefore = (await getStickies(page))[0];
+    const initialText = stickyBefore.text;
 
     // Enter edit mode
     await canvasPage.doubleClickCanvasAt(360, 260);
     await page.waitForTimeout(200);
 
-    // Type text
+    // Type temporary text
     await canvasPage.typeIntoActiveSticky('Temporary text');
 
-    consoleCapture.clear();
-
-    // Press Escape
+    // Press Escape to cancel
     await canvasPage.pressEscape();
-
-    // Verify cancel log
-    const cancelLog = await consoleCapture.waitForLog(/\[KonvaSticky\] Edit cancelled \(Escape\)/);
-    expect(cancelLog).toBeTruthy();
-
-    // Verify no store update (text not saved)
     await page.waitForTimeout(300);
-    const hasStoreUpdate = consoleCapture.hasLog(/\[Store\] Updating sticky.*Text:.*Temporary text/);
-    expect(hasStoreUpdate).toBe(false);
+
+    // Verify text not updated (stayed empty)
+    const stickyAfter = (await getStickies(page))[0];
+    expect(stickyAfter.text).toBe(initialText);
 
     // Textarea should be removed
     const textarea = page.locator('textarea').first();
@@ -94,25 +83,27 @@ test.describe('Sticky Text Editing', () => {
   test('should update existing text', async ({ page }) => {
     // Create sticky
     await canvasPage.createStickyAt('event', 300, 200);
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(500);
 
-    // Add initial text
+    const stickyId = (await getStickies(page))[0].id;
+
+    // Set initial text
     await canvasPage.doubleClickCanvasAt(360, 260);
     await page.waitForTimeout(200);
     await canvasPage.typeIntoActiveSticky('Initial text');
     await canvasPage.clickAway();
     await page.waitForTimeout(300);
 
-    // Edit again
-    consoleCapture.clear();
+    // Edit again to update text
     await canvasPage.doubleClickCanvasAt(360, 260);
     await page.waitForTimeout(200);
     await canvasPage.typeIntoActiveSticky('Updated text');
     await canvasPage.clickAway();
+    await page.waitForTimeout(300);
 
-    // Verify store update shows both old and new text
-    const storeLog = await consoleCapture.waitForLog(/\[Store\] Updating sticky.*Text:/);
-    expect(storeLog).toContain('Initial text');
-    expect(storeLog).toContain('Updated text');
+    // Verify text updated
+    const stickies = await getStickies(page);
+    const sticky = stickies.find((s: any) => s.id === stickyId);
+    expect(sticky.text).toBe('Updated text');
   });
 });
