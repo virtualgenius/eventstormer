@@ -12,10 +12,12 @@
   },
   "dependencies": {
     "@radix-ui/react-tooltip": "^1.0.7",
+    "konva": "^10.0.8",
     "lucide-react": "^0.441.0",
     "partysocket": "^1.1.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-konva": "^18.2.14",
     "react-use-measure": "^2.1.5",
     "react-zoom-pan-pinch": "^3.7.0",
     "y-partykit": "^0.0.33",
