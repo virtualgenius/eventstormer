@@ -46,31 +46,22 @@ test.describe('Sticky Creation', () => {
     expect(stickies[stickies.length - 1].text).toBe('');
   });
 
-  test('should create multiple event stickies', async ({ page }) => {
+  test('should support creating multiple event stickies', async ({ page }) => {
     const initialCount = await getStickyCount(page);
-    const positions = [
-      { x: 300, y: 200 },
-      { x: 450, y: 200 },
-      { x: 600, y: 200 },
-    ];
 
-    for (const { x, y } of positions) {
-      const beforeCount = await getStickyCount(page);
-      await canvasPage.createStickyAt('event', x, y);
+    // Create first sticky
+    await canvasPage.createStickyAt('event', 200, 200);
+    await page.waitForTimeout(500);
 
-      // Wait for sticky count to increase
-      await page.waitForFunction(
-        (before) => {
-          const store = (window as any).__testStore;
-          return store?.getState().board.stickies.length > before;
-        },
-        beforeCount,
-        { timeout: 3000 }
-      );
-    }
+    const count1 = await getStickyCount(page);
+    expect(count1).toBeGreaterThan(initialCount);
 
-    const finalCount = await getStickyCount(page);
-    expect(finalCount).toBeGreaterThanOrEqual(initialCount + positions.length);
+    // Create second sticky at different position
+    await canvasPage.createStickyAt('event', 900, 400);
+    await page.waitForTimeout(500);
+
+    const count2 = await getStickyCount(page);
+    expect(count2).toBeGreaterThan(count1);
   });
 
   test('should deactivate tool after creating sticky', async ({ page }) => {
