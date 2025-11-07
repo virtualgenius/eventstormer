@@ -60,18 +60,19 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
 
       const container = stage.container();
       const group = groupRef.current;
-      const position = group.getAbsolutePosition();
-      const stageBox = container.getBoundingClientRect();
+
+      // Get the bounding box in screen coordinates (already transformed)
+      const clientRect = group.getClientRect();
       const scale = stage.scaleX();
 
       // Create textarea
       const textarea = document.createElement("textarea");
       textarea.value = sticky.text;
       textarea.style.position = "absolute";
-      textarea.style.left = `${stageBox.left + position.x * scale}px`;
-      textarea.style.top = `${stageBox.top + position.y * scale}px`;
-      textarea.style.width = `${STICKY_SIZE * scale}px`;
-      textarea.style.height = `${STICKY_SIZE * scale}px`;
+      textarea.style.left = `${clientRect.x}px`;
+      textarea.style.top = `${clientRect.y}px`;
+      textarea.style.width = `${clientRect.width}px`;
+      textarea.style.height = `${clientRect.height}px`;
       textarea.style.fontSize = `${14 * scale}px`;
       textarea.style.padding = `${8 * scale}px`;
       textarea.style.border = "2px solid #3b82f6";
@@ -100,6 +101,35 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
           debugLog('KonvaSticky', `Edit cancelled (Escape) - ID: ${sticky.id}`);
           setIsEditing(false);
           container.removeChild(textarea);
+        } else if (e.key === "Enter" && e.shiftKey) {
+          // Shift+Enter: Save and exit edit mode
+          e.preventDefault();
+          const newText = textarea.value;
+          debugLog('KonvaSticky', `Edit completed (Shift+Enter) - ID: ${sticky.id}, Old: "${sticky.text}", New: "${newText}"`);
+          updateSticky(sticky.id, { text: newText });
+          setIsEditing(false);
+          container.removeChild(textarea);
+        } else if (e.key === "Tab") {
+          // Tab: Save current, create new sticky to the right, focus it
+          e.preventDefault();
+          const newText = textarea.value;
+          debugLog('KonvaSticky', `Edit completed (Tab) - Creating new sticky to the right`);
+          updateSticky(sticky.id, { text: newText });
+          setIsEditing(false);
+          container.removeChild(textarea);
+
+          // Create new sticky to the right (120px is sticky width + some spacing)
+          const newX = sticky.x + 140;
+          const newY = sticky.y;
+
+          // Trigger creation through store
+          const addSticky = useCollabStore.getState().addSticky;
+          addSticky({
+            kind: sticky.kind,
+            text: "",
+            x: newX,
+            y: newY
+          });
         }
       };
 

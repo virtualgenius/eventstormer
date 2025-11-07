@@ -39,6 +39,7 @@ interface CollabState {
   setPhase: (phase: FacilitationPhase) => void;
   setActiveTool: (tool: string | null) => void;
   addSticky: (partial: Omit<BaseSticky, "id" | "createdAt" | "updatedAt">) => void;
+  deleteSticky: (id: string) => void;
   addVertical: (x: number, label?: string) => void;
   addLane: (y: number, label?: string) => void;
   addTheme: (area: Omit<ThemeArea, "id">) => void;
@@ -189,6 +190,19 @@ export const useCollabStore = create<CollabState>((set, get) => {
       debugLog('Store', `Adding sticky - ID: ${newSticky.id}, Kind: ${newSticky.kind}, Position: (${partial.x}, ${partial.y}), Text: "${partial.text}"`);
       stickies.push([newSticky]);
       yboard.set("updatedAt", now());
+    },
+
+    deleteSticky: (id) => {
+      const stickies = yboard.get("stickies") as Y.Array<any>;
+      const stickyArray = stickies.toArray();
+      const index = stickyArray.findIndex((s: BaseSticky) => s.id === id);
+
+      if (index !== -1) {
+        const sticky = stickyArray[index];
+        debugLog('Store', `Deleting sticky - ID: ${id}, Kind: ${sticky.kind}, Text: "${sticky.text}"`);
+        stickies.delete(index, 1);
+        yboard.set("updatedAt", now());
+      }
     },
 
     addVertical: (x, label) => {

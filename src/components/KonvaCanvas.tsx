@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useCallback, useEffect } from "react";
 import { Stage, Layer, Line, Rect, Text } from "react-konva";
 import type Konva from "konva";
 import { useCollabStore } from "@/store/useCollabStore";
@@ -18,6 +18,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
   const board = useCollabStore((s) => s.board);
   const activeTool = useCollabStore((s) => s.activeTool);
   const addSticky = useCollabStore((s) => s.addSticky);
+  const deleteSticky = useCollabStore((s) => s.deleteSticky);
   const setActiveTool = useCollabStore((s) => s.setActiveTool);
   const updateCursor = useCollabStore((s) => s.updateCursor);
   const users = useCollabStore((s) => s.users);
@@ -136,6 +137,44 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
     if (isPanning) return "grabbing";
     return "default";
   };
+
+  // Handle keyboard shortcuts for Delete and Duplicate
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if user is typing in a textarea or input
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'TEXTAREA' || target.tagName === 'INPUT') {
+        return;
+      }
+
+      // Delete: Backspace or Delete key
+      if ((e.key === 'Backspace' || e.key === 'Delete') && selectedId) {
+        e.preventDefault();
+        debugLog('KonvaCanvas', `Deleting sticky - ID: ${selectedId}`);
+        deleteSticky(selectedId);
+        setSelectedId(null);
+      }
+
+      // Duplicate: Cmd+D or Ctrl+D
+      if ((e.metaKey || e.ctrlKey) && e.key === 'd' && selectedId) {
+        e.preventDefault();
+        const sticky = board.stickies.find(s => s.id === selectedId);
+        if (sticky) {
+          debugLog('KonvaCanvas', `Duplicating sticky - ID: ${selectedId}`);
+          // Create duplicate to the right (140px = sticky width + spacing)
+          addSticky({
+            kind: sticky.kind,
+            text: sticky.text,
+            x: sticky.x + 140,
+            y: sticky.y
+          });
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedId, board.stickies, deleteSticky, addSticky]);
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-slate-50 dark:bg-slate-900">
