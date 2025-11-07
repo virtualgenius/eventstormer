@@ -2,6 +2,7 @@ import { create } from "zustand";
 import * as Y from "yjs";
 import YPartyKitProvider from "y-partykit/provider";
 import { nanoid } from "../lib/nanoid";
+import { debugLog } from "@/lib/debug";
 import type {
   Board,
   BaseSticky,
@@ -180,7 +181,7 @@ export const useCollabStore = create<CollabState>((set, get) => {
         updatedAt: now(),
         ...partial
       };
-      console.log(`[Store] Adding sticky - ID: ${newSticky.id}, Kind: ${newSticky.kind}, Position: (${partial.x}, ${partial.y}), Text: "${partial.text}"`);
+      debugLog('Store', `Adding sticky - ID: ${newSticky.id}, Kind: ${newSticky.kind}, Position: (${partial.x}, ${partial.y}), Text: "${partial.text}"`);
       stickies.push([newSticky]);
       yboard.set("updatedAt", now());
     },
@@ -228,7 +229,7 @@ export const useCollabStore = create<CollabState>((set, get) => {
           changes.push(`Kind: ${oldSticky.kind} → ${updated.kind}`);
         }
 
-        console.log(`[Store] Updating sticky - ID: ${id}, ${changes.join(', ')}`);
+        debugLog('Store', `Updating sticky - ID: ${id}, ${changes.join(', ')}`);
 
         stickies.delete(index, 1);
         stickies.insert(index, [updated]);

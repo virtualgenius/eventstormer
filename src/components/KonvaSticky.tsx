@@ -3,6 +3,7 @@ import { Group, Rect, Text } from "react-konva";
 import type Konva from "konva";
 import type { BaseSticky } from "@/types/domain";
 import { useCollabStore } from "@/store/useCollabStore";
+import { debugLog } from "@/lib/debug";
 
 const COLOR_MAP: Record<BaseSticky["kind"], { fill: string; stroke: string }> = {
   event: { fill: "#fed7aa", stroke: "#fdba74" },
@@ -28,13 +29,13 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
   const STICKY_SIZE = 120;
 
   const handleDragStart = () => {
-    console.log(`[KonvaSticky] Drag started - ID: ${sticky.id}, Kind: ${sticky.kind}, Position: (${sticky.x}, ${sticky.y})`);
+    debugLog('KonvaSticky', `Drag started - ID: ${sticky.id}, Kind: ${sticky.kind}, Position: (${sticky.x}, ${sticky.y})`);
   };
 
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
     const newX = e.target.x();
     const newY = e.target.y();
-    console.log(`[KonvaSticky] Drag ended - ID: ${sticky.id}, Old: (${sticky.x}, ${sticky.y}), New: (${newX.toFixed(1)}, ${newY.toFixed(1)})`);
+    debugLog('KonvaSticky', `Drag ended - ID: ${sticky.id}, Old: (${sticky.x}, ${sticky.y}), New: (${newX.toFixed(1)}, ${newY.toFixed(1)})`);
     updateSticky(sticky.id, {
       x: newX,
       y: newY
@@ -42,12 +43,12 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
   };
 
   const handleClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
-    console.log(`[KonvaSticky] Clicked - ID: ${sticky.id}, Kind: ${sticky.kind}, Selected: ${isSelected}`);
+    debugLog('KonvaSticky', `Clicked - ID: ${sticky.id}, Kind: ${sticky.kind}, Selected: ${isSelected}`);
     onSelect(sticky.id);
   };
 
   const handleDoubleClick = () => {
-    console.log(`[KonvaSticky] Double-clicked (entering edit mode) - ID: ${sticky.id}, Kind: ${sticky.kind}, Text: "${sticky.text}"`);
+    debugLog('KonvaSticky', `Double-clicked (entering edit mode) - ID: ${sticky.id}, Kind: ${sticky.kind}, Text: "${sticky.text}"`);
     setIsEditing(true);
     onSelect(sticky.id);
   };
@@ -88,7 +89,7 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
 
       const handleBlur = () => {
         const newText = textarea.value;
-        console.log(`[KonvaSticky] Edit completed (blur) - ID: ${sticky.id}, Old: "${sticky.text}", New: "${newText}"`);
+        debugLog('KonvaSticky', `Edit completed (blur) - ID: ${sticky.id}, Old: "${sticky.text}", New: "${newText}"`);
         updateSticky(sticky.id, { text: newText });
         setIsEditing(false);
         container.removeChild(textarea);
@@ -96,7 +97,7 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
 
       const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === "Escape") {
-          console.log(`[KonvaSticky] Edit cancelled (Escape) - ID: ${sticky.id}`);
+          debugLog('KonvaSticky', `Edit cancelled (Escape) - ID: ${sticky.id}`);
           setIsEditing(false);
           container.removeChild(textarea);
         }

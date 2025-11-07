@@ -14,7 +14,12 @@
       "Bash(npm run build:*)",
       "Bash(cat:*)",
       "Bash(lsof:*)",
-      "Bash(xargs kill:*)"
+      "Bash(xargs kill:*)",
+      "Read(//private/tmp/**)",
+      "Bash(gh api:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh run watch:*)"
     ],
     "deny": [],
     "ask": []

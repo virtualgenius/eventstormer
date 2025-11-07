@@ -2,6 +2,36 @@
 
 Comprehensive console logging has been added to track all sticky note interactions in the Konva implementation.
 
+## Enabling Debug Mode
+
+Debug logging is **disabled by default**. Enable it using any of these methods:
+
+### Method 1: localStorage (Persistent)
+```js
+// In browser console:
+localStorage.setItem('debug', 'true')
+// Refresh page to activate
+```
+
+### Method 2: URL Parameter (Temporary)
+```
+http://localhost:5173/?debug=true
+```
+
+### Method 3: Window Flag (Programmatic)
+```js
+// In browser console before app loads:
+window.EVENTSTORMER_DEBUG = true
+```
+
+### Method 4: Playwright Tests (Automated)
+```ts
+// In test setup:
+await page.addInitScript(() => {
+  localStorage.setItem('debug', 'true');
+});
+```
+
 ## Console Log Prefixes
 
 All debug logs use tagged prefixes for easy filtering:
@@ -112,8 +142,13 @@ In browser DevTools console, use filters to focus on specific interactions:
 
 ## Disabling Debug Logs
 
-To remove debug logs for production:
+Debug logs are **disabled by default** in production. To turn off debug mode:
 
-1. Search codebase for `console.log` with prefixes: `[KonvaSticky]`, `[KonvaCanvas]`, `[Store]`
-2. Comment out or remove log statements
-3. Or use a build-time strip tool like `terser` with `drop_console: true`
+```js
+// Clear localStorage:
+localStorage.removeItem('debug')
+
+// Or navigate without ?debug=true parameter
+```
+
+The debug utility (`src/lib/debug.ts`) checks for the debug flag before logging, so no logs will appear in production unless explicitly enabled.

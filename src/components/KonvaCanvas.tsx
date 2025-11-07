@@ -5,6 +5,7 @@ import { useCollabStore } from "@/store/useCollabStore";
 import { KonvaSticky } from "./KonvaSticky";
 import { UserCursor } from "./UserCursor";
 import type { StickyKind } from "@/types/domain";
+import { debugLog } from "@/lib/debug";
 
 const CANVAS_WIDTH = 5000;
 const CANVAS_HEIGHT = 3000;
@@ -55,7 +56,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
       y: pointer.y - mousePointTo.y * clampedScale
     };
 
-    console.log(`[KonvaCanvas] Zoom ${direction > 0 ? 'in' : 'out'} - Scale: ${oldScale.toFixed(2)} → ${clampedScale.toFixed(2)}, Pointer: (${pointer.x}, ${pointer.y})`);
+    debugLog('KonvaCanvas', `Zoom ${direction > 0 ? 'in' : 'out'} - Scale: ${oldScale.toFixed(2)} → ${clampedScale.toFixed(2)}, Pointer: (${pointer.x}, ${pointer.y})`);
 
     setScale(clampedScale);
     setStagePos(newPos);
@@ -65,14 +66,14 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
     const clickedOnEmpty = e.target === e.target.getStage();
 
     if (e.evt.button === 2) {
-      console.log(`[KonvaCanvas] Right-click pan started - Position: (${stagePos.x.toFixed(1)}, ${stagePos.y.toFixed(1)})`);
+      debugLog('KonvaCanvas', `Right-click pan started - Position: (${stagePos.x.toFixed(1)}, ${stagePos.y.toFixed(1)})`);
       setIsPanning(true);
       return;
     }
 
     if (clickedOnEmpty) {
       if (selectedId) {
-        console.log(`[KonvaCanvas] Deselecting sticky - ID: ${selectedId}`);
+        debugLog('KonvaCanvas', `Deselecting sticky - ID: ${selectedId}`);
       }
       setSelectedId(null);
 
@@ -87,7 +88,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
         const x = (pointerPosition.x - stage.x()) / stage.scaleX() - 60;
         const y = (pointerPosition.y - stage.y()) / stage.scaleY() - 60;
 
-        console.log(`[KonvaCanvas] Creating sticky - Kind: ${activeTool}, Position: (${x.toFixed(1)}, ${y.toFixed(1)}), Scale: ${scale.toFixed(2)}`);
+        debugLog('KonvaCanvas', `Creating sticky - Kind: ${activeTool}, Position: (${x.toFixed(1)}, ${y.toFixed(1)}), Scale: ${scale.toFixed(2)}`);
 
         addSticky({
           kind: activeTool as StickyKind,
@@ -102,7 +103,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
 
   const handleStageMouseUp = () => {
     if (isPanning) {
-      console.log(`[KonvaCanvas] Pan ended - Position: (${stagePos.x.toFixed(1)}, ${stagePos.y.toFixed(1)})`);
+      debugLog('KonvaCanvas', `Pan ended - Position: (${stagePos.x.toFixed(1)}, ${stagePos.y.toFixed(1)})`);
     }
     setIsPanning(false);
   };
