@@ -19,8 +19,9 @@ export class CanvasPage {
    * Navigate to the app
    */
   async goto() {
-    await this.page.goto('/');
+    await this.page.goto('/?debug=true');
     await this.page.waitForLoadState('networkidle');
+    await this.page.waitForTimeout(500); // Give time for app to initialize
   }
 
   /**

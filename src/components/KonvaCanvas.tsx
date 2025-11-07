@@ -63,7 +63,13 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
   };
 
   const handleStageMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
-    const clickedOnEmpty = e.target === e.target.getStage();
+    const clickedOnStage = e.target === e.target.getStage();
+    const targetType = e.target.getType();
+    const clickedOnBackground = (targetType === 'Rect' || targetType === 'Shape') &&
+                                  e.target.attrs.fill === 'transparent';
+    const clickedOnEmpty = clickedOnStage || clickedOnBackground;
+
+    debugLog('KonvaCanvas', `Mouse down - Target: ${targetType}, ClickedOnStage: ${clickedOnStage}, ClickedOnBackground: ${clickedOnBackground}, ClickedOnEmpty: ${clickedOnEmpty}, ActiveTool: ${activeTool}`);
 
     if (e.evt.button === 2) {
       debugLog('KonvaCanvas', `Right-click pan started - Position: (${stagePos.x.toFixed(1)}, ${stagePos.y.toFixed(1)})`);

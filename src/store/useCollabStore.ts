@@ -98,6 +98,11 @@ export const useCollabStore = create<CollabState>((set, get) => {
     set({ board: getBoardState() });
   });
 
+  // Expose store to window for testing
+  if (typeof window !== 'undefined') {
+    (window as any).__testStore = { getState: get, setState: set };
+  }
+
   return {
     ydoc,
     provider: null,
