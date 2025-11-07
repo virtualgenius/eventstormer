@@ -1,7 +1,8 @@
 import React, { useRef } from "react";
 import { TransformWrapper, TransformComponent, useTransformContext } from "react-zoom-pan-pinch";
-import { useBoardStore } from "@/store/useBoardStore";
+import { useCollabStore } from "@/store/useCollabStore";
 import { Sticky } from "./Sticky";
+import { UserCursor } from "./UserCursor";
 import type { StickyKind } from "@/types/domain";
 import { cn } from "@/lib/utils";
 
@@ -10,11 +11,14 @@ interface CanvasContentProps {
 }
 
 const CanvasContent: React.FC<CanvasContentProps> = ({ setTransform }) => {
-  const board = useBoardStore((s) => s.board);
-  const activeTool = useBoardStore((s) => s.activeTool);
-  const addSticky = useBoardStore((s) => s.addSticky);
-  const setActiveTool = useBoardStore((s) => s.setActiveTool);
-  const updateSticky = useBoardStore((s) => s.updateSticky);
+  const board = useCollabStore((s) => s.board);
+  const activeTool = useCollabStore((s) => s.activeTool);
+  const addSticky = useCollabStore((s) => s.addSticky);
+  const setActiveTool = useCollabStore((s) => s.setActiveTool);
+  const updateSticky = useCollabStore((s) => s.updateSticky);
+  const updateCursor = useCollabStore((s) => s.updateCursor);
+  const users = useCollabStore((s) => s.users);
+  const userId = useCollabStore((s) => s.userId);
   const { transformState } = useTransformContext();
   const [isRightDragging, setIsRightDragging] = React.useState(false);
   const rightDragStart = useRef({ x: 0, y: 0, panX: 0, panY: 0 });
@@ -49,6 +53,17 @@ const CanvasContent: React.FC<CanvasContentProps> = ({ setTransform }) => {
       y
     });
     setActiveTool(null);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const wrapperRect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - wrapperRect.left;
+    const clickY = e.clientY - wrapperRect.top;
+
+    const canvasX = (clickX - transformState.positionX) / transformState.scale;
+    const canvasY = (clickY - transformState.positionY) / transformState.scale;
+
+    updateCursor(canvasX, canvasY);
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -103,6 +118,7 @@ const CanvasContent: React.FC<CanvasContentProps> = ({ setTransform }) => {
         activeTool ? "cursor-crosshair" : isRightDragging ? "cursor-grabbing" : "cursor-default"
       )}
       onClick={handleCanvasClick}
+      onMouseMove={handleMouseMove}
       onMouseDown={handleMouseDown}
       onContextMenu={(e) => e.preventDefault()}
     >
@@ -169,6 +185,20 @@ const CanvasContent: React.FC<CanvasContentProps> = ({ setTransform }) => {
           scale={transformState.scale}
         />
       ))}
+
+      {/* user cursors */}
+      {Array.from(users.entries()).map(([clientId, user]) => {
+        if (user.id === userId || !user.cursor) return null;
+        return (
+          <UserCursor
+            key={clientId}
+            x={user.cursor.x}
+            y={user.cursor.y}
+            color={user.color}
+            name={user.name}
+          />
+        );
+      })}
     </div>
   );
 };

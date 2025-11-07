@@ -1,5 +1,5 @@
 import React from "react";
-import { useBoardStore } from "@/store/useBoardStore";
+import { useCollabStore } from "@/store/useCollabStore";
 
 const PHASE_TO_STICKIES: Record<string, Array<{ kind: string; label: string }>> = {
   events: [{ kind: "event", label: "Event" }],
@@ -32,10 +32,10 @@ const PHASE_TO_STICKIES: Record<string, Array<{ kind: string; label: string }>> 
 };
 
 export const FacilitationPalette: React.FC = () => {
-  const board = useBoardStore((s) => s.board);
-  const activeTool = useBoardStore((s) => s.activeTool);
-  const setActiveTool = useBoardStore((s) => s.setActiveTool);
-  const setPhase = useBoardStore((s) => s.setPhase);
+  const board = useCollabStore((s) => s.board);
+  const activeTool = useCollabStore((s) => s.activeTool);
+  const setActiveTool = useCollabStore((s) => s.setActiveTool);
+  const setPhase = useCollabStore((s) => s.setPhase);
 
   const items = PHASE_TO_STICKIES[board.phase] ?? [];
 
