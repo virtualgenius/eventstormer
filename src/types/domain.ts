@@ -53,11 +53,11 @@ export interface Board {
 }
 
 export type FacilitationPhase =
-  | "events"
-  | "hotspots"
-  | "pivotal"
-  | "lanes"
-  | "actors-systems"
-  | "opportunities"
+  | "chaotic-exploration"
+  | "enforce-timeline"
+  | "people-and-systems"
+  | "problems-and-opportunities"
   | "glossary";
+
+export type ElementType = StickyKind | "vertical-line" | "horizontal-lane" | "theme-area";
 

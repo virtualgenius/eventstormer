@@ -86,7 +86,7 @@ export const useCollabStore = create<CollabState>((set, get) => {
     yboard.set("themes", new Y.Array());
     yboard.set("createdAt", now());
     yboard.set("updatedAt", now());
-    yboard.set("phase", "events");
+    yboard.set("phase", "chaotic-exploration");
   }
 
   // Convert Y.Doc to Board object

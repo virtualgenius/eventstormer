@@ -103,7 +103,6 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
           x,
           y
         });
-        setActiveTool(null);
       }
     }
   };

@@ -33,7 +33,7 @@ export const useBoardStore = create<BoardState>((set) => ({
     themes: [],
     createdAt: now(),
     updatedAt: now(),
-    phase: "events"
+    phase: "chaotic-exploration"
   },
   activeTool: null,
   setPhase: (phase) =>
