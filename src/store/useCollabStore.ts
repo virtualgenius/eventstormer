@@ -180,6 +180,7 @@ export const useCollabStore = create<CollabState>((set, get) => {
         updatedAt: now(),
         ...partial
       };
+      console.log(`[Store] Adding sticky - ID: ${newSticky.id}, Kind: ${newSticky.kind}, Position: (${partial.x}, ${partial.y}), Text: "${partial.text}"`);
       stickies.push([newSticky]);
       yboard.set("updatedAt", now());
     },
@@ -213,7 +214,22 @@ export const useCollabStore = create<CollabState>((set, get) => {
       const index = stickyArray.findIndex((s: BaseSticky) => s.id === id);
 
       if (index !== -1) {
-        const updated = { ...stickyArray[index], ...patch, updatedAt: now() };
+        const oldSticky = stickyArray[index];
+        const updated = { ...oldSticky, ...patch, updatedAt: now() };
+
+        const changes: string[] = [];
+        if (patch.x !== undefined || patch.y !== undefined) {
+          changes.push(`Position: (${oldSticky.x}, ${oldSticky.y}) → (${updated.x}, ${updated.y})`);
+        }
+        if (patch.text !== undefined) {
+          changes.push(`Text: "${oldSticky.text}" → "${updated.text}"`);
+        }
+        if (patch.kind !== undefined) {
+          changes.push(`Kind: ${oldSticky.kind} → ${updated.kind}`);
+        }
+
+        console.log(`[Store] Updating sticky - ID: ${id}, ${changes.join(', ')}`);
+
         stickies.delete(index, 1);
         stickies.insert(index, [updated]);
         yboard.set("updatedAt", now());

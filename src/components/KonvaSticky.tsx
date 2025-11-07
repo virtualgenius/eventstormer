@@ -27,20 +27,27 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
   const colors = COLOR_MAP[sticky.kind];
   const STICKY_SIZE = 120;
 
+  const handleDragStart = () => {
+    console.log(`[KonvaSticky] Drag started - ID: ${sticky.id}, Kind: ${sticky.kind}, Position: (${sticky.x}, ${sticky.y})`);
+  };
+
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
+    const newX = e.target.x();
+    const newY = e.target.y();
+    console.log(`[KonvaSticky] Drag ended - ID: ${sticky.id}, Old: (${sticky.x}, ${sticky.y}), New: (${newX.toFixed(1)}, ${newY.toFixed(1)})`);
     updateSticky(sticky.id, {
-      x: e.target.x(),
-      y: e.target.y()
+      x: newX,
+      y: newY
     });
   };
 
   const handleClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
-    // Single click to select
+    console.log(`[KonvaSticky] Clicked - ID: ${sticky.id}, Kind: ${sticky.kind}, Selected: ${isSelected}`);
     onSelect(sticky.id);
   };
 
   const handleDoubleClick = () => {
-    // Double click to edit
+    console.log(`[KonvaSticky] Double-clicked (entering edit mode) - ID: ${sticky.id}, Kind: ${sticky.kind}, Text: "${sticky.text}"`);
     setIsEditing(true);
     onSelect(sticky.id);
   };
@@ -80,13 +87,16 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
       textarea.select();
 
       const handleBlur = () => {
-        updateSticky(sticky.id, { text: textarea.value });
+        const newText = textarea.value;
+        console.log(`[KonvaSticky] Edit completed (blur) - ID: ${sticky.id}, Old: "${sticky.text}", New: "${newText}"`);
+        updateSticky(sticky.id, { text: newText });
         setIsEditing(false);
         container.removeChild(textarea);
       };
 
       const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === "Escape") {
+          console.log(`[KonvaSticky] Edit cancelled (Escape) - ID: ${sticky.id}`);
           setIsEditing(false);
           container.removeChild(textarea);
         }
@@ -111,6 +121,7 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
       x={sticky.x}
       y={sticky.y}
       draggable
+      onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onClick={handleClick}
       onDblClick={handleDoubleClick}
