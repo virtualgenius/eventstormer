@@ -31,6 +31,40 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
   const [scale, setScale] = useState(1);
   const [isPanning, setIsPanning] = useState(false);
 
+  // Viewport culling: only render stickies visible in viewport
+  const getVisibleStickies = useCallback(() => {
+    const stage = stageRef.current;
+    if (!stage) return board.stickies;
+
+    const viewport = {
+      x: -stagePos.x / scale,
+      y: -stagePos.y / scale,
+      width: window.innerWidth / scale,
+      height: window.innerHeight / scale
+    };
+
+    // Add padding to render slightly off-screen elements (smoother panning)
+    const PADDING = 200;
+
+    const visible = board.stickies.filter((sticky) => {
+      const stickyRight = sticky.x + 120; // sticky width
+      const stickyBottom = sticky.y + 120; // sticky height
+
+      return (
+        stickyRight > viewport.x - PADDING &&
+        sticky.x < viewport.x + viewport.width + PADDING &&
+        stickyBottom > viewport.y - PADDING &&
+        sticky.y < viewport.y + viewport.height + PADDING
+      );
+    });
+
+    if (board.stickies.length > 100) {
+      debugLog('KonvaCanvas', `Viewport culling - Rendering ${visible.length} / ${board.stickies.length} stickies`);
+    }
+
+    return visible;
+  }, [board.stickies, stagePos, scale]);
+
   const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
     e.evt.preventDefault();
 
@@ -296,8 +330,8 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
             </React.Fragment>
           ))}
 
-          {/* Stickies */}
-          {board.stickies.map((s) => (
+          {/* Stickies (viewport culled) */}
+          {getVisibleStickies().map((s) => (
             <KonvaSticky
               key={s.id}
               sticky={s}

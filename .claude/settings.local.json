@@ -24,7 +24,8 @@
       "Bash(npx playwright test:*)",
       "Bash(git reset:*)",
       "Bash(open /Users/paul/Documents/EventStormer/clear-storage.html)",
-      "Bash(npm run test:*)"
+      "Bash(npm run test:*)",
+      "Bash(open http://localhost:5173/eventstormer/)"
     ],
     "deny": [],
     "ask": []
