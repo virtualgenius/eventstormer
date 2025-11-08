@@ -24,9 +24,28 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
   const updateSticky = useCollabStore((s) => s.updateSticky);
   const groupRef = useRef<Konva.Group>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const colors = COLOR_MAP[sticky.kind];
   const STICKY_SIZE = 120;
+
+  // Listen for auto-edit event (triggered by Tab key from another sticky)
+  useEffect(() => {
+    const handleAutoEdit = () => {
+      const board = useCollabStore.getState().board;
+      const newestSticky = board.stickies[board.stickies.length - 1];
+      if (newestSticky && newestSticky.id === sticky.id) {
+        // This is the newest sticky, auto-enter edit mode
+        setTimeout(() => {
+          setIsEditing(true);
+          onSelect(sticky.id);
+        }, 100);
+      }
+    };
+
+    window.addEventListener('auto-edit-newest-sticky', handleAutoEdit);
+    return () => window.removeEventListener('auto-edit-newest-sticky', handleAutoEdit);
+  }, [sticky.id, onSelect]);
 
   const handleDragStart = () => {
     debugLog('KonvaSticky', `Drag started - ID: ${sticky.id}, Kind: ${sticky.kind}, Position: (${sticky.x}, ${sticky.y})`);
@@ -99,8 +118,12 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
       const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === "Escape") {
           debugLog('KonvaSticky', `Edit cancelled (Escape) - ID: ${sticky.id}`);
+          textarea.removeEventListener("blur", handleBlur);
+          textarea.removeEventListener("keydown", handleKeyDown);
           setIsEditing(false);
-          container.removeChild(textarea);
+          if (container.contains(textarea)) {
+            container.removeChild(textarea);
+          }
         } else if (e.key === "Enter" && e.shiftKey) {
           // Shift+Enter: Save and exit edit mode
           e.preventDefault();
@@ -110,19 +133,24 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
           setIsEditing(false);
           container.removeChild(textarea);
         } else if (e.key === "Tab") {
-          // Tab: Save current, create new sticky to the right, focus it
+          // Tab: Save current, create new sticky to the right, auto-edit it
           e.preventDefault();
           const newText = textarea.value;
-          debugLog('KonvaSticky', `Edit completed (Tab) - Creating new sticky to the right`);
+          debugLog('KonvaSticky', `Tab pressed - Saving current sticky and creating new one to the right`);
           updateSticky(sticky.id, { text: newText });
-          setIsEditing(false);
-          container.removeChild(textarea);
 
-          // Create new sticky to the right (120px is sticky width + some spacing)
+          // Clean up current editor FIRST
+          textarea.removeEventListener("blur", handleBlur);
+          textarea.removeEventListener("keydown", handleKeyDown);
+          setIsEditing(false);
+          if (container.contains(textarea)) {
+            container.removeChild(textarea);
+          }
+
+          // Create new sticky to the right (140px = sticky width + spacing)
           const newX = sticky.x + 140;
           const newY = sticky.y;
 
-          // Trigger creation through store
           const addSticky = useCollabStore.getState().addSticky;
           addSticky({
             kind: sticky.kind,
@@ -130,6 +158,9 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
             x: newX,
             y: newY
           });
+
+          // Dispatch custom event to trigger auto-edit on new sticky
+          window.dispatchEvent(new CustomEvent('auto-edit-newest-sticky'));
         }
       };
 

@@ -1,8 +1,11 @@
 import { test, expect } from "@playwright/test";
+import { clearBoard } from "../utils/store";
 
 test.describe("Phase-based element filtering", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/eventstormer/");
+    await clearBoard(page);
+    await page.waitForTimeout(500);
   });
 
   test("should start with Chaotic Exploration phase and show only Event and Hotspot", async ({

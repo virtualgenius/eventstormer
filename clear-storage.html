@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Clear EventStormer Storage</title>
+</head>
+<body>
+  <h1>Clearing EventStormer Storage...</h1>
+  <p id="status">Working...</p>
+  <script>
+    async function clearStorage() {
+      const status = document.getElementById('status');
+
+      try {
+        // Clear localStorage
+        localStorage.clear();
+
+        // Clear sessionStorage
+        sessionStorage.clear();
+
+        // Clear IndexedDB
+        const databases = await indexedDB.databases();
+        for (const db of databases) {
+          if (db.name) {
+            indexedDB.deleteDatabase(db.name);
+          }
+        }
+
+        status.innerHTML = '✅ Storage cleared!<br><br><a href="http://localhost:5173/eventstormer/">Open EventStormer</a>';
+
+        // Auto redirect after 2 seconds
+        setTimeout(() => {
+          window.location.href = 'http://localhost:5173/eventstormer/';
+        }, 2000);
+      } catch (error) {
+        status.innerHTML = '❌ Error: ' + error.message;
+      }
+    }
+
+    clearStorage();
+  </script>
+</body>
+</html>

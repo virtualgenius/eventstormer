@@ -15,6 +15,18 @@ const ELEMENT_LABELS: Record<ElementType, string> = {
   "theme-area": "Theme"
 };
 
+const ELEMENT_COLORS: Record<ElementType, { bg: string; hover: string; active: string }> = {
+  event: { bg: "#fed7aa", hover: "#fdba74", active: "#fb923c" },
+  hotspot: { bg: "#fecaca", hover: "#fca5a5", active: "#f87171" },
+  actor: { bg: "#fef9c3", hover: "#fef08a", active: "#fde047" },
+  system: { bg: "#e9d5ff", hover: "#d8b4fe", active: "#c084fc" },
+  opportunity: { bg: "#bbf7d0", hover: "#86efac", active: "#4ade80" },
+  glossary: { bg: "#f1f5f9", hover: "#e2e8f0", active: "#cbd5e1" },
+  "vertical-line": { bg: "#dbeafe", hover: "#bfdbfe", active: "#93c5fd" },
+  "horizontal-lane": { bg: "#dbeafe", hover: "#bfdbfe", active: "#93c5fd" },
+  "theme-area": { bg: "#f0f9ff", hover: "#e0f2fe", active: "#bae6fd" }
+};
+
 export const FacilitationPalette: React.FC = () => {
   const board = useCollabStore((s) => s.board);
   const activeTool = useCollabStore((s) => s.activeTool);
@@ -52,20 +64,32 @@ export const FacilitationPalette: React.FC = () => {
       </div>
 
       <div className="flex gap-1">
-        {availableElements.map((elementType) => (
-          <button
-            key={elementType}
-            onClick={() => setActiveTool(elementType)}
-            className={
-              "rounded-lg px-3 py-1 text-sm " +
-              (activeTool === elementType
-                ? "bg-slate-900 text-white"
-                : "bg-slate-100 dark:bg-slate-800 hover:bg-slate-200")
-            }
-          >
-            {ELEMENT_LABELS[elementType]}
-          </button>
-        ))}
+        {availableElements.map((elementType) => {
+          const colors = ELEMENT_COLORS[elementType];
+          return (
+            <button
+              key={elementType}
+              onClick={() => setActiveTool(elementType)}
+              className="rounded-lg px-3 py-1 text-sm font-medium text-slate-900 border-2 transition-colors"
+              style={{
+                backgroundColor: activeTool === elementType ? colors.active : colors.bg,
+                borderColor: activeTool === elementType ? colors.active : colors.hover,
+              }}
+              onMouseEnter={(e) => {
+                if (activeTool !== elementType) {
+                  e.currentTarget.style.backgroundColor = colors.hover;
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeTool !== elementType) {
+                  e.currentTarget.style.backgroundColor = colors.bg;
+                }
+              }}
+            >
+              {ELEMENT_LABELS[elementType]}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

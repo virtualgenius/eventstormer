@@ -73,7 +73,7 @@ export async function waitForStickyCountIncrease(page: Page, initialCount: numbe
 }
 
 /**
- * Clear all stickies from the board
+ * Clear all stickies from the board and reset phase
  */
 export async function clearBoard(page: Page): Promise<void> {
   await page.evaluate(() => {
@@ -82,7 +82,8 @@ export async function clearBoard(page: Page): Promise<void> {
       store.setState({
         board: {
           ...store.getState().board,
-          stickies: []
+          stickies: [],
+          phase: "chaotic-exploration"
         }
       });
     }

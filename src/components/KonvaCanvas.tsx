@@ -74,8 +74,14 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
 
     if (e.evt.button === 2) {
       debugLog('KonvaCanvas', `Right-click pan started - Position: (${stagePos.x.toFixed(1)}, ${stagePos.y.toFixed(1)})`);
-      setIsPanning(true);
+      e.target.startDrag();
       return;
+    }
+
+    // Prevent dragging on left-click
+    if (e.evt.button === 0 && e.target.isDragging()) {
+      e.target.stopDrag();
+      setIsPanning(false);
     }
 
     if (clickedOnEmpty) {
@@ -103,15 +109,33 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
           x,
           y
         });
+        setActiveTool(null);
       }
     }
   };
 
   const handleStageMouseUp = () => {
     if (isPanning) {
-      debugLog('KonvaCanvas', `Pan ended - Position: (${stagePos.x.toFixed(1)}, ${stagePos.y.toFixed(1)})`);
+      const stage = stageRef.current;
+      if (stage) {
+        const newPos = { x: stage.x(), y: stage.y() };
+        debugLog('KonvaCanvas', `Pan ended - Position: (${newPos.x.toFixed(1)}, ${newPos.y.toFixed(1)})`);
+        setStagePos(newPos);
+      }
     }
     setIsPanning(false);
+  };
+
+  const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
+    const newPos = { x: e.target.x(), y: e.target.y() };
+    debugLog('KonvaCanvas', `Drag ended - Position: (${newPos.x.toFixed(1)}, ${newPos.y.toFixed(1)})`);
+    setStagePos(newPos);
+  };
+
+  const handleDragMove = () => {
+    if (!isPanning) {
+      setIsPanning(true);
+    }
   };
 
   const handleStageMouseMove = (e: Konva.KonvaEventObject<MouseEvent>) => {
@@ -185,11 +209,13 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
         scaleY={scale}
         x={stagePos.x}
         y={stagePos.y}
-        draggable={isPanning}
+        draggable={true}
         onWheel={handleWheel}
         onMouseDown={handleStageMouseDown}
         onMouseUp={handleStageMouseUp}
         onMouseMove={handleStageMouseMove}
+        onDragMove={handleDragMove}
+        onDragEnd={handleDragEnd}
         onContextMenu={handleContextMenu}
         style={{ cursor: getCursor() }}
       >

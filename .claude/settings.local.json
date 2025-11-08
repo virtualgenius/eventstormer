@@ -22,7 +22,9 @@
       "Bash(gh run watch:*)",
       "Bash(npx playwright install:*)",
       "Bash(npx playwright test:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(open /Users/paul/Documents/EventStormer/clear-storage.html)",
+      "Bash(npm run test:*)"
     ],
     "deny": [],
     "ask": []
