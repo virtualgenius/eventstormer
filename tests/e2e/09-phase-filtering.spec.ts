@@ -1,11 +1,14 @@
 import { test, expect } from "@playwright/test";
-import { clearBoard } from "../utils/store";
+import { clearBoard, setPhase, waitForPhase } from "../utils/store";
+
+test.describe.configure({ mode: 'serial' });
 
 test.describe("Phase-based element filtering", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/eventstormer/");
     await clearBoard(page);
-    await page.waitForTimeout(500);
+    // Wait for phase to reset to chaotic-exploration
+    await waitForPhase(page, "chaotic-exploration", 5000);
   });
 
   test("should start with Chaotic Exploration phase and show only Event and Hotspot", async ({
@@ -41,7 +44,8 @@ test.describe("Phase-based element filtering", () => {
     page,
   }) => {
     const phaseSelect = page.locator("#phase-select");
-    await phaseSelect.selectOption("enforce-timeline");
+    await setPhase(page, "enforce-timeline");
+    await waitForPhase(page, "enforce-timeline");
 
     // Check phase changed
     await expect(phaseSelect).toHaveValue("enforce-timeline");
@@ -76,7 +80,8 @@ test.describe("Phase-based element filtering", () => {
     page,
   }) => {
     const phaseSelect = page.locator("#phase-select");
-    await phaseSelect.selectOption("people-and-systems");
+    await setPhase(page, "people-and-systems");
+    await waitForPhase(page, "people-and-systems");
 
     await expect(phaseSelect).toHaveValue("people-and-systems");
 
@@ -106,7 +111,8 @@ test.describe("Phase-based element filtering", () => {
     page,
   }) => {
     const phaseSelect = page.locator("#phase-select");
-    await phaseSelect.selectOption("problems-and-opportunities");
+    await setPhase(page, "problems-and-opportunities");
+    await waitForPhase(page, "problems-and-opportunities");
 
     await expect(phaseSelect).toHaveValue("problems-and-opportunities");
 
@@ -136,7 +142,8 @@ test.describe("Phase-based element filtering", () => {
     page,
   }) => {
     const phaseSelect = page.locator("#phase-select");
-    await phaseSelect.selectOption("glossary");
+    await setPhase(page, "glossary");
+    await waitForPhase(page, "glossary");
 
     await expect(phaseSelect).toHaveValue("glossary");
 
