@@ -143,7 +143,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
           x,
           y
         });
-        setActiveTool(null);
+        // Keep tool active for continuous creation
       }
     }
   };
@@ -195,13 +195,25 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
     return "default";
   };
 
-  // Handle keyboard shortcuts for Delete and Duplicate
+  // Handle keyboard shortcuts for Delete, Duplicate, and Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Ignore if user is typing in a textarea or input
       const target = e.target as HTMLElement;
       if (target.tagName === 'TEXTAREA' || target.tagName === 'INPUT') {
         return;
+      }
+
+      // Escape: Deactivate tool and deselect
+      if (e.key === 'Escape') {
+        if (activeTool) {
+          debugLog('KonvaCanvas', `Deactivating tool - Tool: ${activeTool}`);
+          setActiveTool(null);
+        }
+        if (selectedId) {
+          debugLog('KonvaCanvas', `Deselecting sticky - ID: ${selectedId}`);
+          setSelectedId(null);
+        }
       }
 
       // Delete: Backspace or Delete key
@@ -231,7 +243,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedId, board.stickies, deleteSticky, addSticky]);
+  }, [selectedId, activeTool, board.stickies, deleteSticky, addSticky, setActiveTool]);
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-slate-50 dark:bg-slate-900">
