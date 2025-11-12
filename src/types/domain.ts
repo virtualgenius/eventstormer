@@ -32,7 +32,7 @@ export interface VerticalLine {
   x: number;
   label?: string;
   pivotalEventId?: string;
-  timelineId: string;            // Which timeline owns this boundary
+  timelineId?: string;           // Which timeline owns this boundary (optional for backward compat)
 }
 
 export interface HorizontalLane {
@@ -48,7 +48,8 @@ export interface ThemeArea {
   y: number;
   width: number;
   height: number;
-  timelineId: string;            // Theme = Sub-Timeline (bound together)
+  stickyIds?: string[];          // DEPRECATED: Use Timeline.stickyIds instead
+  timelineId?: string;           // Theme = Sub-Timeline (optional for backward compat)
 }
 
 export type EventStormingMode = "big-picture" | "process-level" | "design-level";
@@ -56,13 +57,13 @@ export type EventStormingMode = "big-picture" | "process-level" | "design-level"
 export interface Board {
   id: string;
   name: string;
-  mainTimelineId: string;        // References the primary Timeline
-  timelines: Timeline[];         // Main + sub-timelines (themes)
+  mainTimelineId?: string;       // References the primary Timeline (optional for backward compat)
+  timelines?: Timeline[];        // Main + sub-timelines (themes) (optional for backward compat)
   stickies: BaseSticky[];
   verticals: VerticalLine[];
   lanes: HorizontalLane[];
   themes: ThemeArea[];           // Visual bounds for sub-timelines
-  sessionMode: EventStormingMode; // Big Picture, Process-Level, Design-Level
+  sessionMode?: EventStormingMode; // Big Picture, Process-Level, Design-Level (optional, defaults to "big-picture")
   phase: FacilitationPhase;      // Current facilitation phase (board-level)
   createdAt: string;
   updatedAt: string;

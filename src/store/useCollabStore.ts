@@ -78,15 +78,32 @@ export const useCollabStore = create<CollabState>((set, get) => {
 
   // Initialize default board structure
   if (!yboard.has("id")) {
+    const mainTimelineId = nanoid();
+
     yboard.set("id", "demo-board");
-    yboard.set("name", "Untitled Timeline");
+    yboard.set("name", "Untitled Board");
+    yboard.set("mainTimelineId", mainTimelineId);
+    yboard.set("timelines", new Y.Array());
     yboard.set("stickies", new Y.Array());
     yboard.set("verticals", new Y.Array());
     yboard.set("lanes", new Y.Array());
     yboard.set("themes", new Y.Array());
+    yboard.set("sessionMode", "big-picture");
+    yboard.set("phase", "chaotic-exploration");
     yboard.set("createdAt", now());
     yboard.set("updatedAt", now());
-    yboard.set("phase", "chaotic-exploration");
+
+    // Create main timeline
+    const timelines = yboard.get("timelines") as Y.Array<any>;
+    timelines.push([{
+      id: mainTimelineId,
+      name: "Main Timeline",
+      x: 0,
+      y: 200,
+      orientation: "horizontal",
+      stickyIds: [],
+      verticalIds: []
+    }]);
   }
 
   // Convert Y.Doc to Board object
