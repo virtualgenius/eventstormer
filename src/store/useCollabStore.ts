@@ -3,6 +3,7 @@ import * as Y from "yjs";
 import YPartyKitProvider from "y-partykit/provider";
 import { nanoid } from "../lib/nanoid";
 import { debugLog } from "@/lib/debug";
+import { saveBoard, loadBoard } from "@/lib/persistence";
 import type {
   Board,
   BaseSticky,
@@ -31,6 +32,8 @@ interface CollabState {
   isConnected: boolean;
   usersOnline: number;
   users: Map<number, User>;
+  hasUnsavedChanges: boolean;
+  lastSavedAt: string | null;
 
   // Actions
   connect: (roomId: string) => void;
@@ -44,6 +47,8 @@ interface CollabState {
   addLane: (y: number, label?: string) => void;
   addTheme: (area: Omit<ThemeArea, "id">) => void;
   updateSticky: (id: string, patch: Partial<BaseSticky>) => void;
+  saveToIndexedDB: () => Promise<void>;
+  loadFromIndexedDB: (boardId: string) => Promise<void>;
 }
 
 // Generate random user color
@@ -111,10 +116,35 @@ export const useCollabStore = create<CollabState>((set, get) => {
     return yMapToObject(yboard) as Board;
   };
 
-  // Subscribe to Yjs changes
+  // Subscribe to Yjs changes and mark as unsaved
   yboard.observe(() => {
-    set({ board: getBoardState() });
+    set({
+      board: getBoardState(),
+      hasUnsavedChanges: true
+    });
   });
+
+  // Autosave every 5 seconds
+  let autosaveInterval: NodeJS.Timeout | null = null;
+
+  const startAutosave = () => {
+    if (autosaveInterval) return;
+
+    autosaveInterval = setInterval(async () => {
+      const state = get();
+      if (state.hasUnsavedChanges) {
+        await saveBoard(state.board);
+        set({
+          hasUnsavedChanges: false,
+          lastSavedAt: new Date().toISOString()
+        });
+        debugLog('Persistence', 'Board autosaved to IndexedDB');
+      }
+    }, 5000); // 5 seconds
+  };
+
+  // Start autosave on store creation
+  startAutosave();
 
   // Expose store to window for testing
   if (typeof window !== 'undefined') {
@@ -131,6 +161,8 @@ export const useCollabStore = create<CollabState>((set, get) => {
     isConnected: false,
     usersOnline: 0,
     users: new Map(),
+    hasUnsavedChanges: false,
+    lastSavedAt: null,
 
     connect: (roomId: string) => {
       const host = import.meta.env.VITE_PARTYKIT_HOST || "localhost:1999";
@@ -271,6 +303,59 @@ export const useCollabStore = create<CollabState>((set, get) => {
         stickies.insert(index, [updated]);
         yboard.set("updatedAt", now());
       }
+    },
+
+    saveToIndexedDB: async () => {
+      const state = get();
+      await saveBoard(state.board);
+      set({
+        hasUnsavedChanges: false,
+        lastSavedAt: new Date().toISOString()
+      });
+      debugLog('Persistence', 'Board manually saved to IndexedDB');
+    },
+
+    loadFromIndexedDB: async (boardId: string) => {
+      const loadedBoard = await loadBoard(boardId);
+      if (!loadedBoard) {
+        debugLog('Persistence', `Board ${boardId} not found in IndexedDB`);
+        return;
+      }
+
+      // Update Yjs document with loaded data
+      yboard.set("id", loadedBoard.id);
+      yboard.set("name", loadedBoard.name);
+      yboard.set("mainTimelineId", loadedBoard.mainTimelineId);
+      yboard.set("sessionMode", loadedBoard.sessionMode || "big-picture");
+      yboard.set("phase", loadedBoard.phase);
+      yboard.set("createdAt", loadedBoard.createdAt);
+      yboard.set("updatedAt", loadedBoard.updatedAt);
+
+      // Clear and repopulate arrays
+      const stickies = yboard.get("stickies") as Y.Array<any>;
+      const verticals = yboard.get("verticals") as Y.Array<any>;
+      const lanes = yboard.get("lanes") as Y.Array<any>;
+      const themes = yboard.get("themes") as Y.Array<any>;
+      const timelines = yboard.get("timelines") as Y.Array<any>;
+
+      stickies.delete(0, stickies.length);
+      verticals.delete(0, verticals.length);
+      lanes.delete(0, lanes.length);
+      themes.delete(0, themes.length);
+      timelines.delete(0, timelines.length);
+
+      if (loadedBoard.stickies.length > 0) stickies.push(loadedBoard.stickies);
+      if (loadedBoard.verticals.length > 0) verticals.push(loadedBoard.verticals);
+      if (loadedBoard.lanes.length > 0) lanes.push(loadedBoard.lanes);
+      if (loadedBoard.themes.length > 0) themes.push(loadedBoard.themes);
+      if (loadedBoard.timelines && loadedBoard.timelines.length > 0) timelines.push(loadedBoard.timelines);
+
+      set({
+        hasUnsavedChanges: false,
+        lastSavedAt: loadedBoard.updatedAt
+      });
+
+      debugLog('Persistence', `Board ${boardId} loaded from IndexedDB`);
     }
   };
 });

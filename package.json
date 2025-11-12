@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@radix-ui/react-tooltip": "^1.0.7",
+    "dexie": "^4.2.1",
     "konva": "^10.0.8",
     "lucide-react": "^0.441.0",
     "partysocket": "^1.1.6",
