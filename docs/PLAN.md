@@ -284,6 +284,6 @@ Based on [M2-TECHNOLOGY-EVALUATION.md](M2-TECHNOLOGY-EVALUATION.md):
 | **1: Basic Canvas** | ✅ Complete | 04deb84 | - |
 | **2: Real-time Collab** | ✅ Complete | 4db1bd1 | - |
 | **3: Canvas Migration** | ✅ Complete | 28ad383, dd5b035, 83f8e0a | - |
-| **4: Persistence** | 🎯 Next | - | Add IndexedDB, autosave, undo/redo |
-| **5: Visual Grammar** | 📝 Planned | - | After Slice 4 complete |
+| **4: Persistence** | ✅ Complete | 6560cb7 | - |
+| **5: Visual Grammar** | 🎯 Next | - | All sticky types, lines, lanes, themes |
 | **6: Facilitation** | 📝 Planned | - | After Slice 5 complete |
