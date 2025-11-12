@@ -360,10 +360,61 @@ export interface Timeline {
 
 ---
 
+## Decisions (Answered)
+
+### A1: Timeline as Explicit Entity
+**DECISION:** ✅ Yes, explicit `Timeline` entity with the proposed properties. No hierarchical relationships for now.
+
+### A2: Theme-Timeline Relationship
+**DECISION:** ✅ Themes ARE sub-timelines. A theme is a sub-timeline extracted from the main timeline.
+- A theme **cannot exist without** a sub-timeline (they are the same concept)
+- A sub-timeline **cannot exist without** a theme area (they are bound together)
+- ThemeArea should reference its Timeline (or be merged into one entity)
+
+### A3: Vertical Line Scoping
+**DECISION:** ✅ Yes, scoped to timelines. Pivotal boundaries relate to pivotal events within a specific timeline/sub-timeline.
+- A single vertical line **cannot** mark pivotal events on multiple timelines
+- Different timelines need separate VerticalLine entities for their pivotal events
+- Rendering approach: Let users draw them (details TBD)
+
+### A4: Main Timeline
+**DECISION:** ✅ Option B - Explicit main timeline entity
+
+### A5: Timeline Rendering
+**DECISION:** ✅ No explicit lines/paths. A timeline is just:
+- A sequence of events
+- Related elements (actors, pivotal event lines, swimlanes, etc.)
+- Implicit visual arrangement, not a drawn line
+
+### B1: Session Mode Location
+**DECISION:** ✅ Board-level. Session mode defines the subset of available elements (events, hotspots, glossary, actors, systems, etc.).
+- Functions as a guide for participants
+- Facilitator chooses workshop stage (e.g., chaotic exploration)
+- Avoids overwhelming participants new to EventStorming color syntax
+
+### B2: Facilitation Phase Location
+**DECISION:** ✅ Per-board (keep current `Board.phase` approach)
+
+---
+
+## Implementation Notes
+
+**Key Insight:** Theme = Sub-Timeline (same concept, not separate)
+
+**Proposed approach:**
+- Keep `ThemeArea` entity (visual bounds + name)
+- Add `Timeline` entity for both main and sub-timelines
+- Link them: `ThemeArea.timelineId` references the sub-timeline
+- Or merge: ThemeArea becomes Timeline with geometry properties
+
+**DDD Evolution:** Domain model will evolve iteratively. Complex schema migrations are acceptable during pre-release.
+
+---
+
 ## Next Steps
 
-1. **Review and answer questions A.1 - B.2**
-2. **Update `src/types/domain.ts`** based on answers
+1. ✅ **Questions answered**
+2. 🎯 **Update `src/types/domain.ts`** based on decisions
 3. **Update SPEC.md** to reflect timeline and session mode concepts
 4. **Implement Slice 4** with correct domain model
 5. **Update PLAN.md** to include timeline/mode features in appropriate slices
