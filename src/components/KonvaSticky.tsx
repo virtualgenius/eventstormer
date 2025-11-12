@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { Group, Rect, Text } from "react-konva";
 import type Konva from "konva";
 import type { BaseSticky } from "@/types/domain";
+import type { InteractionMode } from "@/store/useCollabStore";
 import { useCollabStore } from "@/store/useCollabStore";
 import { debugLog } from "@/lib/debug";
 
@@ -18,16 +19,18 @@ interface KonvaStickyProps {
   sticky: BaseSticky;
   onSelect: (id: string) => void;
   isSelected: boolean;
+  interactionMode: InteractionMode;
 }
 
-export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSelected }) => {
+export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSelected, interactionMode }) => {
   const updateSticky = useCollabStore((s) => s.updateSticky);
   const groupRef = useRef<Konva.Group>(null);
   const [isEditing, setIsEditing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const colors = COLOR_MAP[sticky.kind];
+  const colors = COLOR_MAP[sticky.kind] || { fill: "#f1f5f9", stroke: "#e2e8f0" };
   const STICKY_SIZE = 120;
+  const height = sticky.kind === 'actor' ? STICKY_SIZE / 2 : STICKY_SIZE;
 
   // Listen for auto-edit event (triggered by Tab key from another sticky)
   useEffect(() => {
@@ -175,14 +178,15 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
         }
       };
     }
-  }, [isEditing, sticky.id, sticky.text, updateSticky, colors.fill]);
+  }, [isEditing, sticky.id, sticky.text, sticky.kind, sticky.x, sticky.y, updateSticky, colors.fill, height]);
 
   return (
     <Group
       ref={groupRef}
       x={sticky.x}
       y={sticky.y}
-      draggable
+      draggable={interactionMode === 'select'}
+      listening={interactionMode !== 'pan'}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onClick={handleClick}
@@ -190,7 +194,7 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
     >
       <Rect
         width={STICKY_SIZE}
-        height={STICKY_SIZE}
+        height={height}
         fill={colors.fill}
         stroke={isSelected ? "#3b82f6" : colors.stroke}
         strokeWidth={isSelected ? 3 : 2}
@@ -203,7 +207,7 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
       />
       <Text
         width={STICKY_SIZE}
-        height={STICKY_SIZE}
+        height={height}
         text={sticky.text}
         fontSize={14}
         fontFamily="system-ui, -apple-system, sans-serif"

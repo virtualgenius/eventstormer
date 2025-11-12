@@ -38,6 +38,8 @@ export interface VerticalLine {
 export interface HorizontalLane {
   id: string;
   y: number;
+  x1?: number;  // Start x position (defaults to 0)
+  x2?: number;  // End x position (defaults to canvas width)
   label?: string;
 }
 

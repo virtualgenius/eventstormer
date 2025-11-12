@@ -22,11 +22,14 @@ interface User {
   cursor?: { x: number; y: number };
 }
 
+export type InteractionMode = 'pan' | 'select' | 'add';
+
 interface CollabState {
   ydoc: Y.Doc;
   provider: YPartyKitProvider | null;
   board: Board;
   activeTool: string | null;
+  interactionMode: InteractionMode;
   userColor: string;
   userId: string;
   isConnected: boolean;
@@ -41,10 +44,15 @@ interface CollabState {
   updateCursor: (x: number, y: number) => void;
   setPhase: (phase: FacilitationPhase) => void;
   setActiveTool: (tool: string | null) => void;
+  setInteractionMode: (mode: InteractionMode) => void;
   addSticky: (partial: Omit<BaseSticky, "id" | "createdAt" | "updatedAt">) => void;
   deleteSticky: (id: string) => void;
   addVertical: (x: number, label?: string) => void;
-  addLane: (y: number, label?: string) => void;
+  updateVertical: (id: string, patch: Partial<Pick<VerticalLine, "x" | "label">>) => void;
+  deleteVertical: (id: string) => void;
+  addLane: (y: number, x1?: number, x2?: number, label?: string) => void;
+  updateLane: (id: string, patch: Partial<Pick<HorizontalLane, "y" | "x1" | "x2" | "label">>) => void;
+  deleteLane: (id: string) => void;
   addTheme: (area: Omit<ThemeArea, "id">) => void;
   updateSticky: (id: string, patch: Partial<BaseSticky>) => void;
   saveToIndexedDB: () => Promise<void>;
@@ -156,6 +164,7 @@ export const useCollabStore = create<CollabState>((set, get) => {
     provider: null,
     board: getBoardState(),
     activeTool: null,
+    interactionMode: 'pan' as InteractionMode, // Default to pan mode
     userColor,
     userId,
     isConnected: false,
@@ -225,7 +234,20 @@ export const useCollabStore = create<CollabState>((set, get) => {
     },
 
     setActiveTool: (tool) => {
-      set({ activeTool: tool });
+      set({
+        activeTool: tool,
+        interactionMode: tool ? 'add' : get().interactionMode // Switch to add mode when tool selected
+      });
+    },
+
+    setInteractionMode: (mode) => {
+      const currentState = get();
+      // If switching away from add mode, clear the active tool
+      if (currentState.interactionMode === 'add' && mode !== 'add') {
+        set({ interactionMode: mode, activeTool: null });
+      } else {
+        set({ interactionMode: mode });
+      }
     },
 
     addSticky: (partial) => {
@@ -265,10 +287,52 @@ export const useCollabStore = create<CollabState>((set, get) => {
       yboard.set("updatedAt", now());
     },
 
-    addLane: (y, label) => {
+    updateVertical: (id, patch) => {
+      const verticals = yboard.get("verticals") as Y.Array<any>;
+      const verticalArray = verticals.toArray();
+      const idx = verticalArray.findIndex((v: VerticalLine) => v.id === id);
+      if (idx !== -1) {
+        verticals.delete(idx, 1);
+        verticals.insert(idx, [{ ...verticalArray[idx], ...patch }]);
+        yboard.set("updatedAt", now());
+      }
+    },
+
+    deleteVertical: (id) => {
+      const verticals = yboard.get("verticals") as Y.Array<any>;
+      const verticalArray = verticals.toArray();
+      const idx = verticalArray.findIndex((v: VerticalLine) => v.id === id);
+      if (idx !== -1) {
+        verticals.delete(idx, 1);
+        yboard.set("updatedAt", now());
+      }
+    },
+
+    addLane: (y, x1, x2, label) => {
       const lanes = yboard.get("lanes") as Y.Array<any>;
-      lanes.push([{ id: nanoid(), y, label }]);
+      lanes.push([{ id: nanoid(), y, x1, x2, label }]);
       yboard.set("updatedAt", now());
+    },
+
+    updateLane: (id, patch) => {
+      const lanes = yboard.get("lanes") as Y.Array<any>;
+      const laneArray = lanes.toArray();
+      const idx = laneArray.findIndex((l: HorizontalLane) => l.id === id);
+      if (idx !== -1) {
+        lanes.delete(idx, 1);
+        lanes.insert(idx, [{ ...laneArray[idx], ...patch }]);
+        yboard.set("updatedAt", now());
+      }
+    },
+
+    deleteLane: (id) => {
+      const lanes = yboard.get("lanes") as Y.Array<any>;
+      const laneArray = lanes.toArray();
+      const idx = laneArray.findIndex((l: HorizontalLane) => l.id === id);
+      if (idx !== -1) {
+        lanes.delete(idx, 1);
+        yboard.set("updatedAt", now());
+      }
     },
 
     addTheme: (area) => {

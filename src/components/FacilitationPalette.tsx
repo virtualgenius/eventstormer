@@ -11,7 +11,7 @@ const ELEMENT_LABELS: Record<ElementType, string> = {
   opportunity: "Opportunity",
   glossary: "Glossary",
   "vertical-line": "Vertical Line",
-  "horizontal-lane": "Lane",
+  "horizontal-lane": "Swimlane",
   "theme-area": "Theme"
 };
 
