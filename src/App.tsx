@@ -3,7 +3,7 @@ import { KonvaCanvas } from "@/components/KonvaCanvas";
 import { FacilitationPalette } from "@/components/FacilitationPalette";
 import { useCollabStore } from "@/store/useCollabStore";
 import { useUndoRedo } from "@/hooks/useUndoRedo";
-import { Users, Download, Save, Upload, FileJson, Hand, MousePointer } from "lucide-react";
+import { Users, Download, Save, Upload, FileJson, Hand, MousePointer, Trash2 } from "lucide-react";
 import { exportCanvasToImage } from "@/lib/export";
 import { downloadBoardJSON, importBoardJSON } from "@/lib/persistence";
 import type Konva from "konva";
@@ -86,6 +86,28 @@ const App: React.FC = () => {
     await saveToIndexedDB();
   };
 
+  const clearBoard = useCollabStore((state) => state.clearBoard);
+
+  const handleClearBoard = async () => {
+    if (confirm('Clear all data? This will delete everything from the board and storage.')) {
+      // Clear the Yjs document
+      clearBoard();
+
+      // Clear all storage
+      localStorage.clear();
+      sessionStorage.clear();
+      const databases = await indexedDB.databases();
+      for (const db of databases) {
+        if (db.name) {
+          indexedDB.deleteDatabase(db.name);
+        }
+      }
+
+      // Reload to start fresh
+      window.location.reload();
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen w-screen">
       <header className="flex items-center justify-between px-4 py-2 border-b bg-white dark:bg-slate-900">
@@ -126,6 +148,14 @@ const App: React.FC = () => {
             </button>
           </div>
 
+          <button
+            onClick={handleClearBoard}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800 text-red-700 dark:text-red-100 rounded transition-colors"
+            title="Clear all data and reload"
+          >
+            <Trash2 className="w-3 h-3" />
+            Clear
+          </button>
           <button
             onClick={handleManualSave}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded transition-colors"

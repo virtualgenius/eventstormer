@@ -42,8 +42,11 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
   const [isPanning, setIsPanning] = useState(false);
   const [drawingLane, setDrawingLane] = useState<{ y: number; x1: number } | null>(null);
   const [tempLaneEnd, setTempLaneEnd] = useState<number | null>(null);
+  const [drawingVertical, setDrawingVertical] = useState<{ x: number; y1: number } | null>(null);
+  const [tempVerticalEnd, setTempVerticalEnd] = useState<number | null>(null);
   const lastCursorUpdate = useRef<number>(0);
   const lastTempLaneUpdate = useRef<number>(0);
+  const lastTempVerticalUpdate = useRef<number>(0);
 
   // Viewport culling: only render stickies visible in viewport
   const getVisibleStickies = useCallback(() => {
@@ -112,6 +115,11 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
   };
 
   const handleStageMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
+    // If event was cancelled by a child (sticky, line, etc.), don't process it
+    if (e.cancelBubble) {
+      return;
+    }
+
     const clickedOnStage = e.target === e.target.getStage();
     const targetType = e.target.getType();
     const clickedOnBackground = (targetType === 'Rect' || targetType === 'Shape') &&
@@ -151,8 +159,9 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
         const canvasY = (pointerPosition.y - stage.y()) / stage.scaleY();
 
         if (activeTool === 'vertical-line') {
-          debugLog('KonvaCanvas', `Creating vertical line - X: ${canvasX.toFixed(1)}`);
-          addVertical(canvasX);
+          // Start drawing vertical line - set start point
+          debugLog('KonvaCanvas', `Starting vertical line - X: ${canvasX.toFixed(1)}, Y: ${canvasY.toFixed(1)}`);
+          setDrawingVertical({ x: canvasX, y1: canvasY });
         } else if (activeTool === 'horizontal-lane') {
           // Start drawing lane - set start point
           debugLog('KonvaCanvas', `Starting horizontal lane - Y: ${canvasY.toFixed(1)}, X: ${canvasX.toFixed(1)}`);
@@ -186,6 +195,16 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
   const handleStageMouseUp = () => {
     setIsPanning(false);
 
+    // Finalize vertical line drawing
+    if (drawingVertical && tempVerticalEnd !== null) {
+      const y1 = Math.min(drawingVertical.y1, tempVerticalEnd);
+      const y2 = Math.max(drawingVertical.y1, tempVerticalEnd);
+      debugLog('KonvaCanvas', `Completing vertical line - X: ${drawingVertical.x.toFixed(1)}, Y1: ${y1.toFixed(1)}, Y2: ${y2.toFixed(1)}`);
+      addVertical(drawingVertical.x, y1, y2);
+      setDrawingVertical(null);
+      setTempVerticalEnd(null);
+    }
+
     // Finalize lane drawing
     if (drawingLane && tempLaneEnd !== null) {
       const x1 = Math.min(drawingLane.x1, tempLaneEnd);
@@ -198,9 +217,13 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
   };
 
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
-    const newPos = { x: e.target.x(), y: e.target.y() };
-    debugLog('KonvaCanvas', `Drag ended - Position: (${newPos.x.toFixed(1)}, ${newPos.y.toFixed(1)})`);
-    setStagePos(newPos);
+    // Only update stage position if the stage itself was dragged (panning)
+    const stage = stageRef.current;
+    if (e.target === stage) {
+      const newPos = { x: e.target.x(), y: e.target.y() };
+      debugLog('KonvaCanvas', `Stage drag ended - Position: (${newPos.x.toFixed(1)}, ${newPos.y.toFixed(1)})`);
+      setStagePos(newPos);
+    }
     setIsPanning(false);
   };
 
@@ -228,6 +251,12 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
       lastCursorUpdate.current = now;
     }
 
+    // Throttle temp vertical end updates to 16ms (60fps max) to reduce re-renders
+    if (drawingVertical && now - lastTempVerticalUpdate.current > 16) {
+      setTempVerticalEnd(canvasY);
+      lastTempVerticalUpdate.current = now;
+    }
+
     // Throttle temp lane end updates to 16ms (60fps max) to reduce re-renders
     if (drawingLane && now - lastTempLaneUpdate.current > 16) {
       setTempLaneEnd(canvasX);
@@ -246,8 +275,19 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
       if (activeTool === 'vertical-line' || activeTool === 'horizontal-lane' || activeTool === 'theme-area') {
         return "crosshair";
       }
-      // For sticky tools, show crosshair (TODO: custom sticky icon cursor)
-      return "crosshair";
+      // For sticky tools, show custom sticky note cursor
+      const stickyColors: Record<string, string> = {
+        'event': '#fed7aa',
+        'hotspot': '#fecaca',
+        'person': '#fef9c3',
+        'system': '#e9d5ff',
+        'opportunity': '#bbf7d0',
+        'glossary': '#f1f5f9'
+      };
+      const color = stickyColors[activeTool] || '#fed7aa';
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><rect x='2' y='2' width='20' height='20' rx='2' fill='${color}' stroke='%23000' stroke-width='1.5'/></svg>`;
+      const encoded = encodeURIComponent(svg);
+      return `url("data:image/svg+xml,${encoded}") 12 12, auto`;
     }
 
     // Pan Mode - show hand cursors
@@ -266,9 +306,12 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
   // Handle keyboard shortcuts for Delete, Duplicate, and Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      debugLog('KonvaCanvas', `Key pressed: ${e.key}, selectedId: ${selectedId}, selectedType: ${selectedType}`);
+
       // Ignore if user is typing in a textarea or input
       const target = e.target as HTMLElement;
       if (target.tagName === 'TEXTAREA' || target.tagName === 'INPUT') {
+        debugLog('KonvaCanvas', `Ignoring key - target is ${target.tagName}`);
         return;
       }
 
@@ -336,7 +379,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
       const labels: Record<string, string> = {
         'event': 'Event',
         'hotspot': 'Hotspot',
-        'actor': 'Actor',
+        'person': 'Person',
         'system': 'System',
         'opportunity': 'Opportunity',
         'glossary': 'Glossary',
@@ -374,7 +417,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
         scaleY={scale}
         x={stagePos.x}
         y={stagePos.y}
-        draggable={interactionMode === 'pan' && !drawingLane}
+        draggable={interactionMode === 'pan' && !drawingLane && !drawingVertical}
         onWheel={handleWheel}
         onMouseDown={handleStageMouseDown}
         onMouseUp={handleStageMouseUp}
@@ -395,12 +438,15 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
           />
 
           {/* Vertical lines */}
-          {board.verticals.map((v) => (
-            <React.Fragment key={v.id}>
-              <Line
-                points={[v.x, 0, v.x, CANVAS_HEIGHT / 2]}
-                stroke={selectedId === v.id && selectedType === 'vertical' ? "#3b82f6" : "#cbd5e1"}
-                strokeWidth={6}
+          {board.verticals.map((v) => {
+            const lineY1 = v.y1 ?? 0;
+            const lineY2 = v.y2 ?? CANVAS_HEIGHT / 2;
+            return (
+              <React.Fragment key={v.id}>
+                <Line
+                  points={[v.x, lineY1, v.x, lineY2]}
+                  stroke={selectedId === v.id && selectedType === 'vertical' ? "#3b82f6" : "#cbd5e1"}
+                  strokeWidth={6}
                 draggable={interactionMode === 'select'}
                 listening={interactionMode !== 'pan'}
                 onDragEnd={(e) => {
@@ -439,7 +485,8 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
                 />
               )}
             </React.Fragment>
-          ))}
+            );
+          })}
 
           {/* Horizontal lanes */}
           {board.lanes.map((l) => {
@@ -490,6 +537,22 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
             );
           })}
 
+          {/* Preview vertical line while drawing */}
+          {drawingVertical && tempVerticalEnd !== null && (
+            <Line
+              points={[
+                drawingVertical.x,
+                Math.min(drawingVertical.y1, tempVerticalEnd),
+                drawingVertical.x,
+                Math.max(drawingVertical.y1, tempVerticalEnd)
+              ]}
+              stroke="#93c5fd"
+              strokeWidth={6}
+              dash={[10, 5]}
+              listening={false}
+            />
+          )}
+
           {/* Preview lane while drawing */}
           {drawingLane && tempLaneEnd !== null && (
             <Line
@@ -532,20 +595,33 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
           ))}
 
           {/* Stickies (viewport culled) */}
-          {getVisibleStickies().map((s) => (
-            <KonvaSticky
-              key={s.id}
-              sticky={s}
-              onSelect={(id) => {
-                if (interactionMode === 'select') {
-                  setSelectedId(id);
-                  setSelectedType('sticky');
-                }
-              }}
-              isSelected={s.id === selectedId && selectedType === 'sticky'}
-              interactionMode={interactionMode}
-            />
-          ))}
+          {(() => {
+            const visibleStickies = getVisibleStickies();
+            const ids = visibleStickies.map(s => s.id);
+            const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+            if (duplicates.length > 0) {
+              debugLog('KonvaCanvas', `DUPLICATE STICKY IDs FOUND: ${duplicates.join(', ')}`);
+              debugLog('KonvaCanvas', `Total stickies: ${board.stickies.length}, Visible: ${visibleStickies.length}`);
+            }
+            return visibleStickies.map((s) => (
+              <KonvaSticky
+                key={s.id}
+                sticky={s}
+                onSelect={(id) => {
+                  debugLog('KonvaCanvas', `onSelect callback - ID: ${id}, Mode: ${interactionMode}, CurrentSelected: ${selectedId}`);
+                  if (interactionMode === 'select') {
+                    debugLog('KonvaCanvas', `Setting selected - ID: ${id}, Type: sticky`);
+                    setSelectedId(id);
+                    setSelectedType('sticky');
+                  } else {
+                    debugLog('KonvaCanvas', `Not setting selected - wrong mode: ${interactionMode}`);
+                  }
+                }}
+                isSelected={s.id === selectedId && selectedType === 'sticky'}
+                interactionMode={interactionMode}
+              />
+            ));
+          })()}
         </Layer>
       </Stage>
 

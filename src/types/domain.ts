@@ -1,7 +1,7 @@
 export type StickyKind =
   | "event"
   | "hotspot"
-  | "actor"
+  | "person"
   | "system"
   | "opportunity"
   | "glossary";
@@ -30,6 +30,8 @@ export interface Timeline {
 export interface VerticalLine {
   id: string;
   x: number;
+  y1?: number;                   // Optional start y position
+  y2?: number;                   // Optional end y position
   label?: string;
   pivotalEventId?: string;
   timelineId?: string;           // Which timeline owns this boundary (optional for backward compat)

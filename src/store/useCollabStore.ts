@@ -47,8 +47,8 @@ interface CollabState {
   setInteractionMode: (mode: InteractionMode) => void;
   addSticky: (partial: Omit<BaseSticky, "id" | "createdAt" | "updatedAt">) => void;
   deleteSticky: (id: string) => void;
-  addVertical: (x: number, label?: string) => void;
-  updateVertical: (id: string, patch: Partial<Pick<VerticalLine, "x" | "label">>) => void;
+  addVertical: (x: number, y1?: number, y2?: number, label?: string) => void;
+  updateVertical: (id: string, patch: Partial<Pick<VerticalLine, "x" | "y1" | "y2" | "label">>) => void;
   deleteVertical: (id: string) => void;
   addLane: (y: number, x1?: number, x2?: number, label?: string) => void;
   updateLane: (id: string, patch: Partial<Pick<HorizontalLane, "y" | "x1" | "x2" | "label">>) => void;
@@ -57,6 +57,7 @@ interface CollabState {
   updateSticky: (id: string, patch: Partial<BaseSticky>) => void;
   saveToIndexedDB: () => Promise<void>;
   loadFromIndexedDB: (boardId: string) => Promise<void>;
+  clearBoard: () => void;
 }
 
 // Generate random user color
@@ -73,7 +74,16 @@ const yMapToObject = (ymap: Y.Map<any>): any => {
   const obj: any = {};
   ymap.forEach((value, key) => {
     if (value instanceof Y.Array) {
-      obj[key] = value.toArray();
+      const arr = value.toArray();
+      // Debug: check for nested arrays
+      if (key === 'stickies' && arr.length > 0) {
+        debugLog('YjsConversion', `Stickies array length: ${arr.length}`);
+        debugLog('YjsConversion', `First item type: ${Array.isArray(arr[0]) ? 'Array' : typeof arr[0]}`);
+        if (Array.isArray(arr[0])) {
+          debugLog('YjsConversion', `NESTED ARRAY DETECTED! First nested item:`, JSON.stringify(arr[0]));
+        }
+      }
+      obj[key] = arr;
     } else if (value instanceof Y.Map) {
       obj[key] = yMapToObject(value);
     } else {
@@ -259,7 +269,7 @@ export const useCollabStore = create<CollabState>((set, get) => {
         ...partial
       };
       debugLog('Store', `Adding sticky - ID: ${newSticky.id}, Kind: ${newSticky.kind}, Position: (${partial.x}, ${partial.y}), Text: "${partial.text}"`);
-      stickies.push([newSticky]);
+      stickies.push([newSticky]); // Y.Array.push expects array of items
       yboard.set("updatedAt", now());
     },
 
@@ -276,11 +286,13 @@ export const useCollabStore = create<CollabState>((set, get) => {
       }
     },
 
-    addVertical: (x, label) => {
+    addVertical: (x, y1, y2, label) => {
       const verticals = yboard.get("verticals") as Y.Array<any>;
       verticals.push([{
         id: nanoid(),
         x,
+        y1,
+        y2,
         label,
         pivotalEventId: undefined
       }]);
@@ -408,11 +420,14 @@ export const useCollabStore = create<CollabState>((set, get) => {
       themes.delete(0, themes.length);
       timelines.delete(0, timelines.length);
 
-      if (loadedBoard.stickies.length > 0) stickies.push(loadedBoard.stickies);
-      if (loadedBoard.verticals.length > 0) verticals.push(loadedBoard.verticals);
-      if (loadedBoard.lanes.length > 0) lanes.push(loadedBoard.lanes);
-      if (loadedBoard.themes.length > 0) themes.push(loadedBoard.themes);
-      if (loadedBoard.timelines && loadedBoard.timelines.length > 0) timelines.push(loadedBoard.timelines);
+      // Push individual items, not the entire array
+      loadedBoard.stickies.forEach(s => stickies.push([s]));
+      loadedBoard.verticals.forEach(v => verticals.push([v]));
+      loadedBoard.lanes.forEach(l => lanes.push([l]));
+      loadedBoard.themes.forEach(t => themes.push([t]));
+      if (loadedBoard.timelines) {
+        loadedBoard.timelines.forEach(t => timelines.push([t]));
+      }
 
       set({
         hasUnsavedChanges: false,
@@ -420,6 +435,24 @@ export const useCollabStore = create<CollabState>((set, get) => {
       });
 
       debugLog('Persistence', `Board ${boardId} loaded from IndexedDB`);
+    },
+
+    clearBoard: () => {
+      // Clear all arrays in Yjs
+      const stickies = yboard.get("stickies") as Y.Array<any>;
+      const verticals = yboard.get("verticals") as Y.Array<any>;
+      const lanes = yboard.get("lanes") as Y.Array<any>;
+      const themes = yboard.get("themes") as Y.Array<any>;
+      const timelines = yboard.get("timelines") as Y.Array<any>;
+
+      stickies.delete(0, stickies.length);
+      verticals.delete(0, verticals.length);
+      lanes.delete(0, lanes.length);
+      themes.delete(0, themes.length);
+      timelines.delete(0, timelines.length);
+
+      yboard.set("updatedAt", now());
+      debugLog('Store', 'Board cleared');
     }
   };
 });
