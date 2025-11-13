@@ -25,7 +25,6 @@ export const KonvaLabel: React.FC<KonvaLabelProps> = ({
   const board = useCollabStore((s) => s.board);
   const groupRef = useRef<Konva.Group>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const dragStartPositions = useRef<Map<string, any>>(new Map());
 
   useEffect(() => {
@@ -134,103 +133,43 @@ export const KonvaLabel: React.FC<KonvaLabelProps> = ({
 
   const handleDblClick = () => {
     if (interactionMode === 'select') {
-      setIsEditing(true);
+      const newText = prompt('Edit label:', label.text);
+      if (newText && newText.trim() && newText !== label.text) {
+        updateLabel(label.id, { text: newText.trim() });
+      }
     }
   };
 
   useEffect(() => {
-    if (isEditing && textareaRef.current) {
-      const textarea = textareaRef.current;
-      const group = groupRef.current;
-
-      if (group) {
-        const stage = group.getStage();
-        if (stage) {
-          const transform = group.getAbsoluteTransform();
-          const pos = transform.point({ x: label.x, y: label.y });
-          const stageBox = stage.container().getBoundingClientRect();
-          const scale = stage.scaleX();
-
-          textarea.style.left = `${stageBox.left + pos.x}px`;
-          textarea.style.top = `${stageBox.top + pos.y}px`;
-          textarea.style.transform = `scale(${scale})`;
-          textarea.style.transformOrigin = 'top left';
-        }
+    if (isEditing) {
+      const newText = prompt('Label text:', label.text);
+      if (newText && newText.trim()) {
+        updateLabel(label.id, { text: newText.trim() });
       }
-
-      textarea.focus();
-      textarea.select();
-    }
-  }, [isEditing, label.x, label.y]);
-
-  const handleTextareaBlur = () => {
-    if (textareaRef.current) {
-      const newText = textareaRef.current.value.trim();
-      if (newText && newText !== label.text) {
-        updateLabel(label.id, { text: newText });
-      }
-    }
-    setIsEditing(false);
-  };
-
-  const handleTextareaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Escape') {
-      e.preventDefault();
       setIsEditing(false);
-    } else if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleTextareaBlur();
     }
-  };
+  }, [isEditing, label.id, label.text, updateLabel]);
 
   return (
-    <>
-      <Group
-        ref={groupRef}
-        x={label.x}
-        y={label.y}
-        draggable={interactionMode === 'select' && !isEditing}
-        onDragStart={handleDragStart}
-        onDragMove={handleDragMove}
-        onDragEnd={handleDragEnd}
-        onClick={handleClick}
-        onTap={handleClick}
-        onDblClick={handleDblClick}
-        onDblTap={handleDblClick}
-      >
-        <Text
-          text={label.text}
-          fontSize={20}
-          fontStyle="bold"
-          fill={isSelected ? "#2563eb" : "#1f2937"}
-          listening={!isEditing}
-          opacity={isEditing ? 0.3 : 1}
-        />
-      </Group>
-
-      {isEditing && (
-        <textarea
-          ref={textareaRef}
-          defaultValue={label.text}
-          onBlur={handleTextareaBlur}
-          onKeyDown={handleTextareaKeyDown}
-          style={{
-            position: 'absolute',
-            fontSize: '20px',
-            fontWeight: 'bold',
-            fontFamily: 'inherit',
-            border: '2px solid #3b82f6',
-            borderRadius: '4px',
-            padding: '4px',
-            background: 'white',
-            outline: 'none',
-            resize: 'none',
-            minWidth: '100px',
-            zIndex: 1000,
-          }}
-          rows={1}
-        />
-      )}
-    </>
+    <Group
+      ref={groupRef}
+      x={label.x}
+      y={label.y}
+      draggable={interactionMode === 'select'}
+      onDragStart={handleDragStart}
+      onDragMove={handleDragMove}
+      onDragEnd={handleDragEnd}
+      onClick={handleClick}
+      onTap={handleClick}
+      onDblClick={handleDblClick}
+      onDblTap={handleDblClick}
+    >
+      <Text
+        text={label.text}
+        fontSize={20}
+        fontStyle="bold"
+        fill={isSelected ? "#2563eb" : "#1f2937"}
+      />
+    </Group>
   );
 };
