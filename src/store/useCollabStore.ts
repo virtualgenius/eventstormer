@@ -23,6 +23,12 @@ interface User {
 }
 
 export type InteractionMode = 'pan' | 'select' | 'add';
+export type ElementType = 'sticky' | 'vertical' | 'lane';
+
+export interface SelectedElement {
+  id: string;
+  type: ElementType;
+}
 
 interface CollabState {
   ydoc: Y.Doc;
@@ -30,6 +36,7 @@ interface CollabState {
   board: Board;
   activeTool: string | null;
   interactionMode: InteractionMode;
+  selectedElements: SelectedElement[];
   userColor: string;
   userId: string;
   isConnected: boolean;
@@ -45,6 +52,12 @@ interface CollabState {
   setPhase: (phase: FacilitationPhase) => void;
   setActiveTool: (tool: string | null) => void;
   setInteractionMode: (mode: InteractionMode) => void;
+  setSelectedElements: (elements: SelectedElement[]) => void;
+  addToSelection: (id: string, type: ElementType) => void;
+  removeFromSelection: (id: string) => void;
+  clearSelection: () => void;
+  toggleSelection: (id: string, type: ElementType) => void;
+  isSelected: (id: string) => boolean;
   addSticky: (partial: Omit<BaseSticky, "id" | "createdAt" | "updatedAt">) => void;
   deleteSticky: (id: string) => void;
   addVertical: (x: number, y1?: number, y2?: number, label?: string) => void;
@@ -175,6 +188,7 @@ export const useCollabStore = create<CollabState>((set, get) => {
     board: getBoardState(),
     activeTool: null,
     interactionMode: 'pan' as InteractionMode, // Default to pan mode
+    selectedElements: [],
     userColor,
     userId,
     isConnected: false,
@@ -258,6 +272,39 @@ export const useCollabStore = create<CollabState>((set, get) => {
       } else {
         set({ interactionMode: mode });
       }
+    },
+
+    setSelectedElements: (elements) =>
+      set({ selectedElements: elements }),
+
+    addToSelection: (id, type) =>
+      set((state) => {
+        const exists = state.selectedElements.some(el => el.id === id);
+        if (exists) return state;
+        return { selectedElements: [...state.selectedElements, { id, type }] };
+      }),
+
+    removeFromSelection: (id) =>
+      set((state) => ({
+        selectedElements: state.selectedElements.filter(el => el.id !== id)
+      })),
+
+    clearSelection: () =>
+      set({ selectedElements: [] }),
+
+    toggleSelection: (id, type) =>
+      set((state) => {
+        const exists = state.selectedElements.some(el => el.id === id);
+        if (exists) {
+          return { selectedElements: state.selectedElements.filter(el => el.id !== id) };
+        } else {
+          return { selectedElements: [...state.selectedElements, { id, type }] };
+        }
+      }),
+
+    isSelected: (id) => {
+      const state = get();
+      return state.selectedElements.some(el => el.id === id);
     },
 
     addSticky: (partial) => {

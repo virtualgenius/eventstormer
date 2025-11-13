@@ -15,18 +15,23 @@ const COLOR_MAP: Record<BaseSticky["kind"], { fill: string; stroke: string }> = 
   glossary: { fill: "#f1f5f9", stroke: "#e2e8f0" }
 };
 
+import type { SelectedElement } from "@/store/useCollabStore";
+
 interface KonvaStickyProps {
   sticky: BaseSticky;
-  onSelect: (id: string) => void;
+  onSelect: (id: string, shiftKey: boolean) => void;
   isSelected: boolean;
   interactionMode: InteractionMode;
+  selectedElements: SelectedElement[];
 }
 
-export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSelected, interactionMode }) => {
-  const updateSticky = useCollabStore((s) => s.updateSticky);
+export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSelected, interactionMode, selectedElements }) => {
+  const updateSticky = useCollabStore ((s) => s.updateSticky);
+  const board = useCollabStore((s) => s.board);
   const groupRef = useRef<Konva.Group>(null);
   const [isEditing, setIsEditing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const dragStartPositions = useRef<Map<string, { x: number; y: number }>>(new Map());
 
   const colors = COLOR_MAP[sticky.kind] || { fill: "#f1f5f9", stroke: "#e2e8f0" };
   const STICKY_SIZE = 120;
@@ -42,7 +47,7 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
         // This is the newest sticky, auto-enter edit mode
         setTimeout(() => {
           setIsEditing(true);
-          onSelect(sticky.id);
+          onSelect(sticky.id, false);
         }, 100);
       }
     };
@@ -52,25 +57,94 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
   }, [sticky.id, onSelect]);
 
   const handleDragStart = () => {
-    debugLog('KonvaSticky', `Drag started - ID: ${sticky.id}, Kind: ${sticky.kind}, Position: (${sticky.x}, ${sticky.y})`);
+    debugLog('KonvaSticky', `Drag started - ID: ${sticky.id}, Kind: ${sticky.kind}, Position: (${sticky.x}, ${sticky.y}), Multi-select: ${selectedElements.length > 0}`);
+
+    // Store initial positions of ALL selected elements for group drag
+    if (selectedElements.length > 0) {
+      const positions = new Map<string, any>();
+      selectedElements.forEach(el => {
+        if (el.type === 'sticky') {
+          const s = board.stickies.find(sticky => sticky.id === el.id);
+          if (s) {
+            positions.set(el.id, { type: 'sticky', x: s.x, y: s.y });
+          }
+        } else if (el.type === 'vertical') {
+          const v = board.verticals.find(vert => vert.id === el.id);
+          if (v) {
+            positions.set(el.id, { type: 'vertical', x: v.x, y1: v.y1, y2: v.y2 });
+          }
+        } else if (el.type === 'lane') {
+          const l = board.lanes.find(lane => lane.id === el.id);
+          if (l) {
+            positions.set(el.id, { type: 'lane', y: l.y, x1: l.x1, x2: l.x2 });
+          }
+        }
+      });
+      dragStartPositions.current = positions;
+      debugLog('KonvaSticky', `Stored ${positions.size} initial positions for group drag (${selectedElements.filter(e => e.type === 'sticky').length} stickies, ${selectedElements.filter(e => e.type === 'vertical').length} verticals, ${selectedElements.filter(e => e.type === 'lane').length} lanes)`);
+    }
+  };
+
+  const handleDragMove = (e: Konva.KonvaEventObject<DragEvent>) => {
+    // If this sticky is part of a multi-selection, move all selected elements
+    const isThisStickySelected = selectedElements.some(el => el.id === sticky.id && el.type === 'sticky');
+    if (selectedElements.length > 0 && isThisStickySelected) {
+      const deltaX = e.target.x() - sticky.x;
+      const deltaY = e.target.y() - sticky.y;
+
+      const updateVertical = useCollabStore.getState().updateVertical;
+      const updateLane = useCollabStore.getState().updateLane;
+
+      // Update positions of all other selected elements
+      selectedElements.forEach(el => {
+        if (el.id !== sticky.id) {
+          const startPos = dragStartPositions.current.get(el.id);
+          if (startPos) {
+            if (startPos.type === 'sticky') {
+              updateSticky(el.id, {
+                x: startPos.x + deltaX,
+                y: startPos.y + deltaY
+              });
+            } else if (startPos.type === 'vertical') {
+              // Vertical lines move both horizontally (x) and vertically (y1, y2)
+              const updates: any = { x: startPos.x + deltaX };
+              if (startPos.y1 !== undefined) updates.y1 = startPos.y1 + deltaY;
+              if (startPos.y2 !== undefined) updates.y2 = startPos.y2 + deltaY;
+              updateVertical(el.id, updates);
+            } else if (startPos.type === 'lane') {
+              // Horizontal lanes move both vertically (y) and horizontally (x1, x2)
+              const updates: any = { y: startPos.y + deltaY };
+              if (startPos.x1 !== undefined) updates.x1 = startPos.x1 + deltaX;
+              if (startPos.x2 !== undefined) updates.x2 = startPos.x2 + deltaX;
+              updateLane(el.id, updates);
+            }
+          }
+        }
+      });
+    }
   };
 
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
     const newX = e.target.x();
     const newY = e.target.y();
-    debugLog('KonvaSticky', `Drag ended - ID: ${sticky.id}, Old: (${sticky.x}, ${sticky.y}), New: (${newX.toFixed(1)}, ${newY.toFixed(1)})`);
+    debugLog('KonvaSticky', `Drag ended - ID: ${sticky.id}, Old: (${sticky.x}, ${sticky.y}), New: (${newX.toFixed(1)}, ${newY.toFixed(1)}), Multi-select: ${selectedElements.length > 0}`);
+
+    // Update this sticky's position
     updateSticky(sticky.id, {
       x: newX,
       y: newY
     });
+
+    // Clear stored positions
+    dragStartPositions.current.clear();
   };
 
   const handleClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
     e.cancelBubble = true;
-    debugLog('KonvaSticky', `Clicked - ID: ${sticky.id}, Kind: ${sticky.kind}, Selected: ${isSelected}, InteractionMode: ${interactionMode}`);
+    debugLog('KonvaSticky', `Clicked - ID: ${sticky.id}, Kind: ${sticky.kind}, Selected: ${isSelected}, InteractionMode: ${interactionMode}, ShiftKey: ${e.evt.shiftKey}`);
     if (interactionMode === 'select') {
-      onSelect(sticky.id);
-      debugLog('KonvaSticky', `Selection callback called for ID: ${sticky.id}`);
+      onSelect(sticky.id, e.evt.shiftKey);
+      debugLog('KonvaSticky', `Selection callback called for ID: ${sticky.id}, ShiftKey: ${e.evt.shiftKey}`);
     } else {
       debugLog('KonvaSticky', `Not selecting - wrong interaction mode: ${interactionMode}`);
     }
@@ -79,7 +153,7 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
   const handleDoubleClick = () => {
     debugLog('KonvaSticky', `Double-clicked (entering edit mode) - ID: ${sticky.id}, Kind: ${sticky.kind}, Text: "${sticky.text}"`);
     setIsEditing(true);
-    onSelect(sticky.id);
+    onSelect(sticky.id, false);
   };
 
   useEffect(() => {
@@ -195,6 +269,7 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
       draggable={interactionMode === 'select'}
       listening={interactionMode !== 'pan'}
       onDragStart={handleDragStart}
+      onDragMove={handleDragMove}
       onDragEnd={handleDragEnd}
       onClick={handleClick}
       onDblClick={handleDoubleClick}

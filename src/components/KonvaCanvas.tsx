@@ -23,6 +23,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
   const addLane = useCollabStore((s) => s.addLane);
   const addTheme = useCollabStore((s) => s.addTheme);
   const deleteSticky = useCollabStore((s) => s.deleteSticky);
+  const updateSticky = useCollabStore((s) => s.updateSticky);
   const updateVertical = useCollabStore((s) => s.updateVertical);
   const deleteVertical = useCollabStore((s) => s.deleteVertical);
   const updateLane = useCollabStore((s) => s.updateLane);
@@ -35,6 +36,11 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
 
   const internalStageRef = useRef<Konva.Stage>(null);
   const stageRef = externalStageRef || internalStageRef;
+  const selectedElements = useCollabStore((s) => s.selectedElements);
+  const setSelectedElements = useCollabStore((s) => s.setSelectedElements);
+  const toggleSelection = useCollabStore((s) => s.toggleSelection);
+  const clearSelection = useCollabStore((s) => s.clearSelection);
+  const isSelected = useCollabStore((s) => s.isSelected);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<'sticky' | 'vertical' | 'lane' | null>(null);
   const [stagePos, setStagePos] = useState({ x: 0, y: 0 });
@@ -44,6 +50,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
   const [tempLaneEnd, setTempLaneEnd] = useState<number | null>(null);
   const [drawingVertical, setDrawingVertical] = useState<{ x: number; y1: number } | null>(null);
   const [tempVerticalEnd, setTempVerticalEnd] = useState<number | null>(null);
+  const [selectionBox, setSelectionBox] = useState<{ x1: number; y1: number; x2: number; y2: number } | null>(null);
   const lastCursorUpdate = useRef<number>(0);
   const lastTempLaneUpdate = useRef<number>(0);
   const lastTempVerticalUpdate = useRef<number>(0);
@@ -141,11 +148,29 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
     }
 
     if (clickedOnEmpty) {
+      // Clear single selection
       if (selectedId) {
         debugLog('KonvaCanvas', `Deselecting - ID: ${selectedId}, Type: ${selectedType}`);
       }
       setSelectedId(null);
       setSelectedType(null);
+
+      // In select mode, start selection box (only if not shift-clicking)
+      if (interactionMode === 'select' && !e.evt.shiftKey) {
+        const stage = stageRef.current;
+        if (!stage) return;
+
+        const pointerPosition = stage.getPointerPosition();
+        if (!pointerPosition) return;
+
+        const canvasX = (pointerPosition.x - stage.x()) / stage.scaleX();
+        const canvasY = (pointerPosition.y - stage.y()) / stage.scaleY();
+
+        setSelectionBox({ x1: canvasX, y1: canvasY, x2: canvasX, y2: canvasY });
+        clearSelection();
+        debugLog('KonvaCanvas', `Starting selection box - Position: (${canvasX.toFixed(1)}, ${canvasY.toFixed(1)})`);
+        return;
+      }
 
       // Handle tool placement - ONLY in Add Mode
       if (interactionMode === 'add' && activeTool) {
@@ -194,6 +219,12 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
 
   const handleStageMouseUp = () => {
     setIsPanning(false);
+
+    // Finalize selection box
+    if (selectionBox) {
+      debugLog('KonvaCanvas', `Completed selection box - Selected ${selectedElements.length} items`);
+      setSelectionBox(null);
+    }
 
     // Finalize vertical line drawing
     if (drawingVertical && tempVerticalEnd !== null) {
@@ -249,6 +280,62 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
     if (now - lastCursorUpdate.current > 50) {
       updateCursor(canvasX, canvasY);
       lastCursorUpdate.current = now;
+    }
+
+    // Update selection box while dragging
+    if (selectionBox) {
+      setSelectionBox({ ...selectionBox, x2: canvasX, y2: canvasY });
+
+      // Calculate which elements are in the selection box
+      const minX = Math.min(selectionBox.x1, canvasX);
+      const maxX = Math.max(selectionBox.x1, canvasX);
+      const minY = Math.min(selectionBox.y1, canvasY);
+      const maxY = Math.max(selectionBox.y1, canvasY);
+
+      const selected: Array<{ id: string; type: 'sticky' | 'vertical' | 'lane' }> = [];
+
+      // Check stickies
+      board.stickies.forEach((sticky) => {
+        const stickyWidth = sticky.kind === 'person' ? 60 : 120;
+        const stickyHeight = sticky.kind === 'person' ? 60 : 120;
+
+        if (
+          sticky.x < maxX &&
+          sticky.x + stickyWidth > minX &&
+          sticky.y < maxY &&
+          sticky.y + stickyHeight > minY
+        ) {
+          selected.push({ id: sticky.id, type: 'sticky' });
+        }
+      });
+
+      // Check vertical lines
+      board.verticals.forEach((v) => {
+        const lineY1 = v.y1 ?? 0;
+        const lineY2 = v.y2 ?? CANVAS_HEIGHT / 2;
+        const lineMinY = Math.min(lineY1, lineY2);
+        const lineMaxY = Math.max(lineY1, lineY2);
+
+        // Line intersects if x is in range and y ranges overlap
+        if (v.x >= minX && v.x <= maxX && lineMinY < maxY && lineMaxY > minY) {
+          selected.push({ id: v.id, type: 'vertical' });
+        }
+      });
+
+      // Check horizontal lanes
+      board.lanes.forEach((l) => {
+        const laneX1 = l.x1 ?? 0;
+        const laneX2 = l.x2 ?? CANVAS_WIDTH;
+        const laneMinX = Math.min(laneX1, laneX2);
+        const laneMaxX = Math.max(laneX1, laneX2);
+
+        // Lane intersects if y is in range and x ranges overlap
+        if (l.y >= minY && l.y <= maxY && laneMinX < maxX && laneMaxX > minX) {
+          selected.push({ id: l.id, type: 'lane' });
+        }
+      });
+
+      setSelectedElements(selected);
     }
 
     // Throttle temp vertical end updates to 16ms (60fps max) to reduce re-renders
@@ -315,11 +402,14 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
         return;
       }
 
-      // Escape: Exit add mode, return to pan mode
+      // Escape: Exit add mode, return to pan mode, or clear selection
       if (e.key === 'Escape') {
         if (interactionMode === 'add') {
           debugLog('KonvaCanvas', `Exiting add mode - Tool: ${activeTool}`);
           setInteractionMode('pan');
+        } else if (selectedElements.length > 0) {
+          debugLog('KonvaCanvas', `Clearing multi-selection - Count: ${selectedElements.length}`);
+          clearSelection();
         } else if (selectedId) {
           debugLog('KonvaCanvas', `Deselecting - ID: ${selectedId}, Type: ${selectedType}`);
           setSelectedId(null);
@@ -336,20 +426,37 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
       }
 
       // Delete: Backspace or Delete key
-      if ((e.key === 'Backspace' || e.key === 'Delete') && selectedId) {
+      if (e.key === 'Backspace' || e.key === 'Delete') {
         e.preventDefault();
-        if (selectedType === 'sticky') {
-          debugLog('KonvaCanvas', `Deleting sticky - ID: ${selectedId}`);
-          deleteSticky(selectedId);
-        } else if (selectedType === 'vertical') {
-          debugLog('KonvaCanvas', `Deleting vertical line - ID: ${selectedId}`);
-          deleteVertical(selectedId);
-        } else if (selectedType === 'lane') {
-          debugLog('KonvaCanvas', `Deleting lane - ID: ${selectedId}`);
-          deleteLane(selectedId);
+
+        // Delete multi-selected elements first
+        if (selectedElements.length > 0) {
+          debugLog('KonvaCanvas', `Deleting multi-selected elements - Count: ${selectedElements.length}`);
+          selectedElements.forEach(el => {
+            if (el.type === 'sticky') {
+              deleteSticky(el.id);
+            } else if (el.type === 'vertical') {
+              deleteVertical(el.id);
+            } else if (el.type === 'lane') {
+              deleteLane(el.id);
+            }
+          });
+          clearSelection();
+        } else if (selectedId) {
+          // Delete single selected item
+          if (selectedType === 'sticky') {
+            debugLog('KonvaCanvas', `Deleting sticky - ID: ${selectedId}`);
+            deleteSticky(selectedId);
+          } else if (selectedType === 'vertical') {
+            debugLog('KonvaCanvas', `Deleting vertical line - ID: ${selectedId}`);
+            deleteVertical(selectedId);
+          } else if (selectedType === 'lane') {
+            debugLog('KonvaCanvas', `Deleting lane - ID: ${selectedId}`);
+            deleteLane(selectedId);
+          }
+          setSelectedId(null);
+          setSelectedType(null);
         }
-        setSelectedId(null);
-        setSelectedType(null);
       }
 
       // Duplicate: Cmd+D or Ctrl+D
@@ -371,7 +478,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedId, selectedType, activeTool, interactionMode, board.stickies, deleteSticky, deleteVertical, deleteLane, addSticky, setActiveTool, setInteractionMode]);
+  }, [selectedId, selectedType, selectedElements, activeTool, interactionMode, board.stickies, deleteSticky, deleteVertical, deleteLane, addSticky, setActiveTool, setInteractionMode, clearSelection]);
 
   // Get mode display text and color
   const getModeDisplay = () => {
@@ -417,7 +524,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
         scaleY={scale}
         x={stagePos.x}
         y={stagePos.y}
-        draggable={interactionMode === 'pan' && !drawingLane && !drawingVertical}
+        draggable={interactionMode === 'pan' && !drawingLane && !drawingVertical && !selectionBox}
         onWheel={handleWheel}
         onMouseDown={handleStageMouseDown}
         onMouseUp={handleStageMouseUp}
@@ -445,30 +552,112 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
               <React.Fragment key={v.id}>
                 <Line
                   points={[v.x, lineY1, v.x, lineY2]}
-                  stroke={selectedId === v.id && selectedType === 'vertical' ? "#3b82f6" : "#cbd5e1"}
-                  strokeWidth={6}
+                  stroke={isSelected(v.id) || (selectedId === v.id && selectedType === 'vertical') ? "#3b82f6" : "#cbd5e1"}
+                  strokeWidth={isSelected(v.id) || (selectedId === v.id && selectedType === 'vertical') ? 8 : 6}
                 draggable={interactionMode === 'select'}
                 listening={interactionMode !== 'pan'}
+                onDragStart={(e) => {
+                  debugLog('KonvaCanvas', `Vertical line drag start - ID: ${v.id}, selectedElements: ${selectedElements.length}, types: ${selectedElements.map(e => e.type).join(', ')}`);
+                  // Store initial positions for group drag
+                  const dragData = new Map<string, any>();
+                  selectedElements.forEach(el => {
+                    if (el.type === 'vertical') {
+                      const vert = board.verticals.find(v => v.id === el.id);
+                      if (vert) dragData.set(el.id, { x: vert.x, y1: vert.y1, y2: vert.y2 });
+                    } else if (el.type === 'lane') {
+                      const lane = board.lanes.find(l => l.id === el.id);
+                      if (lane) dragData.set(el.id, { y: lane.y, x1: lane.x1, x2: lane.x2 });
+                    } else if (el.type === 'sticky') {
+                      const sticky = board.stickies.find(s => s.id === el.id);
+                      if (sticky) dragData.set(el.id, { x: sticky.x, y: sticky.y });
+                    }
+                  });
+                  (e.target as any)._dragStartData = dragData;
+                  (e.target as any)._initialX = v.x;
+                  (e.target as any)._initialY1 = v.y1;
+                  (e.target as any)._initialY2 = v.y2;
+                  debugLog('KonvaCanvas', `Stored ${dragData.size} elements in drag data`);
+                }}
+                onDragMove={(e) => {
+                  const isThisSelected = selectedElements.some(el => el.id === v.id && el.type === 'vertical');
+                  if (selectedElements.length > 0 && isThisSelected) {
+                    const deltaX = e.target.x();
+                    const deltaY = e.target.y();
+                    debugLog('KonvaCanvas', `Vertical line drag move - ID: ${v.id}, deltaX: ${deltaX.toFixed(1)}, deltaY: ${deltaY.toFixed(1)}, selectedCount: ${selectedElements.length}`);
+                    const dragData = (e.target as any)._dragStartData as Map<string, any>;
+                    if (dragData) {
+                      debugLog('KonvaCanvas', `Updating ${selectedElements.length - 1} other elements in group`);
+                      selectedElements.forEach(el => {
+                        if (el.id !== v.id) {
+                          const startPos = dragData.get(el.id);
+                          if (!startPos) return;
+                          if (el.type === 'vertical') {
+                            const updates: any = { x: startPos.x + deltaX };
+                            if (startPos.y1 !== undefined) updates.y1 = startPos.y1 + deltaY;
+                            if (startPos.y2 !== undefined) updates.y2 = startPos.y2 + deltaY;
+                            updateVertical(el.id, updates);
+                          } else if (el.type === 'sticky') {
+                            updateSticky(el.id, {
+                              x: startPos.x + deltaX,
+                              y: startPos.y + deltaY
+                            });
+                          } else if (el.type === 'lane') {
+                            const updates: any = { y: startPos.y + deltaY };
+                            if (startPos.x1 !== undefined) updates.x1 = startPos.x1 + deltaX;
+                            if (startPos.x2 !== undefined) updates.x2 = startPos.x2 + deltaX;
+                            updateLane(el.id, updates);
+                          }
+                        }
+                      });
+                    }
+                  }
+                }}
                 onDragEnd={(e) => {
                   if (interactionMode === 'select') {
                     const newX = e.target.x();
-                    updateVertical(v.id, { x: v.x + newX });
+                    const newY = e.target.y();
+
+                    // Update this vertical line
+                    const updates: any = { x: v.x + newX };
+                    if (v.y1 !== undefined) updates.y1 = (v.y1 ?? 0) + newY;
+                    if (v.y2 !== undefined) updates.y2 = (v.y2 ?? 0) + newY;
+                    updateVertical(v.id, updates);
+
                     e.target.x(0); // Reset position since we update the x in the data
+                    e.target.y(0);
+                    delete (e.target as any)._dragStartData;
+                    delete (e.target as any)._dragStartX;
                   }
                 }}
                 onClick={(e) => {
                   if (interactionMode === 'select') {
                     e.cancelBubble = true;
-                    setSelectedId(v.id);
-                    setSelectedType('vertical');
+                    if (e.evt.shiftKey) {
+                      // Shift-click: toggle selection
+                      toggleSelection(v.id, 'vertical');
+                      setSelectedId(null);
+                      setSelectedType(null);
+                    } else {
+                      // Regular click: single select
+                      clearSelection();
+                      setSelectedId(v.id);
+                      setSelectedType('vertical');
+                    }
                     setActiveTool(null); // Deactivate tool when selecting existing line
                   }
                 }}
                 onTap={(e) => {
                   if (interactionMode === 'select') {
                     e.cancelBubble = true;
-                    setSelectedId(v.id);
-                    setSelectedType('vertical');
+                    if (e.evt.shiftKey) {
+                      toggleSelection(v.id, 'vertical');
+                      setSelectedId(null);
+                      setSelectedType(null);
+                    } else {
+                      clearSelection();
+                      setSelectedId(v.id);
+                      setSelectedType('vertical');
+                    }
                     setActiveTool(null); // Deactivate tool when selecting existing line
                   }
                 }}
@@ -496,30 +685,106 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
               <React.Fragment key={l.id}>
                 <Line
                   points={[laneX1, l.y, laneX2, l.y]}
-                  stroke={selectedId === l.id && selectedType === 'lane' ? "#3b82f6" : "#e2e8f0"}
-                  strokeWidth={6}
+                  stroke={isSelected(l.id) || (selectedId === l.id && selectedType === 'lane') ? "#3b82f6" : "#e2e8f0"}
+                  strokeWidth={isSelected(l.id) || (selectedId === l.id && selectedType === 'lane') ? 8 : 6}
                   draggable={interactionMode === 'select'}
                   listening={interactionMode !== 'pan'}
+                  onDragStart={(e) => {
+                    // Store initial positions for group drag
+                    const dragData = new Map<string, any>();
+                    selectedElements.forEach(el => {
+                      if (el.type === 'vertical') {
+                        const vert = board.verticals.find(v => v.id === el.id);
+                        if (vert) dragData.set(el.id, { x: vert.x, y1: vert.y1, y2: vert.y2 });
+                      } else if (el.type === 'lane') {
+                        const lane = board.lanes.find(ln => ln.id === el.id);
+                        if (lane) dragData.set(el.id, { y: lane.y, x1: lane.x1, x2: lane.x2 });
+                      } else if (el.type === 'sticky') {
+                        const sticky = board.stickies.find(s => s.id === el.id);
+                        if (sticky) dragData.set(el.id, { x: sticky.x, y: sticky.y });
+                      }
+                    });
+                    (e.target as any)._dragStartData = dragData;
+                    (e.target as any)._initialY = l.y;
+                    (e.target as any)._initialX1 = l.x1;
+                    (e.target as any)._initialX2 = l.x2;
+                  }}
+                  onDragMove={(e) => {
+                    const isThisSelected = selectedElements.some(el => el.id === l.id && el.type === 'lane');
+                    if (selectedElements.length > 0 && isThisSelected) {
+                      const deltaY = e.target.y();
+                      const deltaX = e.target.x();
+                      const dragData = (e.target as any)._dragStartData as Map<string, any>;
+                      if (dragData) {
+                        selectedElements.forEach(el => {
+                          if (el.id !== l.id) {
+                            const startPos = dragData.get(el.id);
+                            if (!startPos) return;
+                            if (el.type === 'lane') {
+                              const updates: any = { y: startPos.y + deltaY };
+                              if (startPos.x1 !== undefined) updates.x1 = startPos.x1 + deltaX;
+                              if (startPos.x2 !== undefined) updates.x2 = startPos.x2 + deltaX;
+                              updateLane(el.id, updates);
+                            } else if (el.type === 'sticky') {
+                              updateSticky(el.id, {
+                                x: startPos.x + deltaX,
+                                y: startPos.y + deltaY
+                              });
+                            } else if (el.type === 'vertical') {
+                              const updates: any = { x: startPos.x + deltaX };
+                              if (startPos.y1 !== undefined) updates.y1 = startPos.y1 + deltaY;
+                              if (startPos.y2 !== undefined) updates.y2 = startPos.y2 + deltaY;
+                              updateVertical(el.id, updates);
+                            }
+                          }
+                        });
+                      }
+                    }
+                  }}
                   onDragEnd={(e) => {
                     if (interactionMode === 'select') {
                       const newY = e.target.y();
-                      updateLane(l.id, { y: l.y + newY });
+                      const newX = e.target.x();
+
+                      // Update this horizontal lane
+                      const updates: any = { y: l.y + newY };
+                      if (l.x1 !== undefined) updates.x1 = (l.x1 ?? 0) + newX;
+                      if (l.x2 !== undefined) updates.x2 = (l.x2 ?? 0) + newX;
+                      updateLane(l.id, updates);
+
                       e.target.y(0); // Reset position since we update the y in the data
+                      e.target.x(0);
+                      delete (e.target as any)._dragStartData;
+                      delete (e.target as any)._dragStartY;
                     }
                   }}
                   onClick={(e) => {
                     if (interactionMode === 'select') {
                       e.cancelBubble = true;
-                      setSelectedId(l.id);
-                      setSelectedType('lane');
+                      if (e.evt.shiftKey) {
+                        toggleSelection(l.id, 'lane');
+                        setSelectedId(null);
+                        setSelectedType(null);
+                      } else {
+                        clearSelection();
+                        setSelectedId(l.id);
+                        setSelectedType('lane');
+                      }
                       setActiveTool(null); // Deactivate tool when selecting existing lane
                     }
                   }}
                   onTap={(e) => {
                     if (interactionMode === 'select') {
                       e.cancelBubble = true;
-                      setSelectedId(l.id);
-                      setSelectedType('lane');
+                      if (e.evt.shiftKey) {
+                        toggleSelection(l.id, 'lane');
+                        setSelectedId(null);
+                        setSelectedType(null);
+                      } else {
+                        clearSelection();
+                        setSelectedId(l.id);
+                        setSelectedType('lane');
+                      }
                       setActiveTool(null); // Deactivate tool when selecting existing lane
                     }
                   }}
@@ -594,6 +859,21 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
             </React.Fragment>
           ))}
 
+          {/* Selection box preview */}
+          {selectionBox && (
+            <Rect
+              x={Math.min(selectionBox.x1, selectionBox.x2)}
+              y={Math.min(selectionBox.y1, selectionBox.y2)}
+              width={Math.abs(selectionBox.x2 - selectionBox.x1)}
+              height={Math.abs(selectionBox.y2 - selectionBox.y1)}
+              fill="rgba(59, 130, 246, 0.1)"
+              stroke="#3b82f6"
+              strokeWidth={2}
+              dash={[5, 5]}
+              listening={false}
+            />
+          )}
+
           {/* Stickies (viewport culled) */}
           {(() => {
             const visibleStickies = getVisibleStickies();
@@ -607,17 +887,28 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
               <KonvaSticky
                 key={s.id}
                 sticky={s}
-                onSelect={(id) => {
-                  debugLog('KonvaCanvas', `onSelect callback - ID: ${id}, Mode: ${interactionMode}, CurrentSelected: ${selectedId}`);
+                onSelect={(id, shiftKey) => {
+                  debugLog('KonvaCanvas', `onSelect callback - ID: ${id}, Mode: ${interactionMode}, ShiftKey: ${shiftKey}, CurrentMultiSelect: ${selectedElements.length}`);
                   if (interactionMode === 'select') {
-                    debugLog('KonvaCanvas', `Setting selected - ID: ${id}, Type: sticky`);
-                    setSelectedId(id);
-                    setSelectedType('sticky');
+                    if (shiftKey) {
+                      // Shift-click: toggle selection
+                      debugLog('KonvaCanvas', `Toggling selection - ID: ${id}`);
+                      toggleSelection(id, 'sticky');
+                      setSelectedId(null);
+                      setSelectedType(null);
+                    } else {
+                      // Regular click: single select
+                      debugLog('KonvaCanvas', `Setting selected - ID: ${id}, Type: sticky`);
+                      clearSelection();
+                      setSelectedId(id);
+                      setSelectedType('sticky');
+                    }
                   } else {
                     debugLog('KonvaCanvas', `Not setting selected - wrong mode: ${interactionMode}`);
                   }
                 }}
-                isSelected={s.id === selectedId && selectedType === 'sticky'}
+                isSelected={isSelected(s.id) || (s.id === selectedId && selectedType === 'sticky')}
+                selectedElements={selectedElements}
                 interactionMode={interactionMode}
               />
             ));
