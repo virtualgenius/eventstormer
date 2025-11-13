@@ -12,6 +12,7 @@ const ELEMENT_LABELS: Record<ElementType, string> = {
   glossary: "Glossary",
   "vertical-line": "Vertical Line",
   "horizontal-lane": "Swimlane",
+  "label": "Label",
   "theme-area": "Theme"
 };
 
@@ -24,6 +25,7 @@ const ELEMENT_COLORS: Record<ElementType, { bg: string; hover: string; active: s
   glossary: { bg: "#f1f5f9", hover: "#e2e8f0", active: "#cbd5e1" },
   "vertical-line": { bg: "#dbeafe", hover: "#bfdbfe", active: "#93c5fd" },
   "horizontal-lane": { bg: "#dbeafe", hover: "#bfdbfe", active: "#93c5fd" },
+  "label": { bg: "#f9fafb", hover: "#f3f4f6", active: "#e5e7eb" },
   "theme-area": { bg: "#f0f9ff", hover: "#e0f2fe", active: "#bae6fd" }
 };
 

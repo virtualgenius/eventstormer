@@ -5,12 +5,13 @@ import { FacilitationPhase, ElementType } from "../types/domain";
  * Based on Big Picture EventStorming methodology from Alberto Brandolini.
  */
 export const PHASE_ELEMENTS: Record<FacilitationPhase, ElementType[]> = {
-  "chaotic-exploration": ["event", "hotspot"],
+  "chaotic-exploration": ["event", "hotspot", "label"],
   "enforce-timeline": [
     "event",
     "hotspot",
     "vertical-line",
     "horizontal-lane",
+    "label",
     "theme-area",
   ],
   "people-and-systems": [
@@ -18,6 +19,7 @@ export const PHASE_ELEMENTS: Record<FacilitationPhase, ElementType[]> = {
     "hotspot",
     "vertical-line",
     "horizontal-lane",
+    "label",
     "theme-area",
     "person",
     "system",
@@ -27,6 +29,7 @@ export const PHASE_ELEMENTS: Record<FacilitationPhase, ElementType[]> = {
     "hotspot",
     "vertical-line",
     "horizontal-lane",
+    "label",
     "theme-area",
     "person",
     "system",
@@ -37,6 +40,7 @@ export const PHASE_ELEMENTS: Record<FacilitationPhase, ElementType[]> = {
     "hotspot",
     "vertical-line",
     "horizontal-lane",
+    "label",
     "theme-area",
     "person",
     "system",

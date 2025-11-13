@@ -3,6 +3,7 @@ import { Stage, Layer, Line, Rect, Text } from "react-konva";
 import type Konva from "konva";
 import { useCollabStore } from "@/store/useCollabStore";
 import { KonvaSticky } from "./KonvaSticky";
+import { KonvaLabel } from "./KonvaLabel";
 import { UserCursor } from "./UserCursor";
 import type { StickyKind } from "@/types/domain";
 import { debugLog } from "@/lib/debug";
@@ -21,6 +22,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
   const addSticky = useCollabStore((s) => s.addSticky);
   const addVertical = useCollabStore((s) => s.addVertical);
   const addLane = useCollabStore((s) => s.addLane);
+  const addLabel = useCollabStore((s) => s.addLabel);
   const addTheme = useCollabStore((s) => s.addTheme);
   const deleteSticky = useCollabStore((s) => s.deleteSticky);
   const updateSticky = useCollabStore((s) => s.updateSticky);
@@ -28,6 +30,8 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
   const deleteVertical = useCollabStore((s) => s.deleteVertical);
   const updateLane = useCollabStore((s) => s.updateLane);
   const deleteLane = useCollabStore((s) => s.deleteLane);
+  const updateLabel = useCollabStore((s) => s.updateLabel);
+  const deleteLabel = useCollabStore((s) => s.deleteLabel);
   const setActiveTool = useCollabStore((s) => s.setActiveTool);
   const updateCursor = useCollabStore((s) => s.updateCursor);
   const setInteractionMode = useCollabStore((s) => s.setInteractionMode);
@@ -42,7 +46,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
   const clearSelection = useCollabStore((s) => s.clearSelection);
   const isSelected = useCollabStore((s) => s.isSelected);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [selectedType, setSelectedType] = useState<'sticky' | 'vertical' | 'lane' | null>(null);
+  const [selectedType, setSelectedType] = useState<'sticky' | 'vertical' | 'lane' | 'label' | null>(null);
   const [stagePos, setStagePos] = useState({ x: 0, y: 0 });
   const [scale, setScale] = useState(1);
   const [isPanning, setIsPanning] = useState(false);
@@ -200,6 +204,9 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
             width: 400,
             height: 300
           });
+        } else if (activeTool === 'label') {
+          debugLog('KonvaCanvas', `Creating label - Position: (${canvasX.toFixed(1)}, ${canvasY.toFixed(1)})`);
+          addLabel(canvasX, canvasY, "Label");
         } else {
           // Handle sticky creation
           const x = canvasX - 60;
@@ -292,7 +299,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
       const minY = Math.min(selectionBox.y1, canvasY);
       const maxY = Math.max(selectionBox.y1, canvasY);
 
-      const selected: Array<{ id: string; type: 'sticky' | 'vertical' | 'lane' }> = [];
+      const selected: Array<{ id: string; type: 'sticky' | 'vertical' | 'lane' | 'label' }> = [];
 
       // Check stickies
       board.stickies.forEach((sticky) => {
@@ -332,6 +339,18 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
         // Lane intersects if y is in range and x ranges overlap
         if (l.y >= minY && l.y <= maxY && laneMinX < maxX && laneMaxX > minX) {
           selected.push({ id: l.id, type: 'lane' });
+        }
+      });
+
+      // Check labels (approximate with 100px width, 30px height for selection)
+      board.labels.forEach((label) => {
+        if (
+          label.x < maxX &&
+          label.x + 100 > minX &&
+          label.y < maxY &&
+          label.y + 30 > minY
+        ) {
+          selected.push({ id: label.id, type: 'label' });
         }
       });
 
@@ -439,6 +458,8 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
               deleteVertical(el.id);
             } else if (el.type === 'lane') {
               deleteLane(el.id);
+            } else if (el.type === 'label') {
+              deleteLabel(el.id);
             }
           });
           clearSelection();
@@ -453,6 +474,9 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
           } else if (selectedType === 'lane') {
             debugLog('KonvaCanvas', `Deleting lane - ID: ${selectedId}`);
             deleteLane(selectedId);
+          } else if (selectedType === 'label') {
+            debugLog('KonvaCanvas', `Deleting label - ID: ${selectedId}`);
+            deleteLabel(selectedId);
           }
           setSelectedId(null);
           setSelectedType(null);
@@ -478,7 +502,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedId, selectedType, selectedElements, activeTool, interactionMode, board.stickies, deleteSticky, deleteVertical, deleteLane, addSticky, setActiveTool, setInteractionMode, clearSelection]);
+  }, [selectedId, selectedType, selectedElements, activeTool, interactionMode, board.stickies, deleteSticky, deleteVertical, deleteLane, deleteLabel, addSticky, setActiveTool, setInteractionMode, clearSelection]);
 
   // Get mode display text and color
   const getModeDisplay = () => {
@@ -492,6 +516,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
         'glossary': 'Glossary',
         'vertical-line': 'Vertical Line',
         'horizontal-lane': 'Swimlane',
+        'label': 'Label',
         'theme-area': 'Theme'
       };
       return { text: `Adding: ${labels[activeTool] || activeTool}`, color: 'bg-green-100 dark:bg-green-900 text-green-900 dark:text-green-100' };
@@ -570,6 +595,9 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
                     } else if (el.type === 'sticky') {
                       const sticky = board.stickies.find(s => s.id === el.id);
                       if (sticky) dragData.set(el.id, { x: sticky.x, y: sticky.y });
+                    } else if (el.type === 'label') {
+                      const label = board.labels.find(l => l.id === el.id);
+                      if (label) dragData.set(el.id, { x: label.x, y: label.y });
                     }
                   });
                   (e.target as any)._dragStartData = dragData;
@@ -606,6 +634,11 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
                             if (startPos.x1 !== undefined) updates.x1 = startPos.x1 + deltaX;
                             if (startPos.x2 !== undefined) updates.x2 = startPos.x2 + deltaX;
                             updateLane(el.id, updates);
+                          } else if (el.type === 'label') {
+                            updateLabel(el.id, {
+                              x: startPos.x + deltaX,
+                              y: startPos.y + deltaY
+                            });
                           }
                         }
                       });
@@ -702,6 +735,9 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
                       } else if (el.type === 'sticky') {
                         const sticky = board.stickies.find(s => s.id === el.id);
                         if (sticky) dragData.set(el.id, { x: sticky.x, y: sticky.y });
+                      } else if (el.type === 'label') {
+                        const label = board.labels.find(lbl => lbl.id === el.id);
+                        if (label) dragData.set(el.id, { x: label.x, y: label.y });
                       }
                     });
                     (e.target as any)._dragStartData = dragData;
@@ -735,6 +771,11 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
                               if (startPos.y1 !== undefined) updates.y1 = startPos.y1 + deltaY;
                               if (startPos.y2 !== undefined) updates.y2 = startPos.y2 + deltaY;
                               updateVertical(el.id, updates);
+                            } else if (el.type === 'label') {
+                              updateLabel(el.id, {
+                                x: startPos.x + deltaX,
+                                y: startPos.y + deltaY
+                              });
                             }
                           }
                         });
@@ -913,6 +954,31 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
               />
             ));
           })()}
+
+          {/* Labels */}
+          {board.labels.map((label) => (
+            <KonvaLabel
+              key={label.id}
+              label={label}
+              onSelect={(id, shiftKey) => {
+                debugLog('KonvaCanvas', `Label onSelect - ID: ${id}, Mode: ${interactionMode}, ShiftKey: ${shiftKey}`);
+                if (interactionMode === 'select') {
+                  if (shiftKey) {
+                    toggleSelection(id, 'label');
+                    setSelectedId(null);
+                    setSelectedType(null);
+                  } else {
+                    clearSelection();
+                    setSelectedId(id);
+                    setSelectedType('label');
+                  }
+                }
+              }}
+              isSelected={isSelected(label.id) || (label.id === selectedId && selectedType === 'label')}
+              selectedElements={selectedElements}
+              interactionMode={interactionMode}
+            />
+          ))}
         </Layer>
       </Stage>
 

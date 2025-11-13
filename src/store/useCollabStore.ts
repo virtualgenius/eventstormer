@@ -10,7 +10,8 @@ import type {
   FacilitationPhase,
   HorizontalLane,
   VerticalLine,
-  ThemeArea
+  ThemeArea,
+  Label
 } from "@/types/domain";
 
 const now = () => new Date().toISOString();
@@ -23,7 +24,7 @@ interface User {
 }
 
 export type InteractionMode = 'pan' | 'select' | 'add';
-export type ElementType = 'sticky' | 'vertical' | 'lane';
+export type ElementType = 'sticky' | 'vertical' | 'lane' | 'label';
 
 export interface SelectedElement {
   id: string;
@@ -66,6 +67,9 @@ interface CollabState {
   addLane: (y: number, x1?: number, x2?: number, label?: string) => void;
   updateLane: (id: string, patch: Partial<Pick<HorizontalLane, "y" | "x1" | "x2" | "label">>) => void;
   deleteLane: (id: string) => void;
+  addLabel: (x: number, y: number, text?: string) => void;
+  updateLabel: (id: string, patch: Partial<Pick<Label, "x" | "y" | "text">>) => void;
+  deleteLabel: (id: string) => void;
   addTheme: (area: Omit<ThemeArea, "id">) => void;
   updateSticky: (id: string, patch: Partial<BaseSticky>) => void;
   saveToIndexedDB: () => Promise<void>;
@@ -123,6 +127,7 @@ export const useCollabStore = create<CollabState>((set, get) => {
     yboard.set("stickies", new Y.Array());
     yboard.set("verticals", new Y.Array());
     yboard.set("lanes", new Y.Array());
+    yboard.set("labels", new Y.Array());
     yboard.set("themes", new Y.Array());
     yboard.set("sessionMode", "big-picture");
     yboard.set("phase", "chaotic-exploration");
@@ -394,6 +399,40 @@ export const useCollabStore = create<CollabState>((set, get) => {
       }
     },
 
+    addLabel: (x, y, text = "Label") => {
+      const labels = yboard.get("labels") as Y.Array<any>;
+      labels.push([{
+        id: nanoid(),
+        text,
+        x,
+        y,
+        createdAt: now(),
+        updatedAt: now()
+      }]);
+      yboard.set("updatedAt", now());
+    },
+
+    updateLabel: (id, patch) => {
+      const labels = yboard.get("labels") as Y.Array<any>;
+      const labelArray = labels.toArray();
+      const idx = labelArray.findIndex((l: Label) => l.id === id);
+      if (idx !== -1) {
+        labels.delete(idx, 1);
+        labels.insert(idx, [{ ...labelArray[idx], ...patch, updatedAt: now() }]);
+        yboard.set("updatedAt", now());
+      }
+    },
+
+    deleteLabel: (id) => {
+      const labels = yboard.get("labels") as Y.Array<any>;
+      const labelArray = labels.toArray();
+      const idx = labelArray.findIndex((l: Label) => l.id === id);
+      if (idx !== -1) {
+        labels.delete(idx, 1);
+        yboard.set("updatedAt", now());
+      }
+    },
+
     addTheme: (area) => {
       const themes = yboard.get("themes") as Y.Array<any>;
       themes.push([{ id: nanoid(), ...area }]);
@@ -458,12 +497,14 @@ export const useCollabStore = create<CollabState>((set, get) => {
       const stickies = yboard.get("stickies") as Y.Array<any>;
       const verticals = yboard.get("verticals") as Y.Array<any>;
       const lanes = yboard.get("lanes") as Y.Array<any>;
+      const labels = yboard.get("labels") as Y.Array<any>;
       const themes = yboard.get("themes") as Y.Array<any>;
       const timelines = yboard.get("timelines") as Y.Array<any>;
 
       stickies.delete(0, stickies.length);
       verticals.delete(0, verticals.length);
       lanes.delete(0, lanes.length);
+      labels.delete(0, labels.length);
       themes.delete(0, themes.length);
       timelines.delete(0, timelines.length);
 
@@ -471,6 +512,7 @@ export const useCollabStore = create<CollabState>((set, get) => {
       loadedBoard.stickies.forEach(s => stickies.push([s]));
       loadedBoard.verticals.forEach(v => verticals.push([v]));
       loadedBoard.lanes.forEach(l => lanes.push([l]));
+      loadedBoard.labels.forEach(l => labels.push([l]));
       loadedBoard.themes.forEach(t => themes.push([t]));
       if (loadedBoard.timelines) {
         loadedBoard.timelines.forEach(t => timelines.push([t]));
@@ -489,12 +531,14 @@ export const useCollabStore = create<CollabState>((set, get) => {
       const stickies = yboard.get("stickies") as Y.Array<any>;
       const verticals = yboard.get("verticals") as Y.Array<any>;
       const lanes = yboard.get("lanes") as Y.Array<any>;
+      const labels = yboard.get("labels") as Y.Array<any>;
       const themes = yboard.get("themes") as Y.Array<any>;
       const timelines = yboard.get("timelines") as Y.Array<any>;
 
       stickies.delete(0, stickies.length);
       verticals.delete(0, verticals.length);
       lanes.delete(0, lanes.length);
+      labels.delete(0, labels.length);
       themes.delete(0, themes.length);
       timelines.delete(0, timelines.length);
 

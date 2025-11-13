@@ -56,6 +56,15 @@ export interface ThemeArea {
   timelineId?: string;           // Theme = Sub-Timeline (optional for backward compat)
 }
 
+export interface Label {
+  id: string;
+  text: string;
+  x: number;
+  y: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export type EventStormingMode = "big-picture" | "process-level" | "design-level";
 
 export interface Board {
@@ -66,6 +75,7 @@ export interface Board {
   stickies: BaseSticky[];
   verticals: VerticalLine[];
   lanes: HorizontalLane[];
+  labels: Label[];
   themes: ThemeArea[];           // Visual bounds for sub-timelines
   sessionMode?: EventStormingMode; // Big Picture, Process-Level, Design-Level (optional, defaults to "big-picture")
   phase: FacilitationPhase;      // Current facilitation phase (board-level)
@@ -80,5 +90,5 @@ export type FacilitationPhase =
   | "problems-and-opportunities"
   | "glossary";
 
-export type ElementType = StickyKind | "vertical-line" | "horizontal-lane" | "theme-area";
+export type ElementType = StickyKind | "vertical-line" | "horizontal-lane" | "label" | "theme-area";
 
