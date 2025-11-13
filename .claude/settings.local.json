@@ -25,7 +25,10 @@
       "Bash(git reset:*)",
       "Bash(open /Users/paul/Documents/EventStormer/clear-storage.html)",
       "Bash(npm run test:*)",
-      "Bash(open http://localhost:5173/eventstormer/)"
+      "Bash(open http://localhost:5173/eventstormer/)",
+      "Bash(open http://localhost:5174/eventstormer/)",
+      "Bash(open http://localhost:5174/eventstormer/clear-storage.html)",
+      "Bash(open http://localhost:5173/eventstormer/clear-storage.html)"
     ],
     "deny": [],
     "ask": []

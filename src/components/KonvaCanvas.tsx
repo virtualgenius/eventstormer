@@ -377,6 +377,10 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
   const getCursor = () => {
     // Add Mode - show tool-specific cursor
     if (interactionMode === 'add' && activeTool) {
+      // For label tool, show text cursor
+      if (activeTool === 'label') {
+        return "text";
+      }
       // For line tools, show crosshair
       if (activeTool === 'vertical-line' || activeTool === 'horizontal-lane' || activeTool === 'theme-area') {
         return "crosshair";
