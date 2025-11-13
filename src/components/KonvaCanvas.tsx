@@ -960,7 +960,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
           })()}
 
           {/* Labels */}
-          {board.labels.map((label) => (
+          {board.labels?.map((label) => (
             <KonvaLabel
               key={label.id}
               label={label}

@@ -512,7 +512,9 @@ export const useCollabStore = create<CollabState>((set, get) => {
       loadedBoard.stickies.forEach(s => stickies.push([s]));
       loadedBoard.verticals.forEach(v => verticals.push([v]));
       loadedBoard.lanes.forEach(l => lanes.push([l]));
-      loadedBoard.labels.forEach(l => labels.push([l]));
+      if (loadedBoard.labels) {
+        loadedBoard.labels.forEach(l => labels.push([l]));
+      }
       loadedBoard.themes.forEach(t => themes.push([t]));
       if (loadedBoard.timelines) {
         loadedBoard.timelines.forEach(t => timelines.push([t]));

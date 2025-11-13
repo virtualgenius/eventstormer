@@ -75,7 +75,7 @@ export interface Board {
   stickies: BaseSticky[];
   verticals: VerticalLine[];
   lanes: HorizontalLane[];
-  labels: Label[];
+  labels?: Label[];              // Optional for backward compatibility with existing boards
   themes: ThemeArea[];           // Visual bounds for sub-timelines
   sessionMode?: EventStormingMode; // Big Picture, Process-Level, Design-Level (optional, defaults to "big-picture")
   phase: FacilitationPhase;      // Current facilitation phase (board-level)
