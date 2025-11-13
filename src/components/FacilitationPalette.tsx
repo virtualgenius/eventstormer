@@ -38,16 +38,16 @@ export const FacilitationPalette: React.FC = () => {
   const availableElements = getAvailableElements(board.phase) ?? [];
 
   return (
-    <div className="flex items-center gap-2 border-b bg-white/80 dark:bg-slate-900/70 px-4 py-2">
-      <div className="flex items-center gap-2">
-        <label htmlFor="phase-select" className="text-sm font-medium text-slate-700 dark:text-slate-300">
+    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 border-b bg-white/80 dark:bg-slate-900/70 px-3 md:px-4 py-2">
+      <div className="flex items-center gap-2 flex-shrink-0">
+        <label htmlFor="phase-select" className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
           Phase:
         </label>
         <select
           id="phase-select"
           value={board.phase}
           onChange={(e) => setPhase(e.target.value as FacilitationPhase)}
-          className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1 text-sm"
+          className="flex-1 sm:flex-none rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 sm:px-3 py-1.5 sm:py-1 text-xs sm:text-sm"
         >
           {(
             [
@@ -65,14 +65,14 @@ export const FacilitationPalette: React.FC = () => {
         </select>
       </div>
 
-      <div className="flex gap-1">
+      <div className="flex gap-1 overflow-x-auto pb-1 sm:pb-0 -mx-1 px-1 scrollbar-thin">
         {availableElements.map((elementType) => {
           const colors = ELEMENT_COLORS[elementType];
           return (
             <button
               key={elementType}
               onClick={() => setActiveTool(elementType)}
-              className="rounded-lg px-3 py-1 text-sm font-medium text-slate-900 border-2 transition-colors"
+              className="rounded-lg px-3 sm:px-3 py-2 sm:py-1 text-xs sm:text-sm font-medium text-slate-900 border-2 transition-colors whitespace-nowrap flex-shrink-0 min-h-[44px] sm:min-h-0"
               style={{
                 backgroundColor: activeTool === elementType ? colors.active : colors.bg,
                 borderColor: activeTool === elementType ? colors.active : colors.hover,

@@ -58,6 +58,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
   const lastCursorUpdate = useRef<number>(0);
   const lastTempLaneUpdate = useRef<number>(0);
   const lastTempVerticalUpdate = useRef<number>(0);
+  const lastTouchDistance = useRef<number | null>(null);
 
   // Viewport culling: only render stickies visible in viewport
   const getVisibleStickies = useCallback(() => {
@@ -125,6 +126,70 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
 
     setScale(clampedScale);
     setStagePos(newPos);
+  };
+
+  const getTouchDistance = (touches: TouchList) => {
+    if (touches.length < 2) return null;
+    const touch1 = touches[0];
+    const touch2 = touches[1];
+    const dx = touch1.clientX - touch2.clientX;
+    const dy = touch1.clientY - touch2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  const handleTouchMove = (e: Konva.KonvaEventObject<TouchEvent>) => {
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    // Pinch to zoom with two fingers
+    if (e.evt.touches.length === 2) {
+      e.evt.preventDefault();
+
+      const currentDistance = getTouchDistance(e.evt.touches);
+      if (currentDistance === null) return;
+
+      if (lastTouchDistance.current !== null) {
+        const oldScale = stage.scaleX();
+        const scaleFactor = currentDistance / lastTouchDistance.current;
+        const newScale = oldScale * scaleFactor;
+        const clampedScale = Math.max(0.25, Math.min(4, newScale));
+
+        // Get midpoint between touches for zoom center
+        const touch1 = e.evt.touches[0];
+        const touch2 = e.evt.touches[1];
+        const centerX = (touch1.clientX + touch2.clientX) / 2;
+        const centerY = (touch1.clientY + touch2.clientY) / 2;
+
+        const mousePointTo = {
+          x: (centerX - stage.x()) / oldScale,
+          y: (centerY - stage.y()) / oldScale
+        };
+
+        const newPos = {
+          x: centerX - mousePointTo.x * clampedScale,
+          y: centerY - mousePointTo.y * clampedScale
+        };
+
+        debugLog('KonvaCanvas', `Pinch zoom - Scale: ${oldScale.toFixed(2)} → ${clampedScale.toFixed(2)}`);
+
+        setScale(clampedScale);
+        setStagePos(newPos);
+      }
+
+      lastTouchDistance.current = currentDistance;
+      return;
+    }
+
+    // Reset touch distance if not pinching
+    lastTouchDistance.current = null;
+
+    // Single touch - handle normally
+    handlePointerMove(e);
+  };
+
+  const handleTouchEnd = (e: Konva.KonvaEventObject<TouchEvent>) => {
+    lastTouchDistance.current = null;
+    handleStageMouseUp();
   };
 
   const handlePointerDown = (e: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
@@ -551,11 +616,11 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
   return (
     <div className="relative h-full w-full overflow-hidden bg-slate-50 dark:bg-slate-900">
       {/* Floating Mode Indicator */}
-      <div className="absolute top-4 left-4 z-10">
-        <div className={`flex items-center gap-2 px-3 py-2 rounded-lg shadow-lg text-sm font-medium ${modeDisplay.color}`}>
+      <div className="absolute top-2 left-2 md:top-4 md:left-4 z-10">
+        <div className={`flex items-center gap-1.5 md:gap-2 px-2 py-1.5 md:px-3 md:py-2 rounded-lg shadow-lg text-xs md:text-sm font-medium ${modeDisplay.color}`}>
           {modeDisplay.text}
           {interactionMode === 'add' && (
-            <span className="text-xs opacity-75">(Press ESC to exit)</span>
+            <span className="hidden sm:inline text-xs opacity-75">(Press ESC to exit)</span>
           )}
         </div>
       </div>
@@ -574,8 +639,8 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
         onMouseUp={handleStageMouseUp}
         onMouseMove={handlePointerMove}
         onTouchStart={handlePointerDown}
-        onTouchEnd={handleStageMouseUp}
-        onTouchMove={handlePointerMove}
+        onTouchEnd={handleTouchEnd}
+        onTouchMove={handleTouchMove}
         onDragMove={handleDragMove}
         onDragEnd={handleDragEnd}
         onContextMenu={handleContextMenu}

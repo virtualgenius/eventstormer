@@ -3,7 +3,7 @@ import { KonvaCanvas } from "@/components/KonvaCanvas";
 import { FacilitationPalette } from "@/components/FacilitationPalette";
 import { useCollabStore } from "@/store/useCollabStore";
 import { useUndoRedo } from "@/hooks/useUndoRedo";
-import { Users, Download, Save, Upload, FileJson, Hand, MousePointer, Trash2 } from "lucide-react";
+import { Users, Download, Save, Upload, FileJson, Hand, MousePointer, Trash2, Menu, X } from "lucide-react";
 import { exportCanvasToImage } from "@/lib/export";
 import { downloadBoardJSON, importBoardJSON } from "@/lib/persistence";
 import type Konva from "konva";
@@ -24,24 +24,29 @@ const App: React.FC = () => {
   const stageRef = useRef<Konva.Stage>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const usersListRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const [showUsersList, setShowUsersList] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   // Enable undo/redo with keyboard shortcuts
   useUndoRedo(ydoc);
 
-  // Close users list when clicking outside
+  // Close users list and mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (usersListRef.current && !usersListRef.current.contains(event.target as Node)) {
         setShowUsersList(false);
       }
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMobileMenu(false);
+      }
     };
 
-    if (showUsersList) {
+    if (showUsersList || showMobileMenu) {
       document.addEventListener('mousedown', handleClickOutside);
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
-  }, [showUsersList]);
+  }, [showUsersList, showMobileMenu]);
 
   useEffect(() => {
     // Try to load board from IndexedDB on mount
@@ -110,84 +115,88 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen w-screen">
-      <header className="flex items-center justify-between px-4 py-2 border-b bg-white dark:bg-slate-900">
-        <div className="flex items-center gap-3">
-          <div className="text-sm font-semibold tracking-tight">EventStormer</div>
+      <header className="flex items-center justify-between px-3 py-2 md:px-4 border-b bg-white dark:bg-slate-900">
+        <div className="flex items-center gap-2 md:gap-3 min-w-0">
+          <div className="text-sm md:text-base font-semibold tracking-tight truncate">EventStormer</div>
           {hasUnsavedChanges && (
-            <span className="text-xs text-amber-600 dark:text-amber-400">
+            <span className="hidden sm:inline text-xs text-amber-600 dark:text-amber-400">
               • Unsaved changes
             </span>
           )}
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 md:gap-3">
           {/* Pan/Select Mode Toggle */}
-          <div className="flex items-center gap-1 border border-slate-300 dark:border-slate-700 rounded-lg p-1">
+          <div className="flex items-center gap-0.5 md:gap-1 border border-slate-300 dark:border-slate-700 rounded-lg p-0.5 md:p-1">
             <button
               onClick={() => setInteractionMode('pan')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded transition-colors ${
+              className={`flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-1.5 text-xs rounded transition-colors ${
                 interactionMode === 'pan'
                   ? 'bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100'
                   : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'
               }`}
               title="Pan Mode (Space)"
             >
-              <Hand className="w-3 h-3" />
-              Pan
+              <Hand className="w-3.5 h-3.5 md:w-3 md:h-3" />
+              <span className="hidden sm:inline">Pan</span>
             </button>
             <button
               onClick={() => setInteractionMode('select')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded transition-colors ${
+              className={`flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-1.5 text-xs rounded transition-colors ${
                 interactionMode === 'select'
                   ? 'bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100'
                   : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'
               }`}
               title="Select Mode (V)"
             >
-              <MousePointer className="w-3 h-3" />
-              Select
+              <MousePointer className="w-3.5 h-3.5 md:w-3 md:h-3" />
+              <span className="hidden sm:inline">Select</span>
             </button>
           </div>
 
-          <button
-            onClick={handleClearBoard}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800 text-red-700 dark:text-red-100 rounded transition-colors"
-            title="Clear all data and reload"
-          >
-            <Trash2 className="w-3 h-3" />
-            Clear
-          </button>
-          <button
-            onClick={handleManualSave}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded transition-colors"
-            title="Save to IndexedDB"
-          >
-            <Save className="w-3 h-3" />
-            Save
-          </button>
-          <button
-            onClick={handleExportPNG}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded transition-colors"
-            title="Export board as PNG"
-          >
-            <Download className="w-3 h-3" />
-            PNG
-          </button>
-          <button
-            onClick={handleExportJSON}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded transition-colors"
-            title="Export board as JSON"
-          >
-            <FileJson className="w-3 h-3" />
-            Export
-          </button>
-          <button
-            onClick={handleImportJSON}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded transition-colors"
-            title="Import board from JSON"
-          >
-            <Upload className="w-3 h-3" />
-            Import
-          </button>
+          {/* Desktop buttons - hidden on mobile */}
+          <div className="hidden lg:flex items-center gap-2">
+            <button
+              onClick={handleClearBoard}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800 text-red-700 dark:text-red-100 rounded transition-colors"
+              title="Clear all data and reload"
+            >
+              <Trash2 className="w-3 h-3" />
+              Clear
+            </button>
+            <button
+              onClick={handleManualSave}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded transition-colors"
+              title="Save to IndexedDB"
+            >
+              <Save className="w-3 h-3" />
+              Save
+            </button>
+            <button
+              onClick={handleExportPNG}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded transition-colors"
+              title="Export board as PNG"
+            >
+              <Download className="w-3 h-3" />
+              PNG
+            </button>
+            <button
+              onClick={handleExportJSON}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded transition-colors"
+              title="Export board as JSON"
+            >
+              <FileJson className="w-3 h-3" />
+              Export
+            </button>
+            <button
+              onClick={handleImportJSON}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded transition-colors"
+              title="Import board from JSON"
+            >
+              <Upload className="w-3 h-3" />
+              Import
+            </button>
+          </div>
+
           <input
             ref={fileInputRef}
             type="file"
@@ -195,13 +204,66 @@ const App: React.FC = () => {
             onChange={handleFileChange}
             className="hidden"
           />
+
+          {/* Mobile menu button */}
+          <div className="lg:hidden relative" ref={menuRef}>
+            <button
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              className="flex items-center justify-center w-9 h-9 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+              title="Menu"
+            >
+              {showMobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+
+            {showMobileMenu && (
+              <div className="absolute right-0 top-full mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg p-2 min-w-[180px] z-50">
+                <button
+                  onClick={() => { handleManualSave(); setShowMobileMenu(false); }}
+                  className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors"
+                >
+                  <Save className="w-4 h-4" />
+                  Save
+                </button>
+                <button
+                  onClick={() => { handleExportPNG(); setShowMobileMenu(false); }}
+                  className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors"
+                >
+                  <Download className="w-4 h-4" />
+                  Export PNG
+                </button>
+                <button
+                  onClick={() => { handleExportJSON(); setShowMobileMenu(false); }}
+                  className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors"
+                >
+                  <FileJson className="w-4 h-4" />
+                  Export JSON
+                </button>
+                <button
+                  onClick={() => { handleImportJSON(); setShowMobileMenu(false); }}
+                  className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors"
+                >
+                  <Upload className="w-4 h-4" />
+                  Import JSON
+                </button>
+                <div className="border-t border-slate-200 dark:border-slate-700 my-1.5" />
+                <button
+                  onClick={() => { handleClearBoard(); setShowMobileMenu(false); }}
+                  className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Clear Board
+                </button>
+              </div>
+            )}
+          </div>
           <div className="relative" ref={usersListRef}>
             <button
               onClick={() => setShowUsersList(!showUsersList)}
-              className="flex items-center gap-2 text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 px-3 py-1.5 rounded transition-colors"
+              className="flex items-center gap-1.5 md:gap-2 text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 px-2 md:px-3 py-1.5 rounded transition-colors"
             >
-              <Users className="w-3 h-3" />
-              <span>{usersOnline} online</span>
+              <Users className="w-3.5 h-3.5 md:w-3 md:h-3" />
+              <span className="hidden sm:inline">{usersOnline} online</span>
+              <span className="sm:hidden">{usersOnline}</span>
               <span
                 className={`w-2 h-2 rounded-full ${
                   isConnected ? "bg-green-500" : "bg-red-500"
