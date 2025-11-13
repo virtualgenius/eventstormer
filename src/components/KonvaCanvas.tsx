@@ -61,6 +61,8 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
 
   // Viewport culling: only render stickies visible in viewport
   const getVisibleStickies = useCallback(() => {
+    if (!board.stickies) return [];
+
     const stage = stageRef.current;
     if (!stage) return board.stickies;
 
@@ -137,7 +139,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
                                   e.target.attrs.fill === 'transparent';
     const clickedOnEmpty = clickedOnStage || clickedOnBackground;
 
-    debugLog('KonvaCanvas', `Pointer down - Target: ${targetType}, ClickedOnStage: ${clickedOnStage}, ClickedOnBackground: ${clickedOnBackground}, ClickedOnEmpty: ${clickedOnEmpty}, ActiveTool: ${activeTool}`);
+    debugLog('KonvaCanvas', `Pointer down - Target: ${targetType}, ClickedOnStage: ${clickedOnStage}, ClickedOnBackground: ${clickedOnBackground}, ClickedOnEmpty: ${clickedOnEmpty}, ActiveTool: ${activeTool}, InteractionMode: ${interactionMode}`);
 
     // Check if it's a mouse event with right-click
     const isMouseEvent = 'button' in e.evt;
@@ -145,6 +147,12 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
       debugLog('KonvaCanvas', `Right-click pan started - Position: (${stagePos.x.toFixed(1)}, ${stagePos.y.toFixed(1)})`);
       e.target.startDrag();
       return;
+    }
+
+    // In add mode, prevent any stage dragging
+    if (interactionMode === 'add') {
+      e.target.stopDrag();
+      setIsPanning(false);
     }
 
     // Prevent dragging on left-click/touch when drawing lane or when tool is active
@@ -309,7 +317,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
       const selected: Array<{ id: string; type: 'sticky' | 'vertical' | 'lane' | 'label' }> = [];
 
       // Check stickies
-      board.stickies.forEach((sticky) => {
+      board.stickies?.forEach((sticky) => {
         const stickyWidth = sticky.kind === 'person' ? 60 : 120;
         const stickyHeight = sticky.kind === 'person' ? 60 : 120;
 
@@ -324,7 +332,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
       });
 
       // Check vertical lines
-      board.verticals.forEach((v) => {
+      board.verticals?.forEach((v) => {
         const lineY1 = v.y1 ?? 0;
         const lineY2 = v.y2 ?? CANVAS_HEIGHT / 2;
         const lineMinY = Math.min(lineY1, lineY2);
@@ -337,7 +345,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
       });
 
       // Check horizontal lanes
-      board.lanes.forEach((l) => {
+      board.lanes?.forEach((l) => {
         const laneX1 = l.x1 ?? 0;
         const laneX2 = l.x2 ?? CANVAS_WIDTH;
         const laneMinX = Math.min(laneX1, laneX2);
@@ -350,7 +358,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
       });
 
       // Check labels (approximate with 100px width, 30px height for selection)
-      board.labels.forEach((label) => {
+      board.labels?.forEach((label) => {
         if (
           label.x < maxX &&
           label.x + 100 > minX &&
@@ -497,7 +505,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
       // Duplicate: Cmd+D or Ctrl+D
       if ((e.metaKey || e.ctrlKey) && e.key === 'd' && selectedId) {
         e.preventDefault();
-        const sticky = board.stickies.find(s => s.id === selectedId);
+        const sticky = board.stickies?.find(s => s.id === selectedId);
         if (sticky) {
           debugLog('KonvaCanvas', `Duplicating sticky - ID: ${selectedId}`);
           // Create duplicate to the right (140px = sticky width + spacing)
@@ -584,7 +592,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
           />
 
           {/* Vertical lines */}
-          {board.verticals.map((v) => {
+          {board.verticals?.map((v) => {
             const lineY1 = v.y1 ?? 0;
             const lineY2 = v.y2 ?? CANVAS_HEIGHT / 2;
             return (
@@ -725,7 +733,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
           })}
 
           {/* Horizontal lanes */}
-          {board.lanes.map((l) => {
+          {board.lanes?.map((l) => {
             const laneX1 = l.x1 ?? 0;
             const laneX2 = l.x2 ?? CANVAS_WIDTH;
             return (
@@ -890,7 +898,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
           )}
 
           {/* Themes */}
-          {board.themes.map((t) => (
+          {board.themes?.map((t) => (
             <React.Fragment key={t.id}>
               <Rect
                 x={t.x}
@@ -932,7 +940,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
           {/* Stickies (viewport culled) */}
           {(() => {
             const visibleStickies = getVisibleStickies();
-            const ids = visibleStickies.map(s => s.id);
+            const ids = visibleStickies?.map(s => s.id) || [];
             const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
             if (duplicates.length > 0) {
               debugLog('KonvaCanvas', `DUPLICATE STICKY IDs FOUND: ${duplicates.join(', ')}`);
