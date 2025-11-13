@@ -111,10 +111,11 @@ export const KonvaLabel: React.FC<KonvaLabelProps> = ({
     }
   };
 
-  const handleClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
+  const handleClick = (e: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
     if (interactionMode === 'select') {
       e.cancelBubble = true;
-      if (e.evt.shiftKey) {
+      const shiftKey = 'shiftKey' in e.evt ? e.evt.shiftKey : false;
+      if (shiftKey) {
         onSelect(label.id, true);
       } else {
         onSelect(label.id, false);

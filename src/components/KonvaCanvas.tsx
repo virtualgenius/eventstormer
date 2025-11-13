@@ -125,7 +125,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
     setStagePos(newPos);
   };
 
-  const handleStageMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
+  const handlePointerDown = (e: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
     // If event was cancelled by a child (sticky, line, etc.), don't process it
     if (e.cancelBubble) {
       return;
@@ -137,16 +137,18 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
                                   e.target.attrs.fill === 'transparent';
     const clickedOnEmpty = clickedOnStage || clickedOnBackground;
 
-    debugLog('KonvaCanvas', `Mouse down - Target: ${targetType}, ClickedOnStage: ${clickedOnStage}, ClickedOnBackground: ${clickedOnBackground}, ClickedOnEmpty: ${clickedOnEmpty}, ActiveTool: ${activeTool}`);
+    debugLog('KonvaCanvas', `Pointer down - Target: ${targetType}, ClickedOnStage: ${clickedOnStage}, ClickedOnBackground: ${clickedOnBackground}, ClickedOnEmpty: ${clickedOnEmpty}, ActiveTool: ${activeTool}`);
 
-    if (e.evt.button === 2) {
+    // Check if it's a mouse event with right-click
+    const isMouseEvent = 'button' in e.evt;
+    if (isMouseEvent && e.evt.button === 2) {
       debugLog('KonvaCanvas', `Right-click pan started - Position: (${stagePos.x.toFixed(1)}, ${stagePos.y.toFixed(1)})`);
       e.target.startDrag();
       return;
     }
 
-    // Prevent dragging on left-click when drawing lane or when tool is active
-    if (e.evt.button === 0 && (activeTool === 'horizontal-lane' || e.target.isDragging())) {
+    // Prevent dragging on left-click/touch when drawing lane or when tool is active
+    if ((!isMouseEvent || e.evt.button === 0) && (activeTool === 'horizontal-lane' || e.target.isDragging())) {
       e.target.stopDrag();
       setIsPanning(false);
     }
@@ -160,7 +162,8 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
       setSelectedType(null);
 
       // In select mode, start selection box (only if not shift-clicking)
-      if (interactionMode === 'select' && !e.evt.shiftKey) {
+      const shiftKey = isMouseEvent ? e.evt.shiftKey : false;
+      if (interactionMode === 'select' && !shiftKey) {
         const stage = stageRef.current;
         if (!stage) return;
 
@@ -276,7 +279,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
     }
   };
 
-  const handleStageMouseMove = (e: Konva.KonvaEventObject<MouseEvent>) => {
+  const handlePointerMove = (e: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
     const stage = stageRef.current;
     if (!stage) return;
 
@@ -559,9 +562,12 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
         y={stagePos.y}
         draggable={interactionMode === 'pan' && !drawingLane && !drawingVertical && !selectionBox}
         onWheel={handleWheel}
-        onMouseDown={handleStageMouseDown}
+        onMouseDown={handlePointerDown}
         onMouseUp={handleStageMouseUp}
-        onMouseMove={handleStageMouseMove}
+        onMouseMove={handlePointerMove}
+        onTouchStart={handlePointerDown}
+        onTouchEnd={handleStageMouseUp}
+        onTouchMove={handlePointerMove}
         onDragMove={handleDragMove}
         onDragEnd={handleDragEnd}
         onContextMenu={handleContextMenu}

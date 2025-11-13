@@ -150,12 +150,13 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
     dragStartPositions.current.clear();
   };
 
-  const handleClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
+  const handleClick = (e: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
     e.cancelBubble = true;
-    debugLog('KonvaSticky', `Clicked - ID: ${sticky.id}, Kind: ${sticky.kind}, Selected: ${isSelected}, InteractionMode: ${interactionMode}, ShiftKey: ${e.evt.shiftKey}`);
+    const shiftKey = 'shiftKey' in e.evt ? e.evt.shiftKey : false;
+    debugLog('KonvaSticky', `Clicked - ID: ${sticky.id}, Kind: ${sticky.kind}, Selected: ${isSelected}, InteractionMode: ${interactionMode}, ShiftKey: ${shiftKey}`);
     if (interactionMode === 'select') {
-      onSelect(sticky.id, e.evt.shiftKey);
-      debugLog('KonvaSticky', `Selection callback called for ID: ${sticky.id}, ShiftKey: ${e.evt.shiftKey}`);
+      onSelect(sticky.id, shiftKey);
+      debugLog('KonvaSticky', `Selection callback called for ID: ${sticky.id}, ShiftKey: ${shiftKey}`);
     } else {
       debugLog('KonvaSticky', `Not selecting - wrong interaction mode: ${interactionMode}`);
     }
@@ -286,6 +287,8 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
       onDragEnd={handleDragEnd}
       onClick={handleClick}
       onDblClick={handleDoubleClick}
+      onTap={handleClick}
+      onDblTap={handleDoubleClick}
     >
       <Rect
         width={width}
