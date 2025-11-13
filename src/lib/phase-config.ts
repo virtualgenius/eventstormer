@@ -5,7 +5,7 @@ import { FacilitationPhase, ElementType } from "../types/domain";
  * Based on Big Picture EventStorming methodology from Alberto Brandolini.
  */
 export const PHASE_ELEMENTS: Record<FacilitationPhase, ElementType[]> = {
-  "chaotic-exploration": ["event", "hotspot", "label"],
+  "chaotic-exploration": ["event", "hotspot"],
   "enforce-timeline": [
     "event",
     "hotspot",
