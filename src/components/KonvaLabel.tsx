@@ -25,20 +25,17 @@ export const KonvaLabel: React.FC<KonvaLabelProps> = ({
   const board = useCollabStore((s) => s.board);
   const groupRef = useRef<Konva.Group>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(label.text);
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const dragStartPositions = useRef<Map<string, any>>(new Map());
 
   // Auto-edit on creation
   useEffect(() => {
     const checkAutoEdit = () => {
-      if (board.labels.length > 0) {
+      if (board.labels && board.labels.length > 0) {
         const sortedLabels = [...board.labels].sort(
           (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
         if (sortedLabels[0].id === label.id && label.text === "Label") {
           setTimeout(() => {
-            setEditValue(label.text);
             setIsEditing(true);
             onSelect(label.id, false);
           }, 100);
@@ -47,21 +44,7 @@ export const KonvaLabel: React.FC<KonvaLabelProps> = ({
     };
 
     checkAutoEdit();
-  }, [label.id, board.labels.length, label.text, onSelect]);
-
-  // Handle input element lifecycle
-  useEffect(() => {
-    if (isEditing) {
-      // Use setTimeout to ensure input is mounted in DOM
-      const timer = setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.focus();
-          inputRef.current.select();
-        }
-      }, 0);
-      return () => clearTimeout(timer);
-    }
-  }, [isEditing]);
+  }, [label.id, board.labels, label.text, onSelect]);
 
   const handleDragStart = () => {
     debugLog('KonvaLabel', `Drag started - ID: ${label.id}, Position: (${label.x}, ${label.y}), Multi-select: ${selectedElements.length > 0}`);
@@ -70,7 +53,7 @@ export const KonvaLabel: React.FC<KonvaLabelProps> = ({
       const positions = new Map<string, any>();
       selectedElements.forEach(el => {
         if (el.type === 'label') {
-          const l = board.labels.find(lbl => lbl.id === el.id);
+          const l = board.labels?.find(lbl => lbl.id === el.id);
           if (l) positions.set(el.id, { type: 'label', x: l.x, y: l.y });
         } else if (el.type === 'sticky') {
           const s = board.stickies.find(sticky => sticky.id === el.id);
@@ -141,103 +124,108 @@ export const KonvaLabel: React.FC<KonvaLabelProps> = ({
 
   const handleDblClick = () => {
     if (interactionMode === 'select' && !isEditing) {
-      setEditValue(label.text);
       setIsEditing(true);
+      onSelect(label.id, false);
     }
   };
 
-  const finishEditing = () => {
-    const newText = editValue.trim();
-    if (newText && newText !== label.text) {
-      updateLabel(label.id, { text: newText });
+  // Handle textarea editing - same approach as KonvaSticky
+  useEffect(() => {
+    if (isEditing && groupRef.current) {
+      const stage = groupRef.current.getStage();
+      if (!stage) return;
+
+      const container = stage.container();
+      const group = groupRef.current;
+
+      // Get the bounding box in screen coordinates
+      const clientRect = group.getClientRect();
+      const scale = stage.scaleX();
+
+      // Create input element
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = label.text;
+      input.style.position = "absolute";
+      input.style.left = `${clientRect.x}px`;
+      input.style.top = `${clientRect.y}px`;
+      input.style.width = `${Math.max(clientRect.width, 200)}px`;
+      input.style.height = `${clientRect.height}px`;
+      input.style.fontSize = `${20 * scale}px`;
+      input.style.fontWeight = "bold";
+      input.style.padding = `${4 * scale}px`;
+      input.style.border = "2px solid #3b82f6";
+      input.style.borderRadius = "4px";
+      input.style.backgroundColor = "white";
+      input.style.outline = "none";
+      input.style.fontFamily = "system-ui, -apple-system, sans-serif";
+      input.style.zIndex = "1000";
+
+      container.appendChild(input);
+      input.focus();
+      input.select();
+
+      const handleBlur = () => {
+        const newText = input.value.trim();
+        if (newText) {
+          updateLabel(label.id, { text: newText });
+        }
+        setIsEditing(false);
+        container.removeChild(input);
+      };
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          input.removeEventListener("blur", handleBlur);
+          input.removeEventListener("keydown", handleKeyDown);
+          setIsEditing(false);
+          if (container.contains(input)) {
+            container.removeChild(input);
+          }
+        } else if (e.key === "Enter") {
+          e.preventDefault();
+          const newText = input.value.trim();
+          if (newText) {
+            updateLabel(label.id, { text: newText });
+          }
+          setIsEditing(false);
+          container.removeChild(input);
+        }
+      };
+
+      input.addEventListener("blur", handleBlur);
+      input.addEventListener("keydown", handleKeyDown);
+
+      return () => {
+        if (container.contains(input)) {
+          input.removeEventListener("blur", handleBlur);
+          input.removeEventListener("keydown", handleKeyDown);
+          container.removeChild(input);
+        }
+      };
     }
-    setIsEditing(false);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      finishEditing();
-    } else if (e.key === 'Escape') {
-      e.preventDefault();
-      setEditValue(label.text);
-      setIsEditing(false);
-    }
-  };
-
-  // Get absolute position for input overlay
-  const getInputPosition = () => {
-    const group = groupRef.current;
-    if (!group) return { left: 0, top: 0, scale: 1 };
-
-    const stage = group.getStage();
-    if (!stage) return { left: 0, top: 0, scale: 1 };
-
-    const transform = group.getAbsoluteTransform();
-    const pos = transform.point({ x: 0, y: 0 });
-    const stageBox = stage.container().getBoundingClientRect();
-    const scale = stage.scaleX();
-
-    return {
-      left: stageBox.left + pos.x,
-      top: stageBox.top + pos.y,
-      scale
-    };
-  };
-
-  const inputPos = isEditing ? getInputPosition() : { left: 0, top: 0, scale: 1 };
+  }, [isEditing, label.id, label.text, updateLabel]);
 
   return (
-    <>
-      <Group
-        ref={groupRef}
-        x={label.x}
-        y={label.y}
-        draggable={interactionMode === 'select' && !isEditing}
-        onDragStart={handleDragStart}
-        onDragMove={handleDragMove}
-        onDragEnd={handleDragEnd}
-        onClick={handleClick}
-        onTap={handleClick}
-        onDblClick={handleDblClick}
-        onDblTap={handleDblClick}
-      >
-        <Text
-          text={isEditing ? editValue : label.text}
-          fontSize={20}
-          fontStyle="bold"
-          fill={isSelected ? "#2563eb" : "#1f2937"}
-          opacity={isEditing ? 0.3 : 1}
-        />
-      </Group>
-
-      {isEditing && (
-        <input
-          ref={inputRef}
-          type="text"
-          value={editValue}
-          onChange={(e) => setEditValue(e.target.value)}
-          onBlur={finishEditing}
-          onKeyDown={handleKeyDown}
-          style={{
-            position: 'fixed',
-            left: `${inputPos.left}px`,
-            top: `${inputPos.top}px`,
-            fontSize: '20px',
-            fontWeight: 'bold',
-            fontFamily: 'inherit',
-            border: '2px solid #3b82f6',
-            borderRadius: '4px',
-            padding: '2px 4px',
-            background: 'white',
-            outline: 'none',
-            minWidth: '100px',
-            transform: `scale(${inputPos.scale})`,
-            transformOrigin: 'top left',
-            zIndex: 10000,
-          }}
-        />
-      )}
-    </>
+    <Group
+      ref={groupRef}
+      x={label.x}
+      y={label.y}
+      draggable={interactionMode === 'select' && !isEditing}
+      onDragStart={handleDragStart}
+      onDragMove={handleDragMove}
+      onDragEnd={handleDragEnd}
+      onClick={handleClick}
+      onTap={handleClick}
+      onDblClick={handleDblClick}
+      onDblTap={handleDblClick}
+    >
+      <Text
+        text={label.text}
+        fontSize={20}
+        fontStyle="bold"
+        fill={isSelected ? "#2563eb" : "#1f2937"}
+      />
+    </Group>
   );
 };
