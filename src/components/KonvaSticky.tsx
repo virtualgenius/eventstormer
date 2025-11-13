@@ -78,10 +78,15 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
           if (l) {
             positions.set(el.id, { type: 'lane', y: l.y, x1: l.x1, x2: l.x2 });
           }
+        } else if (el.type === 'label') {
+          const label = board.labels?.find(lbl => lbl.id === el.id);
+          if (label) {
+            positions.set(el.id, { type: 'label', x: label.x, y: label.y });
+          }
         }
       });
       dragStartPositions.current = positions;
-      debugLog('KonvaSticky', `Stored ${positions.size} initial positions for group drag (${selectedElements.filter(e => e.type === 'sticky').length} stickies, ${selectedElements.filter(e => e.type === 'vertical').length} verticals, ${selectedElements.filter(e => e.type === 'lane').length} lanes)`);
+      debugLog('KonvaSticky', `Stored ${positions.size} initial positions for group drag (${selectedElements.filter(e => e.type === 'sticky').length} stickies, ${selectedElements.filter(e => e.type === 'vertical').length} verticals, ${selectedElements.filter(e => e.type === 'lane').length} lanes, ${selectedElements.filter(e => e.type === 'label').length} labels)`);
     }
   };
 
@@ -94,6 +99,7 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
 
       const updateVertical = useCollabStore.getState().updateVertical;
       const updateLane = useCollabStore.getState().updateLane;
+      const updateLabel = useCollabStore.getState().updateLabel;
 
       // Update positions of all other selected elements
       selectedElements.forEach(el => {
@@ -117,6 +123,11 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
               if (startPos.x1 !== undefined) updates.x1 = startPos.x1 + deltaX;
               if (startPos.x2 !== undefined) updates.x2 = startPos.x2 + deltaX;
               updateLane(el.id, updates);
+            } else if (startPos.type === 'label') {
+              updateLabel(el.id, {
+                x: startPos.x + deltaX,
+                y: startPos.y + deltaY
+              });
             }
           }
         }
@@ -243,8 +254,10 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
             y: newY
           });
 
-          // Dispatch custom event to trigger auto-edit on new sticky
-          window.dispatchEvent(new CustomEvent('auto-edit-newest-sticky'));
+          // Dispatch custom event to trigger auto-edit on new sticky (with delay to ensure it's in the array)
+          setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('auto-edit-newest-sticky'));
+          }, 50);
         }
       };
 

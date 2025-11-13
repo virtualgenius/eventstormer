@@ -218,6 +218,10 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
             x,
             y
           });
+          // Trigger auto-edit for newly created sticky (with small delay to ensure it's in the array)
+          setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('auto-edit-newest-sticky'));
+          }, 50);
         }
         // Keep tool active for continuous creation
       }
