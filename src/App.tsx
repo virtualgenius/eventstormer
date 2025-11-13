@@ -49,16 +49,17 @@ const App: React.FC = () => {
   }, [showUsersList, showMobileMenu]);
 
   useEffect(() => {
-    // Try to load board from IndexedDB on mount
-    loadFromIndexedDB("demo-board").then(() => {
-      // Connect to default room after loading
-      connect("demo-room");
-    });
+    // Connect to collaborative room first
+    connect("demo-room");
+
+    // Note: We no longer load from IndexedDB on mount
+    // The collaborative state from the room is now the source of truth
+    // IndexedDB is only used for manual save/export features
 
     return () => {
       disconnect();
     };
-  }, [connect, disconnect, loadFromIndexedDB]);
+  }, [connect, disconnect]);
 
   const handleExportPNG = () => {
     exportCanvasToImage(stageRef.current);
