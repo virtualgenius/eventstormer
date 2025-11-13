@@ -51,9 +51,15 @@ export const KonvaLabel: React.FC<KonvaLabelProps> = ({
 
   // Handle input element lifecycle
   useEffect(() => {
-    if (isEditing && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
+    if (isEditing) {
+      // Use setTimeout to ensure input is mounted in DOM
+      const timer = setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+          inputRef.current.select();
+        }
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [isEditing]);
 
