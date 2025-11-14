@@ -5,7 +5,8 @@ export default defineConfig({
   plugins: [react()],
   base: '/eventstormer/',
   server: {
-    port: 5173
+    port: 5173,
+    host: '0.0.0.0' // Allow external connections
   },
   preview: {
     port: 4173

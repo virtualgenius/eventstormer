@@ -6,11 +6,11 @@ export default class YjsServer implements Party.Server {
     console.log(`[PartyKit] Room initialized: ${room.id}`);
   }
 
-  onConnect(conn: Party.Connection, ctx: Party.ConnectionContext) {
+  async onConnect(conn: Party.Connection, ctx: Party.ConnectionContext) {
     console.log(`[PartyKit] Client connecting - Room: ${this.room.id}, IP: ${ctx.request.headers.get('cf-connecting-ip')}`);
 
-    return onConnect(conn, this.room, {
-      persist: false, // Enable persistence in production
+    return await onConnect(conn, this.room, {
+      persist: { mode: "snapshot" },
       callback: {
         handler: async () => {
           console.log(`[PartyKit] Message handled in room: ${this.room.id}`);
