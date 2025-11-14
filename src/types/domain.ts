@@ -43,6 +43,7 @@ export interface HorizontalLane {
   x1?: number;  // Start x position (defaults to 0)
   x2?: number;  // End x position (defaults to canvas width)
   label?: string;
+  timelineId?: string;  // Which timeline owns this lane (optional for backward compat)
 }
 
 export interface ThemeArea {
