@@ -32,6 +32,8 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          VITE_PARTYKIT_HOST: eventstormer.paulrayner.partykit.dev
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

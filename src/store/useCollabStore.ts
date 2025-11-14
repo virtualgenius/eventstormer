@@ -204,9 +204,11 @@ export const useCollabStore = create<CollabState>((set, get) => {
 
     connect: (roomId: string) => {
       const host = import.meta.env.VITE_PARTYKIT_HOST || "localhost:1999";
+      debugLog('Connection', `Connecting to PartyKit - Host: ${host}, Room: ${roomId}`);
       const provider = new YPartyKitProvider(host, roomId, ydoc);
 
       provider.on("status", ({ status }: { status: string }) => {
+        debugLog('Connection', `PartyKit connection status: ${status}`);
         set({ isConnected: status === "connected" });
       });
 
