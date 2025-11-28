@@ -6,7 +6,7 @@ import { NamePrompt } from "@/components/NamePrompt";
 import { useCollabStore } from "@/store/useCollabStore";
 import { useBoardStore } from "@/store/useBoardStore";
 import { useUndoRedo } from "@/hooks/useUndoRedo";
-import { Users, Download, Save, Upload, FileJson, Hand, MousePointer, Trash2, Menu, X, Home, Edit2 } from "lucide-react";
+import { Users, Download, Save, Upload, FileJson, Hand, MousePointer, Menu, X, Home, Edit2 } from "lucide-react";
 import { exportCanvasToImage } from "@/lib/export";
 import { downloadBoardJSON, importBoardJSON } from "@/lib/persistence";
 import type Konva from "konva";
@@ -200,14 +200,6 @@ export const BoardPage: React.FC = () => {
     await saveToIndexedDB();
   };
 
-  const clearBoard = useCollabStore((state) => state.clearBoard);
-
-  const handleClearBoard = async () => {
-    if (confirm('Clear all data from this board? This cannot be undone.')) {
-      clearBoard();
-    }
-  };
-
   const handleGoHome = () => {
     navigate('/');
   };
@@ -311,14 +303,6 @@ export const BoardPage: React.FC = () => {
           {/* Desktop buttons - hidden on mobile */}
           <div className="hidden lg:flex items-center gap-2">
             <button
-              onClick={handleClearBoard}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800 text-red-700 dark:text-red-100 rounded transition-colors"
-              title="Clear all data and reload"
-            >
-              <Trash2 className="w-3 h-3" />
-              Clear
-            </button>
-            <button
               onClick={handleManualSave}
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded transition-colors"
               title="Save to IndexedDB"
@@ -399,14 +383,6 @@ export const BoardPage: React.FC = () => {
                 >
                   <Upload className="w-4 h-4" />
                   Import JSON
-                </button>
-                <div className="border-t border-slate-200 dark:border-slate-700 my-1.5" />
-                <button
-                  onClick={() => { handleClearBoard(); setShowMobileMenu(false); }}
-                  className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  Clear Board
                 </button>
               </div>
             )}
