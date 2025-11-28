@@ -37,3 +37,6 @@ playwright/.cache/
 
 # PartyKit
 .partykit/state/
+
+# Wrangler
+.wrangler/
