@@ -133,11 +133,57 @@ export const BoardPage: React.FC = () => {
     const text = await file.text();
     try {
       const importedBoard = importBoardJSON(text);
-      await loadFromIndexedDB(importedBoard.id);
-      window.location.reload();
+
+      // Load imported board data into Yjs document
+      const yboard = ydoc.getMap("board");
+
+      yboard.set("id", importedBoard.id);
+      yboard.set("name", importedBoard.name);
+      yboard.set("mainTimelineId", importedBoard.mainTimelineId);
+      yboard.set("sessionMode", importedBoard.sessionMode || "big-picture");
+      yboard.set("phase", importedBoard.phase);
+      yboard.set("createdAt", importedBoard.createdAt);
+      yboard.set("updatedAt", importedBoard.updatedAt);
+
+      // Clear and repopulate arrays
+      const stickies = yboard.get("stickies") as any;
+      const verticals = yboard.get("verticals") as any;
+      const lanes = yboard.get("lanes") as any;
+      const labels = yboard.get("labels") as any;
+      const themes = yboard.get("themes") as any;
+      const timelines = yboard.get("timelines") as any;
+
+      stickies.delete(0, stickies.length);
+      verticals.delete(0, verticals.length);
+      lanes.delete(0, lanes.length);
+      labels.delete(0, labels.length);
+      themes.delete(0, themes.length);
+      timelines.delete(0, timelines.length);
+
+      importedBoard.stickies.forEach((s: any) => stickies.push([s]));
+      importedBoard.verticals.forEach((v: any) => verticals.push([v]));
+      importedBoard.lanes.forEach((l: any) => lanes.push([l]));
+      if (importedBoard.labels) {
+        importedBoard.labels.forEach((l: any) => labels.push([l]));
+      }
+      importedBoard.themes.forEach((t: any) => themes.push([t]));
+      if (importedBoard.timelines) {
+        importedBoard.timelines.forEach((t: any) => timelines.push([t]));
+      }
+
+      // Save to IndexedDB
+      await saveToIndexedDB();
+
+      // Navigate to the imported board
+      navigate(`/board/${importedBoard.id}`);
     } catch (error) {
       console.error('Failed to import board:', error);
       alert('Failed to import board JSON. Please check the file format.');
+    }
+
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
