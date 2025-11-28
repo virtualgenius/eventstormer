@@ -280,8 +280,8 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
             name: "New Theme",
             x: canvasX,
             y: canvasY,
-            width: 400,
-            height: 300
+            width: 800,
+            height: 600
           });
         } else if (activeTool === 'label') {
           debugLog('KonvaCanvas', `Creating label - Position: (${canvasX.toFixed(1)}, ${canvasY.toFixed(1)})`);
@@ -663,6 +663,30 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
             fill="transparent"
           />
 
+          {/* Themes (rendered first so they're visually behind other elements) */}
+          {board.themes?.map((theme) => (
+            <KonvaTheme
+              key={theme.id}
+              theme={theme}
+              onSelect={(id, shiftKey) => {
+                if (interactionMode === 'select') {
+                  if (shiftKey) {
+                    toggleSelection(id, 'theme');
+                    setSelectedId(null);
+                    setSelectedType(null);
+                  } else {
+                    clearSelection();
+                    setSelectedId(id);
+                    setSelectedType('theme');
+                  }
+                }
+              }}
+              isSelected={isSelected(theme.id) || (theme.id === selectedId && selectedType === 'theme')}
+              selectedElements={selectedElements}
+              interactionMode={interactionMode}
+            />
+          ))}
+
           {/* Vertical lines */}
           {board.verticals?.map((v) => {
             const lineY1 = v.y1 ?? 0;
@@ -968,30 +992,6 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
               listening={false}
             />
           )}
-
-          {/* Themes */}
-          {board.themes?.map((theme) => (
-            <KonvaTheme
-              key={theme.id}
-              theme={theme}
-              onSelect={(id, shiftKey) => {
-                if (interactionMode === 'select') {
-                  if (shiftKey) {
-                    toggleSelection(id, 'theme');
-                    setSelectedId(null);
-                    setSelectedType(null);
-                  } else {
-                    clearSelection();
-                    setSelectedId(id);
-                    setSelectedType('theme');
-                  }
-                }
-              }}
-              isSelected={isSelected(theme.id) || (theme.id === selectedId && selectedType === 'theme')}
-              selectedElements={selectedElements}
-              interactionMode={interactionMode}
-            />
-          ))}
 
           {/* Selection box preview */}
           {selectionBox && (
