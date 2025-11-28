@@ -29,11 +29,12 @@
   ],
   "type": "module",
   "scripts": {
-    "dev": "npm run dev:party & npm run dev:vite",
-    "dev:vite": "vite",
-    "dev:party": "partykit dev",
+    "dev": "concurrently \"npm run dev:worker\" \"npm run dev:vite\"",
+    "dev:vite": "vite --port 5180",
+    "dev:worker": "wrangler dev workers/server.ts --port 8800",
     "build": "vite build",
     "preview": "vite preview",
+    "deploy:worker": "wrangler deploy",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
@@ -44,6 +45,7 @@
     "dexie": "^4.2.1",
     "konva": "^10.0.8",
     "lucide-react": "^0.441.0",
+    "partyserver": "^0.0.75",
     "partysocket": "^1.1.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -51,6 +53,7 @@
     "react-use-measure": "^2.1.5",
     "react-zoom-pan-pinch": "^3.7.0",
     "y-partykit": "^0.0.33",
+    "y-partyserver": "^0.0.51",
     "y-protocols": "^1.0.6",
     "yjs": "^13.6.27",
     "zustand": "^5.0.0"
@@ -59,10 +62,12 @@
     "@playwright/test": "^1.56.1",
     "@vitejs/plugin-react": "^4.5.3",
     "autoprefixer": "^10.4.20",
+    "concurrently": "^9.2.1",
     "partykit": "^0.0.115",
     "postcss": "^8.4.41",
     "tailwindcss": "^3.4.10",
     "typescript": "^5.6.2",
-    "vite": "^5.3.4"
+    "vite": "^5.3.4",
+    "wrangler": "^4.51.0"
   }
 }

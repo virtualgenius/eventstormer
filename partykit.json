@@ -1,6 +1,0 @@
-{
-  "name": "eventstormer",
-  "main": "party/server.ts",
-  "compatibilityDate": "2025-11-07",
-  "port": 1999
-}

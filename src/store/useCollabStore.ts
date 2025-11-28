@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import * as Y from "yjs";
-import YPartyKitProvider from "y-partykit/provider";
+import YProvider from "y-partyserver/provider";
 import { nanoid } from "../lib/nanoid";
 import { debugLog } from "@/lib/debug";
 import { saveBoard, loadBoard } from "@/lib/persistence";
@@ -33,7 +33,7 @@ export interface SelectedElement {
 
 interface CollabState {
   ydoc: Y.Doc;
-  provider: YPartyKitProvider | null;
+  provider: YProvider | null;
   board: Board;
   activeTool: string | null;
   interactionMode: InteractionMode;
@@ -203,12 +203,15 @@ export const useCollabStore = create<CollabState>((set, get) => {
     lastSavedAt: null,
 
     connect: (roomId: string) => {
-      const host = import.meta.env.VITE_PARTYKIT_HOST || "localhost:1999";
-      debugLog('Connection', `Connecting to PartyKit - Host: ${host}, Room: ${roomId}`);
-      const provider = new YPartyKitProvider(host, roomId, ydoc);
+      const host = import.meta.env.VITE_COLLAB_HOST || "localhost:8787";
+      debugLog('Connection', `Connecting to Collab Server - Host: ${host}, Room: ${roomId}`);
+      const provider = new YProvider(host, roomId, ydoc, {
+        connect: true,
+        party: "yjs-room",
+      });
 
       provider.on("status", ({ status }: { status: string }) => {
-        debugLog('Connection', `PartyKit connection status: ${status}`);
+        debugLog('Connection', `Collab server connection status: ${status}`);
         set({ isConnected: status === "connected" });
       });
 
