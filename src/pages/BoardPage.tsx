@@ -134,48 +134,57 @@ export const BoardPage: React.FC = () => {
     try {
       const importedBoard = importBoardJSON(text);
 
+      // Confirm import will replace current board content
+      const confirmImport = confirm(
+        `Import "${importedBoard.name}"? This will replace the current board content with ${importedBoard.stickies.length} stickies.`
+      );
+      if (!confirmImport) return;
+
       // Load imported board data into Yjs document
       const yboard = ydoc.getMap("board");
 
-      yboard.set("id", importedBoard.id);
-      yboard.set("name", importedBoard.name);
-      yboard.set("mainTimelineId", importedBoard.mainTimelineId);
-      yboard.set("sessionMode", importedBoard.sessionMode || "big-picture");
-      yboard.set("phase", importedBoard.phase);
-      yboard.set("createdAt", importedBoard.createdAt);
-      yboard.set("updatedAt", importedBoard.updatedAt);
+      // Use transact to batch all changes
+      ydoc.transact(() => {
+        // Update board metadata (keep current board ID to stay in same room)
+        yboard.set("name", importedBoard.name);
+        yboard.set("mainTimelineId", importedBoard.mainTimelineId);
+        yboard.set("sessionMode", importedBoard.sessionMode || "big-picture");
+        yboard.set("phase", importedBoard.phase);
+        yboard.set("updatedAt", new Date().toISOString());
 
-      // Clear and repopulate arrays
-      const stickies = yboard.get("stickies") as any;
-      const verticals = yboard.get("verticals") as any;
-      const lanes = yboard.get("lanes") as any;
-      const labels = yboard.get("labels") as any;
-      const themes = yboard.get("themes") as any;
-      const timelines = yboard.get("timelines") as any;
+        // Get or create arrays
+        let stickies = yboard.get("stickies") as any;
+        let verticals = yboard.get("verticals") as any;
+        let lanes = yboard.get("lanes") as any;
+        let labels = yboard.get("labels") as any;
+        let themes = yboard.get("themes") as any;
+        let timelines = yboard.get("timelines") as any;
 
-      stickies.delete(0, stickies.length);
-      verticals.delete(0, verticals.length);
-      lanes.delete(0, lanes.length);
-      labels.delete(0, labels.length);
-      themes.delete(0, themes.length);
-      timelines.delete(0, timelines.length);
+        // Clear existing content
+        if (stickies) stickies.delete(0, stickies.length);
+        if (verticals) verticals.delete(0, verticals.length);
+        if (lanes) lanes.delete(0, lanes.length);
+        if (labels) labels.delete(0, labels.length);
+        if (themes) themes.delete(0, themes.length);
+        if (timelines) timelines.delete(0, timelines.length);
 
-      importedBoard.stickies.forEach((s: any) => stickies.push([s]));
-      importedBoard.verticals.forEach((v: any) => verticals.push([v]));
-      importedBoard.lanes.forEach((l: any) => lanes.push([l]));
-      if (importedBoard.labels) {
-        importedBoard.labels.forEach((l: any) => labels.push([l]));
-      }
-      importedBoard.themes.forEach((t: any) => themes.push([t]));
-      if (importedBoard.timelines) {
-        importedBoard.timelines.forEach((t: any) => timelines.push([t]));
-      }
+        // Add imported content
+        importedBoard.stickies.forEach((s: any) => stickies.push([s]));
+        importedBoard.verticals.forEach((v: any) => verticals.push([v]));
+        importedBoard.lanes.forEach((l: any) => lanes.push([l]));
+        if (importedBoard.labels) {
+          importedBoard.labels.forEach((l: any) => labels.push([l]));
+        }
+        importedBoard.themes.forEach((t: any) => themes.push([t]));
+        if (importedBoard.timelines) {
+          importedBoard.timelines.forEach((t: any) => timelines.push([t]));
+        }
+      });
 
       // Save to IndexedDB
       await saveToIndexedDB();
 
-      // Navigate to the imported board
-      navigate(`/board/${importedBoard.id}`);
+      alert(`Imported "${importedBoard.name}" with ${importedBoard.stickies.length} stickies.`);
     } catch (error) {
       console.error('Failed to import board:', error);
       alert('Failed to import board JSON. Please check the file format.');
