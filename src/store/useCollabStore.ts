@@ -3,7 +3,7 @@ import * as Y from "yjs";
 import YProvider from "y-partyserver/provider";
 import { nanoid } from "../lib/nanoid";
 import { debugLog } from "@/lib/debug";
-import { saveBoard } from "@/lib/persistence";
+import { saveBoard, loadBoard } from "@/lib/persistence";
 import type {
   Board,
   BaseSticky,
@@ -62,7 +62,7 @@ interface CollabState {
   locallyCreatedLabelIds: Set<string>;
 
   // Actions
-  connectToBoard: (boardId: string, userName?: string) => void;
+  connectToBoard: (boardId: string, userName?: string) => Promise<void>;
   disconnect: () => void;
   updateCursor: (x: number, y: number) => void;
   setPhase: (phase: FacilitationPhase) => void;
@@ -167,7 +167,7 @@ export const useCollabStore = create<CollabState>((set, get) => {
     lastSavedAt: null,
     locallyCreatedLabelIds: new Set<string>(),
 
-    connectToBoard: (boardId: string, userName?: string) => {
+    connectToBoard: async (boardId: string, userName?: string) => {
       const state = get();
 
       // If already connected to this board, do nothing
@@ -182,37 +182,80 @@ export const useCollabStore = create<CollabState>((set, get) => {
         state.provider.disconnect();
       }
 
+      // Try to load existing board from IndexedDB
+      const savedBoard = await loadBoard(boardId);
+
       // Create fresh Y.Doc for this board
       const ydoc = new Y.Doc();
       const yboard = ydoc.getMap("board");
 
-      // Initialize board structure
-      const mainTimelineId = nanoid();
-      yboard.set("id", boardId);
-      yboard.set("name", "Untitled Board");
-      yboard.set("mainTimelineId", mainTimelineId);
-      yboard.set("timelines", new Y.Array());
-      yboard.set("stickies", new Y.Array());
-      yboard.set("verticals", new Y.Array());
-      yboard.set("lanes", new Y.Array());
-      yboard.set("labels", new Y.Array());
-      yboard.set("themes", new Y.Array());
-      yboard.set("sessionMode", "big-picture");
-      yboard.set("phase", "chaotic-exploration");
-      yboard.set("createdAt", now());
-      yboard.set("updatedAt", now());
+      if (savedBoard) {
+        // Load saved board data into Yjs
+        debugLog('Connection', `Loading board ${boardId} from IndexedDB`);
+        yboard.set("id", savedBoard.id);
+        yboard.set("name", savedBoard.name);
+        yboard.set("mainTimelineId", savedBoard.mainTimelineId);
+        yboard.set("sessionMode", savedBoard.sessionMode || "big-picture");
+        yboard.set("phase", savedBoard.phase);
+        yboard.set("createdAt", savedBoard.createdAt);
+        yboard.set("updatedAt", savedBoard.updatedAt);
 
-      // Create main timeline
-      const timelines = yboard.get("timelines") as Y.Array<any>;
-      timelines.push([{
-        id: mainTimelineId,
-        name: "Main Timeline",
-        x: 0,
-        y: 200,
-        orientation: "horizontal",
-        stickyIds: [],
-        verticalIds: []
-      }]);
+        // Initialize arrays
+        const stickies = new Y.Array();
+        const verticals = new Y.Array();
+        const lanes = new Y.Array();
+        const labels = new Y.Array();
+        const themes = new Y.Array();
+        const timelines = new Y.Array();
+
+        yboard.set("stickies", stickies);
+        yboard.set("verticals", verticals);
+        yboard.set("lanes", lanes);
+        yboard.set("labels", labels);
+        yboard.set("themes", themes);
+        yboard.set("timelines", timelines);
+
+        // Populate arrays with saved data
+        savedBoard.stickies.forEach(s => stickies.push([s]));
+        savedBoard.verticals.forEach(v => verticals.push([v]));
+        savedBoard.lanes.forEach(l => lanes.push([l]));
+        if (savedBoard.labels) {
+          savedBoard.labels.forEach(l => labels.push([l]));
+        }
+        savedBoard.themes.forEach(t => themes.push([t]));
+        if (savedBoard.timelines) {
+          savedBoard.timelines.forEach(t => timelines.push([t]));
+        }
+      } else {
+        // Initialize new board with defaults
+        debugLog('Connection', `Creating new board ${boardId}`);
+        const mainTimelineId = nanoid();
+        yboard.set("id", boardId);
+        yboard.set("name", "Untitled Board");
+        yboard.set("mainTimelineId", mainTimelineId);
+        yboard.set("timelines", new Y.Array());
+        yboard.set("stickies", new Y.Array());
+        yboard.set("verticals", new Y.Array());
+        yboard.set("lanes", new Y.Array());
+        yboard.set("labels", new Y.Array());
+        yboard.set("themes", new Y.Array());
+        yboard.set("sessionMode", "big-picture");
+        yboard.set("phase", "chaotic-exploration");
+        yboard.set("createdAt", now());
+        yboard.set("updatedAt", now());
+
+        // Create main timeline
+        const timelines = yboard.get("timelines") as Y.Array<any>;
+        timelines.push([{
+          id: mainTimelineId,
+          name: "Main Timeline",
+          x: 0,
+          y: 200,
+          orientation: "horizontal",
+          stickyIds: [],
+          verticalIds: []
+        }]);
+      }
 
       // Convert Y.Doc to Board object
       const getBoardState = (): Board => {
