@@ -125,8 +125,6 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
       y: pointer.y - mousePointTo.y * clampedScale
     };
 
-    debugLog('KonvaCanvas', `Zoom ${direction > 0 ? 'in' : 'out'} - Scale: ${oldScale.toFixed(2)} → ${clampedScale.toFixed(2)}, Pointer: (${pointer.x}, ${pointer.y})`);
-
     setScale(clampedScale);
     setStagePos(newPos);
   };

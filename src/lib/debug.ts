@@ -13,7 +13,10 @@ declare global {
   }
 }
 
-export const isDebugEnabled = (): boolean => {
+// Cache the debug state to avoid expensive checks on every call
+let debugEnabledCache: boolean | null = null;
+
+const checkDebugEnabled = (): boolean => {
   // Check localStorage
   if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
     if (localStorage.getItem('debug') === 'true') {
@@ -37,8 +40,15 @@ export const isDebugEnabled = (): boolean => {
   return false;
 };
 
-export const debugLog = (prefix: string, message: string): void => {
+export const isDebugEnabled = (): boolean => {
+  if (debugEnabledCache === null) {
+    debugEnabledCache = checkDebugEnabled();
+  }
+  return debugEnabledCache;
+};
+
+export const debugLog = (prefix: string, message: string, ...args: any[]): void => {
   if (isDebugEnabled()) {
-    console.log(`[${prefix}] ${message}`);
+    console.log(`[${prefix}] ${message}`, ...args);
   }
 };
