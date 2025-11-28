@@ -3,7 +3,7 @@ import * as Y from "yjs";
 import YProvider from "y-partyserver/provider";
 import { nanoid } from "../lib/nanoid";
 import { debugLog } from "@/lib/debug";
-import { saveBoard, loadBoard } from "@/lib/persistence";
+import { saveBoard } from "@/lib/persistence";
 import type {
   Board,
   BaseSticky,
@@ -31,10 +31,24 @@ export interface SelectedElement {
   type: ElementType;
 }
 
+const DEFAULT_BOARD: Board = {
+  id: "",
+  name: "Untitled Board",
+  stickies: [],
+  verticals: [],
+  lanes: [],
+  labels: [],
+  themes: [],
+  phase: "chaotic-exploration",
+  createdAt: now(),
+  updatedAt: now()
+};
+
 interface CollabState {
-  ydoc: Y.Doc;
+  ydoc: Y.Doc | null;
   provider: YProvider | null;
   board: Board;
+  currentBoardId: string | null;
   activeTool: string | null;
   interactionMode: InteractionMode;
   selectedElements: SelectedElement[];
@@ -48,8 +62,7 @@ interface CollabState {
   locallyCreatedLabelIds: Set<string>;
 
   // Actions
-  connect: (roomId: string, userName?: string) => void;
-  initializeBoard: (boardId: string) => void;
+  connectToBoard: (boardId: string, userName?: string) => void;
   disconnect: () => void;
   updateCursor: (x: number, y: number) => void;
   setPhase: (phase: FacilitationPhase) => void;
@@ -78,7 +91,6 @@ interface CollabState {
   deleteTheme: (id: string) => void;
   updateSticky: (id: string, patch: Partial<BaseSticky>) => void;
   saveToIndexedDB: () => Promise<void>;
-  loadFromIndexedDB: (boardId: string) => Promise<void>;
   clearBoard: () => void;
 }
 
@@ -96,16 +108,7 @@ const yMapToObject = (ymap: Y.Map<any>): any => {
   const obj: any = {};
   ymap.forEach((value, key) => {
     if (value instanceof Y.Array) {
-      const arr = value.toArray();
-      // Debug: check for nested arrays
-      if (key === 'stickies' && arr.length > 0) {
-        debugLog('YjsConversion', `Stickies array length: ${arr.length}`);
-        debugLog('YjsConversion', `First item type: ${Array.isArray(arr[0]) ? 'Array' : typeof arr[0]}`);
-        if (Array.isArray(arr[0])) {
-          debugLog('YjsConversion', `NESTED ARRAY DETECTED! First nested item:`, JSON.stringify(arr[0]));
-        }
-      }
-      obj[key] = arr;
+      obj[key] = value.toArray();
     } else if (value instanceof Y.Map) {
       obj[key] = yMapToObject(value);
     } else {
@@ -115,65 +118,21 @@ const yMapToObject = (ymap: Y.Map<any>): any => {
   return obj;
 };
 
+// Persistent user identity
+const userId = nanoid();
+const userColor = generateUserColor();
+
+// Autosave interval reference
+let autosaveInterval: NodeJS.Timeout | null = null;
+
 export const useCollabStore = create<CollabState>((set, get) => {
-  const ydoc = new Y.Doc();
-  const yboard = ydoc.getMap("board");
-  const userId = nanoid();
-  const userColor = generateUserColor();
-
-  // Initialize default board structure
-  if (!yboard.has("id")) {
-    const mainTimelineId = nanoid();
-
-    yboard.set("id", "demo-board");
-    yboard.set("name", "Untitled Board");
-    yboard.set("mainTimelineId", mainTimelineId);
-    yboard.set("timelines", new Y.Array());
-    yboard.set("stickies", new Y.Array());
-    yboard.set("verticals", new Y.Array());
-    yboard.set("lanes", new Y.Array());
-    yboard.set("labels", new Y.Array());
-    yboard.set("themes", new Y.Array());
-    yboard.set("sessionMode", "big-picture");
-    yboard.set("phase", "chaotic-exploration");
-    yboard.set("createdAt", now());
-    yboard.set("updatedAt", now());
-
-    // Create main timeline
-    const timelines = yboard.get("timelines") as Y.Array<any>;
-    timelines.push([{
-      id: mainTimelineId,
-      name: "Main Timeline",
-      x: 0,
-      y: 200,
-      orientation: "horizontal",
-      stickyIds: [],
-      verticalIds: []
-    }]);
-  }
-
-  // Convert Y.Doc to Board object
-  const getBoardState = (): Board => {
-    return yMapToObject(yboard) as Board;
-  };
-
-  // Subscribe to Yjs changes and mark as unsaved
-  yboard.observe(() => {
-    set({
-      board: getBoardState(),
-      hasUnsavedChanges: true
-    });
-  });
-
-  // Autosave every 5 seconds
-  let autosaveInterval: NodeJS.Timeout | null = null;
-
+  // Start autosave
   const startAutosave = () => {
     if (autosaveInterval) return;
 
     autosaveInterval = setInterval(async () => {
       const state = get();
-      if (state.hasUnsavedChanges) {
+      if (state.hasUnsavedChanges && state.currentBoardId) {
         await saveBoard(state.board);
         set({
           hasUnsavedChanges: false,
@@ -181,10 +140,9 @@ export const useCollabStore = create<CollabState>((set, get) => {
         });
         debugLog('Persistence', 'Board autosaved to IndexedDB');
       }
-    }, 5000); // 5 seconds
+    }, 5000);
   };
 
-  // Start autosave on store creation
   startAutosave();
 
   // Expose store to window for testing
@@ -193,11 +151,12 @@ export const useCollabStore = create<CollabState>((set, get) => {
   }
 
   return {
-    ydoc,
+    ydoc: null,
     provider: null,
-    board: getBoardState(),
+    board: DEFAULT_BOARD,
+    currentBoardId: null,
     activeTool: null,
-    interactionMode: 'pan' as InteractionMode, // Default to pan mode
+    interactionMode: 'pan' as InteractionMode,
     selectedElements: [],
     userColor,
     userId,
@@ -208,51 +167,77 @@ export const useCollabStore = create<CollabState>((set, get) => {
     lastSavedAt: null,
     locallyCreatedLabelIds: new Set<string>(),
 
-    initializeBoard: (boardId: string) => {
-      // Set board ID in Yjs doc if this is a new board
-      if (!yboard.has("id") || yboard.get("id") === "demo-board") {
-        const mainTimelineId = nanoid();
+    connectToBoard: (boardId: string, userName?: string) => {
+      const state = get();
 
-        yboard.set("id", boardId);
-        yboard.set("name", "Untitled Board");
-        yboard.set("mainTimelineId", mainTimelineId);
-        if (!yboard.has("timelines")) yboard.set("timelines", new Y.Array());
-        if (!yboard.has("stickies")) yboard.set("stickies", new Y.Array());
-        if (!yboard.has("verticals")) yboard.set("verticals", new Y.Array());
-        if (!yboard.has("lanes")) yboard.set("lanes", new Y.Array());
-        if (!yboard.has("labels")) yboard.set("labels", new Y.Array());
-        if (!yboard.has("themes")) yboard.set("themes", new Y.Array());
-        yboard.set("sessionMode", "big-picture");
-        yboard.set("phase", "chaotic-exploration");
-        yboard.set("createdAt", now());
-        yboard.set("updatedAt", now());
-
-        // Create main timeline if not exists
-        const timelines = yboard.get("timelines") as Y.Array<any>;
-        if (timelines.length === 0) {
-          timelines.push([{
-            id: mainTimelineId,
-            name: "Main Timeline",
-            x: 0,
-            y: 200,
-            orientation: "horizontal",
-            stickyIds: [],
-            verticalIds: []
-          }]);
-        }
+      // If already connected to this board, do nothing
+      if (state.currentBoardId === boardId && state.provider) {
+        debugLog('Connection', `Already connected to board ${boardId}`);
+        return;
       }
-    },
 
-    connect: (roomId: string, userName?: string) => {
+      // Disconnect from previous board if any
+      if (state.provider) {
+        debugLog('Connection', `Disconnecting from previous board ${state.currentBoardId}`);
+        state.provider.disconnect();
+      }
+
+      // Create fresh Y.Doc for this board
+      const ydoc = new Y.Doc();
+      const yboard = ydoc.getMap("board");
+
+      // Initialize board structure
+      const mainTimelineId = nanoid();
+      yboard.set("id", boardId);
+      yboard.set("name", "Untitled Board");
+      yboard.set("mainTimelineId", mainTimelineId);
+      yboard.set("timelines", new Y.Array());
+      yboard.set("stickies", new Y.Array());
+      yboard.set("verticals", new Y.Array());
+      yboard.set("lanes", new Y.Array());
+      yboard.set("labels", new Y.Array());
+      yboard.set("themes", new Y.Array());
+      yboard.set("sessionMode", "big-picture");
+      yboard.set("phase", "chaotic-exploration");
+      yboard.set("createdAt", now());
+      yboard.set("updatedAt", now());
+
+      // Create main timeline
+      const timelines = yboard.get("timelines") as Y.Array<any>;
+      timelines.push([{
+        id: mainTimelineId,
+        name: "Main Timeline",
+        x: 0,
+        y: 200,
+        orientation: "horizontal",
+        stickyIds: [],
+        verticalIds: []
+      }]);
+
+      // Convert Y.Doc to Board object
+      const getBoardState = (): Board => {
+        return yMapToObject(yboard) as Board;
+      };
+
+      // Subscribe to Yjs changes
+      yboard.observe(() => {
+        set({
+          board: getBoardState(),
+          hasUnsavedChanges: true
+        });
+      });
+
+      // Connect to collaboration server
       const host = import.meta.env.VITE_COLLAB_HOST || "localhost:8787";
-      debugLog('Connection', `Connecting to Collab Server - Host: ${host}, Room: ${roomId}`);
-      const provider = new YProvider(host, roomId, ydoc, {
+      debugLog('Connection', `Connecting to board ${boardId} at ${host}`);
+
+      const provider = new YProvider(host, boardId, ydoc, {
         connect: true,
         party: "yjs-room",
       });
 
       provider.on("status", ({ status }: { status: string }) => {
-        debugLog('Connection', `Collab server connection status: ${status}`);
+        debugLog('Connection', `Connection status: ${status}`);
         set({ isConnected: status === "connected" });
       });
 
@@ -269,7 +254,7 @@ export const useCollabStore = create<CollabState>((set, get) => {
         set({ usersOnline: states.size, users });
       });
 
-      // Set local user info with provided name or default
+      // Set local user info
       const displayName = userName || `User ${userId.slice(0, 4)}`;
       provider.awareness.setLocalState({
         user: {
@@ -279,14 +264,30 @@ export const useCollabStore = create<CollabState>((set, get) => {
         }
       });
 
-      set({ provider });
+      set({
+        ydoc,
+        provider,
+        currentBoardId: boardId,
+        board: getBoardState(),
+        selectedElements: [],
+        locallyCreatedLabelIds: new Set<string>(),
+        hasUnsavedChanges: false
+      });
     },
 
     disconnect: () => {
       const { provider } = get();
       if (provider) {
         provider.disconnect();
-        set({ provider: null, isConnected: false, usersOnline: 0, users: new Map() });
+        set({
+          provider: null,
+          ydoc: null,
+          currentBoardId: null,
+          isConnected: false,
+          usersOnline: 0,
+          users: new Map(),
+          board: DEFAULT_BOARD
+        });
       }
     },
 
@@ -297,7 +298,7 @@ export const useCollabStore = create<CollabState>((set, get) => {
         provider.awareness.setLocalState({
           ...currentState,
           user: {
-            ...currentState.user,
+            ...currentState?.user,
             cursor: { x, y }
           }
         });
@@ -305,6 +306,9 @@ export const useCollabStore = create<CollabState>((set, get) => {
     },
 
     setPhase: (phase) => {
+      const { ydoc } = get();
+      if (!ydoc) return;
+      const yboard = ydoc.getMap("board");
       yboard.set("phase", phase);
       yboard.set("updatedAt", now());
     },
@@ -312,13 +316,12 @@ export const useCollabStore = create<CollabState>((set, get) => {
     setActiveTool: (tool) => {
       set({
         activeTool: tool,
-        interactionMode: tool ? 'add' : get().interactionMode // Switch to add mode when tool selected
+        interactionMode: tool ? 'add' : get().interactionMode
       });
     },
 
     setInteractionMode: (mode) => {
       const currentState = get();
-      // If switching away from add mode, clear the active tool
       if (currentState.interactionMode === 'add' && mode !== 'add') {
         set({ interactionMode: mode, activeTool: null });
       } else {
@@ -360,6 +363,9 @@ export const useCollabStore = create<CollabState>((set, get) => {
     },
 
     addSticky: (partial) => {
+      const { ydoc } = get();
+      if (!ydoc) return;
+      const yboard = ydoc.getMap("board");
       const stickies = yboard.get("stickies") as Y.Array<any>;
       const newSticky = {
         id: nanoid(),
@@ -367,25 +373,29 @@ export const useCollabStore = create<CollabState>((set, get) => {
         updatedAt: now(),
         ...partial
       };
-      debugLog('Store', `Adding sticky - ID: ${newSticky.id}, Kind: ${newSticky.kind}, Position: (${partial.x}, ${partial.y}), Text: "${partial.text}"`);
-      stickies.push([newSticky]); // Y.Array.push expects array of items
+      debugLog('Store', `Adding sticky - ID: ${newSticky.id}, Kind: ${newSticky.kind}`);
+      stickies.push([newSticky]);
       yboard.set("updatedAt", now());
     },
 
     deleteSticky: (id) => {
+      const { ydoc } = get();
+      if (!ydoc) return;
+      const yboard = ydoc.getMap("board");
       const stickies = yboard.get("stickies") as Y.Array<any>;
       const stickyArray = stickies.toArray();
       const index = stickyArray.findIndex((s: BaseSticky) => s.id === id);
 
       if (index !== -1) {
-        const sticky = stickyArray[index];
-        debugLog('Store', `Deleting sticky - ID: ${id}, Kind: ${sticky.kind}, Text: "${sticky.text}"`);
         stickies.delete(index, 1);
         yboard.set("updatedAt", now());
       }
     },
 
     addVertical: (x, y1, y2, label) => {
+      const { ydoc } = get();
+      if (!ydoc) return;
+      const yboard = ydoc.getMap("board");
       const verticals = yboard.get("verticals") as Y.Array<any>;
       verticals.push([{
         id: nanoid(),
@@ -399,6 +409,9 @@ export const useCollabStore = create<CollabState>((set, get) => {
     },
 
     updateVertical: (id, patch) => {
+      const { ydoc } = get();
+      if (!ydoc) return;
+      const yboard = ydoc.getMap("board");
       const verticals = yboard.get("verticals") as Y.Array<any>;
       const verticalArray = verticals.toArray();
       const idx = verticalArray.findIndex((v: VerticalLine) => v.id === id);
@@ -410,6 +423,9 @@ export const useCollabStore = create<CollabState>((set, get) => {
     },
 
     deleteVertical: (id) => {
+      const { ydoc } = get();
+      if (!ydoc) return;
+      const yboard = ydoc.getMap("board");
       const verticals = yboard.get("verticals") as Y.Array<any>;
       const verticalArray = verticals.toArray();
       const idx = verticalArray.findIndex((v: VerticalLine) => v.id === id);
@@ -420,12 +436,18 @@ export const useCollabStore = create<CollabState>((set, get) => {
     },
 
     addLane: (y, x1, x2, label) => {
+      const { ydoc } = get();
+      if (!ydoc) return;
+      const yboard = ydoc.getMap("board");
       const lanes = yboard.get("lanes") as Y.Array<any>;
       lanes.push([{ id: nanoid(), y, x1, x2, label }]);
       yboard.set("updatedAt", now());
     },
 
     updateLane: (id, patch) => {
+      const { ydoc } = get();
+      if (!ydoc) return;
+      const yboard = ydoc.getMap("board");
       const lanes = yboard.get("lanes") as Y.Array<any>;
       const laneArray = lanes.toArray();
       const idx = laneArray.findIndex((l: HorizontalLane) => l.id === id);
@@ -437,6 +459,9 @@ export const useCollabStore = create<CollabState>((set, get) => {
     },
 
     deleteLane: (id) => {
+      const { ydoc } = get();
+      if (!ydoc) return;
+      const yboard = ydoc.getMap("board");
       const lanes = yboard.get("lanes") as Y.Array<any>;
       const laneArray = lanes.toArray();
       const idx = laneArray.findIndex((l: HorizontalLane) => l.id === id);
@@ -447,6 +472,9 @@ export const useCollabStore = create<CollabState>((set, get) => {
     },
 
     addLabel: (x, y, text = "Label") => {
+      const { ydoc } = get();
+      if (!ydoc) return;
+      const yboard = ydoc.getMap("board");
       const labels = yboard.get("labels") as Y.Array<any>;
       const id = nanoid();
       labels.push([{
@@ -464,6 +492,9 @@ export const useCollabStore = create<CollabState>((set, get) => {
     },
 
     updateLabel: (id, patch) => {
+      const { ydoc } = get();
+      if (!ydoc) return;
+      const yboard = ydoc.getMap("board");
       const labels = yboard.get("labels") as Y.Array<any>;
       const labelArray = labels.toArray();
       const idx = labelArray.findIndex((l: Label) => l.id === id);
@@ -475,6 +506,9 @@ export const useCollabStore = create<CollabState>((set, get) => {
     },
 
     deleteLabel: (id) => {
+      const { ydoc } = get();
+      if (!ydoc) return;
+      const yboard = ydoc.getMap("board");
       const labels = yboard.get("labels") as Y.Array<any>;
       const labelArray = labels.toArray();
       const idx = labelArray.findIndex((l: Label) => l.id === id);
@@ -493,12 +527,18 @@ export const useCollabStore = create<CollabState>((set, get) => {
     },
 
     addTheme: (area) => {
+      const { ydoc } = get();
+      if (!ydoc) return;
+      const yboard = ydoc.getMap("board");
       const themes = yboard.get("themes") as Y.Array<any>;
       themes.push([{ id: nanoid(), ...area }]);
       yboard.set("updatedAt", now());
     },
 
     updateTheme: (id, patch) => {
+      const { ydoc } = get();
+      if (!ydoc) return;
+      const yboard = ydoc.getMap("board");
       const themes = yboard.get("themes") as Y.Array<any>;
       const themeArray = themes.toArray();
       const idx = themeArray.findIndex((t: ThemeArea) => t.id === id);
@@ -510,6 +550,9 @@ export const useCollabStore = create<CollabState>((set, get) => {
     },
 
     deleteTheme: (id) => {
+      const { ydoc } = get();
+      if (!ydoc) return;
+      const yboard = ydoc.getMap("board");
       const themes = yboard.get("themes") as Y.Array<any>;
       const themeArray = themes.toArray();
       const idx = themeArray.findIndex((t: ThemeArea) => t.id === id);
@@ -520,6 +563,9 @@ export const useCollabStore = create<CollabState>((set, get) => {
     },
 
     updateSticky: (id, patch) => {
+      const { ydoc } = get();
+      if (!ydoc) return;
+      const yboard = ydoc.getMap("board");
       const stickies = yboard.get("stickies") as Y.Array<any>;
       const stickyArray = stickies.toArray();
       const index = stickyArray.findIndex((s: BaseSticky) => s.id === id);
@@ -527,20 +573,6 @@ export const useCollabStore = create<CollabState>((set, get) => {
       if (index !== -1) {
         const oldSticky = stickyArray[index];
         const updated = { ...oldSticky, ...patch, updatedAt: now() };
-
-        const changes: string[] = [];
-        if (patch.x !== undefined || patch.y !== undefined) {
-          changes.push(`Position: (${oldSticky.x}, ${oldSticky.y}) → (${updated.x}, ${updated.y})`);
-        }
-        if (patch.text !== undefined) {
-          changes.push(`Text: "${oldSticky.text}" → "${updated.text}"`);
-        }
-        if (patch.kind !== undefined) {
-          changes.push(`Kind: ${oldSticky.kind} → ${updated.kind}`);
-        }
-
-        debugLog('Store', `Updating sticky - ID: ${id}, ${changes.join(', ')}`);
-
         stickies.delete(index, 1);
         stickies.insert(index, [updated]);
         yboard.set("updatedAt", now());
@@ -557,59 +589,11 @@ export const useCollabStore = create<CollabState>((set, get) => {
       debugLog('Persistence', 'Board manually saved to IndexedDB');
     },
 
-    loadFromIndexedDB: async (boardId: string) => {
-      const loadedBoard = await loadBoard(boardId);
-      if (!loadedBoard) {
-        debugLog('Persistence', `Board ${boardId} not found in IndexedDB`);
-        return;
-      }
-
-      // Update Yjs document with loaded data
-      yboard.set("id", loadedBoard.id);
-      yboard.set("name", loadedBoard.name);
-      yboard.set("mainTimelineId", loadedBoard.mainTimelineId);
-      yboard.set("sessionMode", loadedBoard.sessionMode || "big-picture");
-      yboard.set("phase", loadedBoard.phase);
-      yboard.set("createdAt", loadedBoard.createdAt);
-      yboard.set("updatedAt", loadedBoard.updatedAt);
-
-      // Clear and repopulate arrays
-      const stickies = yboard.get("stickies") as Y.Array<any>;
-      const verticals = yboard.get("verticals") as Y.Array<any>;
-      const lanes = yboard.get("lanes") as Y.Array<any>;
-      const labels = yboard.get("labels") as Y.Array<any>;
-      const themes = yboard.get("themes") as Y.Array<any>;
-      const timelines = yboard.get("timelines") as Y.Array<any>;
-
-      stickies.delete(0, stickies.length);
-      verticals.delete(0, verticals.length);
-      lanes.delete(0, lanes.length);
-      labels.delete(0, labels.length);
-      themes.delete(0, themes.length);
-      timelines.delete(0, timelines.length);
-
-      // Push individual items, not the entire array
-      loadedBoard.stickies.forEach(s => stickies.push([s]));
-      loadedBoard.verticals.forEach(v => verticals.push([v]));
-      loadedBoard.lanes.forEach(l => lanes.push([l]));
-      if (loadedBoard.labels) {
-        loadedBoard.labels.forEach(l => labels.push([l]));
-      }
-      loadedBoard.themes.forEach(t => themes.push([t]));
-      if (loadedBoard.timelines) {
-        loadedBoard.timelines.forEach(t => timelines.push([t]));
-      }
-
-      set({
-        hasUnsavedChanges: false,
-        lastSavedAt: loadedBoard.updatedAt
-      });
-
-      debugLog('Persistence', `Board ${boardId} loaded from IndexedDB`);
-    },
-
     clearBoard: () => {
-      // Clear all arrays in Yjs
+      const { ydoc } = get();
+      if (!ydoc) return;
+      const yboard = ydoc.getMap("board");
+
       const stickies = yboard.get("stickies") as Y.Array<any>;
       const verticals = yboard.get("verticals") as Y.Array<any>;
       const lanes = yboard.get("lanes") as Y.Array<any>;

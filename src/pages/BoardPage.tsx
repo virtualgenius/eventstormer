@@ -17,7 +17,7 @@ export const BoardPage: React.FC = () => {
   const { boardId } = useParams<{ boardId: string }>();
   const navigate = useNavigate();
 
-  const connect = useCollabStore((state) => state.connect);
+  const connectToBoard = useCollabStore((state) => state.connectToBoard);
   const disconnect = useCollabStore((state) => state.disconnect);
   const isConnected = useCollabStore((state) => state.isConnected);
   const usersOnline = useCollabStore((state) => state.usersOnline);
@@ -27,7 +27,6 @@ export const BoardPage: React.FC = () => {
   const setInteractionMode = useCollabStore((state) => state.setInteractionMode);
   const hasUnsavedChanges = useCollabStore((state) => state.hasUnsavedChanges);
   const saveToIndexedDB = useCollabStore((state) => state.saveToIndexedDB);
-  const loadFromIndexedDB = useCollabStore((state) => state.loadFromIndexedDB);
   const ydoc = useCollabStore((state) => state.ydoc);
   const setBoardId = useBoardStore((state) => state.setBoardId);
   const setBoardName = useBoardStore((state) => state.setBoardName);
@@ -75,21 +74,18 @@ export const BoardPage: React.FC = () => {
     }
   }, [showUsersList, showMobileMenu]);
 
-  const initializeBoard = useCollabStore((state) => state.initializeBoard);
-
   // Connect to collaboration room when boardId changes
   useEffect(() => {
     if (!boardId) return;
     if (showNamePrompt) return; // Wait for name prompt to complete
 
     setBoardId(boardId);
-    initializeBoard(boardId);
-    connect(boardId, userName || undefined);
+    connectToBoard(boardId, userName || undefined);
 
     return () => {
       disconnect();
     };
-  }, [boardId, connect, disconnect, setBoardId, showNamePrompt, initializeBoard, userName]);
+  }, [boardId, connectToBoard, disconnect, setBoardId, showNamePrompt, userName]);
 
   // Update awareness with user name when it changes
   useEffect(() => {
