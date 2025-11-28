@@ -48,7 +48,8 @@ interface CollabState {
   locallyCreatedLabelIds: Set<string>;
 
   // Actions
-  connect: (roomId: string) => void;
+  connect: (roomId: string, userName?: string) => void;
+  initializeBoard: (boardId: string) => void;
   disconnect: () => void;
   updateCursor: (x: number, y: number) => void;
   setPhase: (phase: FacilitationPhase) => void;
@@ -207,7 +208,42 @@ export const useCollabStore = create<CollabState>((set, get) => {
     lastSavedAt: null,
     locallyCreatedLabelIds: new Set<string>(),
 
-    connect: (roomId: string) => {
+    initializeBoard: (boardId: string) => {
+      // Set board ID in Yjs doc if this is a new board
+      if (!yboard.has("id") || yboard.get("id") === "demo-board") {
+        const mainTimelineId = nanoid();
+
+        yboard.set("id", boardId);
+        yboard.set("name", "Untitled Board");
+        yboard.set("mainTimelineId", mainTimelineId);
+        if (!yboard.has("timelines")) yboard.set("timelines", new Y.Array());
+        if (!yboard.has("stickies")) yboard.set("stickies", new Y.Array());
+        if (!yboard.has("verticals")) yboard.set("verticals", new Y.Array());
+        if (!yboard.has("lanes")) yboard.set("lanes", new Y.Array());
+        if (!yboard.has("labels")) yboard.set("labels", new Y.Array());
+        if (!yboard.has("themes")) yboard.set("themes", new Y.Array());
+        yboard.set("sessionMode", "big-picture");
+        yboard.set("phase", "chaotic-exploration");
+        yboard.set("createdAt", now());
+        yboard.set("updatedAt", now());
+
+        // Create main timeline if not exists
+        const timelines = yboard.get("timelines") as Y.Array<any>;
+        if (timelines.length === 0) {
+          timelines.push([{
+            id: mainTimelineId,
+            name: "Main Timeline",
+            x: 0,
+            y: 200,
+            orientation: "horizontal",
+            stickyIds: [],
+            verticalIds: []
+          }]);
+        }
+      }
+    },
+
+    connect: (roomId: string, userName?: string) => {
       const host = import.meta.env.VITE_COLLAB_HOST || "localhost:8787";
       debugLog('Connection', `Connecting to Collab Server - Host: ${host}, Room: ${roomId}`);
       const provider = new YProvider(host, roomId, ydoc, {
@@ -233,12 +269,13 @@ export const useCollabStore = create<CollabState>((set, get) => {
         set({ usersOnline: states.size, users });
       });
 
-      // Set local user info
+      // Set local user info with provided name or default
+      const displayName = userName || `User ${userId.slice(0, 4)}`;
       provider.awareness.setLocalState({
         user: {
           id: userId,
           color: userColor,
-          name: `User ${userId.slice(0, 4)}`
+          name: displayName
         }
       });
 
