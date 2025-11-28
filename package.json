@@ -7,10 +7,10 @@
   "author": "Paul Rayner",
   "repository": {
     "type": "git",
-    "url": "https://github.com/paulrayner/eventstormer.git"
+    "url": "https://github.com/virtualgenius/eventstormer.git"
   },
   "bugs": {
-    "url": "https://github.com/paulrayner/eventstormer/issues"
+    "url": "https://github.com/virtualgenius/eventstormer/issues"
   },
   "homepage": "https://eventstormer.virtualgenius.com",
   "keywords": [

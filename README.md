@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
-[![GitHub](https://img.shields.io/badge/GitHub-paulrayner%2Feventstormer-lightgrey)](https://github.com/paulrayner/eventstormer)
+[![GitHub](https://img.shields.io/badge/GitHub-virtualgenius%2Feventstormer-lightgrey)](https://github.com/virtualgenius/eventstormer)
 
 **[Live Demo](https://eventstormer.virtualgenius.com)** | **Purpose-built facilitation tool for Big Picture EventStorming workshops.**
 
