@@ -41,7 +41,7 @@ export const FacilitationPalette: React.FC = () => {
     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 border-b bg-white/80 dark:bg-slate-900/70 px-3 md:px-4 py-2">
       <div className="flex items-center gap-2 flex-shrink-0">
         <label htmlFor="phase-select" className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
-          Phase:
+          Big Picture Phase:
         </label>
         <select
           id="phase-select"
