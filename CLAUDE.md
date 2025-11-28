@@ -9,19 +9,44 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Commands
 
 ```bash
-npm run dev      # Start Vite dev server
-npm run build    # Build for production
-npm run preview  # Preview production build
+npm run dev          # Start frontend + collaboration worker locally
+npm run dev:vite     # Start only Vite dev server
+npm run dev:worker   # Start only Cloudflare worker locally
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run deploy:worker # Deploy worker to Cloudflare
 ```
 
 ## Architecture
 
 ### Tech Stack
-- **Frontend**: React 18 + TypeScript
-- **Build Tool**: Vite
+- **Frontend**: React 18 + TypeScript + Vite
+- **Canvas**: react-konva for infinite canvas rendering
 - **Styling**: TailwindCSS + PostCSS
-- **State Management**: Zustand (centralized board state)
+- **State Management**: Zustand + Yjs (CRDT)
+- **Real-time Sync**: Cloudflare Workers + Durable Objects via y-partyserver
+- **Local Persistence**: IndexedDB via Dexie
 - **UI Components**: Radix UI (tooltips), Lucide React (icons)
+
+### Real-time Collaboration Stack
+
+```
+┌─────────────────────────────────────────────────────┐
+│  Frontend (React + Zustand)                         │
+│  useCollabStore.ts - Yjs Y.Doc with Y.Map/Y.Array   │
+└────────────────┬────────────────────────────────────┘
+                 │ YProvider (y-partyserver/provider)
+                 │ WebSocket connection
+┌────────────────┴────────────────────────────────────┐
+│  Cloudflare Worker (workers/server.ts)              │
+│  YjsRoom Durable Object - room state + sync         │
+└─────────────────────────────────────────────────────┘
+```
+
+Key files:
+- [src/store/useCollabStore.ts](src/store/useCollabStore.ts) - Main collaboration store with Yjs integration
+- [workers/server.ts](workers/server.ts) - Cloudflare Worker with Durable Objects
+- [wrangler.toml](wrangler.toml) - Cloudflare deployment configuration
 
 ### Core Domain Model
 
@@ -30,26 +55,27 @@ The application revolves around a **Board** that contains:
 - **Vertical Lines**: Pivotal event boundaries between sub-processes
 - **Horizontal Lanes**: User-created swimlanes with labels
 - **Theme Areas**: Rectangular zones for grouping work
+- **Labels**: Free-form text annotations
 - **Facilitation Phase**: Controls which sticky types are available in the palette
 
 All domain types are defined in [src/types/domain.ts](src/types/domain.ts).
 
 ### State Management
 
-Single Zustand store ([src/store/useBoardStore.ts](src/store/useBoardStore.ts)) manages:
-- Board state (stickies, lines, lanes, themes)
-- Phase transitions (events → hotspots → pivotal → lanes → actors-systems → opportunities → glossary)
-- CRUD operations for all board elements
+Dual-layer state management:
+- **Yjs Y.Doc**: Source of truth for collaborative state ([src/store/useCollabStore.ts](src/store/useCollabStore.ts))
+- **Zustand**: React state derived from Yjs via `yboard.observe()`
+- **IndexedDB**: Local persistence with 5-second autosave
 
-Each state mutation updates `updatedAt` timestamps using ISO format.
+All mutations go through Yjs (Y.Array.push, Y.Array.delete, Y.Map.set), which automatically syncs to other clients.
 
 ### Component Architecture
 
 **App.tsx**: Top-level layout with header, palette, and canvas.
 
-**FacilitationPalette**: Phase-aware toolbar that shows only sticky types available in the current facilitation phase.
+**FacilitationPalette**: Phase-aware toolbar showing sticky types for current phase.
 
-**Canvas**: Infinite canvas rendering board elements (implementation in progress).
+**KonvaCanvas**: Infinite canvas using react-konva for rendering stickies, lines, lanes.
 
 **Sticky**: Individual sticky note component with type-specific styling.
 
@@ -97,20 +123,14 @@ All timestamps use ISO 8601 format via `new Date().toISOString()`.
 
 ### Facilitation Phases
 Phase progression is linear and controlled. The palette component filters available sticky types based on current phase:
-- `events`: Only event stickies
-- `hotspots`: Events + hotspots
-- `pivotal`: Events + hotspots + vertical lines
-- `lanes`: All previous + horizontal lanes
-- `actors-systems`: All previous + actors + systems
-- `opportunities`: All previous + opportunities
+- `chaotic-exploration`: Events + hotspots
+- `enforce-timeline`: Events + hotspots + vertical lines
+- `people-and-systems`: All previous + actors + systems + lanes
+- `problems-and-opportunities`: All previous + opportunities
 - `glossary`: All elements available
 
-### Future Milestones
-- **M1 (Current)**: MVP with basic canvas, real-time collaboration, guided palette
-- **M2**: Local persistence (IndexedDB), checkpoints, theme extraction
-- **M3**: Breakout groups, participant expertise tagging, export to image/PDF
-- **M4**: Process-level support (Commands, Policies)
-- **M5**: AI assistance (glossary generation, past-tense validation, clustering)
+### Environment Variables
+- `VITE_COLLAB_HOST`: Collaboration server URL (default: `localhost:8800` for dev)
 
 ## Documentation
 
@@ -118,18 +138,27 @@ Comprehensive documentation in [docs/](docs/):
 - [VISION.md](docs/VISION.md): Product vision, target audience, guiding principles
 - [SPEC.md](docs/SPEC.md): Core behavior, visual grammar, semantic validation
 - [PLAN.md](docs/PLAN.md): Milestone breakdown and roadmap
-- [ARCHITECTURE.md](docs/ARCHITECTURE.md): Technical architecture decisions
+- [DEPLOYMENT.md](docs/DEPLOYMENT.md): Cloudflare Workers deployment guide
 
 ## Current State
 
-This is an early-stage MVP scaffold. Core infrastructure is in place:
+Core infrastructure complete:
 - ✅ Type definitions for domain model
-- ✅ Zustand store with basic CRUD operations
+- ✅ Zustand + Yjs store with CRDT sync
+- ✅ Real-time collaboration via Cloudflare Workers
 - ✅ Phase-based facilitation system
-- ✅ Component structure (App, Palette, Canvas, Sticky)
-- 🚧 Canvas rendering and interaction
-- 🚧 Real-time collaboration
-- 🚧 Undo/redo system
+- ✅ Canvas rendering with react-konva
+- ✅ User presence tracking
+- ✅ Local persistence (IndexedDB)
+- ✅ Undo/redo via Yjs UndoManager
 - 🚧 Export/import functionality
+- 🚧 Multiple room support
 
-No test suite exists yet. When adding tests, prefer testing pure business logic functions separately from React components.
+## Testing
+
+E2E tests using Playwright in [tests/e2e/](tests/e2e/):
+```bash
+npm run test:e2e        # Run all tests
+npm run test:e2e:ui     # Interactive UI mode
+npm run test:e2e:headed # Run with browser visible
+```
