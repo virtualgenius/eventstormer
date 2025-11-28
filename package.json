@@ -1,7 +1,32 @@
 {
   "name": "eventstormer",
-  "private": true,
-  "version": "0.0.1",
+  "private": false,
+  "version": "0.1.0",
+  "description": "Purpose-built facilitation tool for Big Picture EventStorming workshops",
+  "license": "MIT",
+  "author": "Paul Rayner",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paulrayner/eventstormer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/paulrayner/eventstormer/issues"
+  },
+  "homepage": "https://eventstormer.virtualgenius.com",
+  "keywords": [
+    "eventstorming",
+    "event-storming",
+    "ddd",
+    "domain-driven-design",
+    "facilitation",
+    "workshop",
+    "domain-events",
+    "collaborative",
+    "real-time",
+    "remote-workshop",
+    "infinite-canvas",
+    "sociotechnical"
+  ],
   "type": "module",
   "scripts": {
     "dev": "npm run dev:party & npm run dev:vite",

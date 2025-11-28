@@ -2,8 +2,9 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
+[![GitHub](https://img.shields.io/badge/GitHub-paulrayner%2Feventstormer-lightgrey)](https://github.com/paulrayner/eventstormer)
 
-**Purpose-built facilitation tool for Big Picture EventStorming workshops.**
+**[Live Demo](https://eventstormer.virtualgenius.com)** | **Purpose-built facilitation tool for Big Picture EventStorming workshops.**
 
 EventStormer enables remote and hybrid teams to collaboratively visualize and understand complex socio-technical systems using the EventStorming methodology. It provides a guided, phase-based facilitation experience with an infinite canvas, real-time collaboration, and a clean, professional aesthetic.
 
