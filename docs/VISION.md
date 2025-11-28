@@ -4,7 +4,7 @@
 **EventStormer** (working title)
 
 ### Purpose
-EventStormer is an **open-source, purpose-built facilitation tool for Big Picture EventStorming**. It enables teams to visualize, discuss, and understand complex socio-technical systems through collaborative modeling.
+EventStormer is an **open-source, purpose-built facilitation tool for EventStorming workshops**. It enables teams to visualize, discuss, and understand complex socio-technical systems through collaborative modeling.
 
 Where Miro and other whiteboard tools provide general-purpose canvases, EventStormer embodies the semantics and flow of EventStorming itself — using the right visual grammar, interaction rhythm, and facilitation flow to help teams focus on insight, not tool mechanics.
 
@@ -34,8 +34,8 @@ EventStormer exists to:
 - Smooth, subtle animations (Framer Motion).
 
 ### Positioning
-An **open, local-first, collaborative model visualization app** for Big Picture EventStorming.  
-Future milestones expand to Process and Design levels, with optional AI-assisted semantic helpers.
+An **open, local-first, collaborative model visualization app** for EventStorming workshops.
+Starting with Big Picture EventStorming, with planned support for Process-Level, Design-Level, and Team Flow variants. Future milestones include optional AI-assisted semantic helpers.
 
 ### Outstanding Questions
 - Should the project tagline emphasize *collaborative discovery* or *domain understanding*?

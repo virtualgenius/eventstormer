@@ -4,9 +4,20 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
 [![GitHub](https://img.shields.io/badge/GitHub-virtualgenius%2Feventstormer-lightgrey)](https://github.com/virtualgenius/eventstormer)
 
-**[Live Demo](https://eventstormer.virtualgenius.com)** | **Purpose-built facilitation tool for Big Picture EventStorming workshops.**
+**[Live Demo](https://eventstormer.virtualgenius.com)** | **Purpose-built facilitation tool for EventStorming workshops.**
 
 EventStormer enables remote and hybrid teams to collaboratively visualize and understand complex socio-technical systems using the EventStorming methodology. It provides a guided, phase-based facilitation experience with an infinite canvas, real-time collaboration, and a clean, professional aesthetic.
+
+## EventStorming Variants
+
+EventStormer is designed to support the full range of EventStorming workshop formats:
+
+- **Big Picture EventStorming** (current focus): Explore an entire business domain, identify domain events, hotspots, and opportunities across the organization
+- **Process-Level EventStorming** (planned): Deep dive into a specific business process with commands, policies, and read models
+- **Design-Level EventStorming** (planned): Detailed software design with aggregates, bounded contexts, and domain services
+- **Team Flow EventStorming** (planned): Map team interactions, dependencies, and communication patterns
+
+We're starting with Big Picture support and will expand to other variants in future milestones.
 
 ## What is EventStorming?
 
@@ -23,51 +34,92 @@ Most EventStorming tools are either generic whiteboarding tools (Miro, Mural) or
 
 - **Guided facilitation**: Phase-based palette that shows only the sticky types appropriate for the current stage
 - **Visual grammar enforcement**: EventStorming-specific sticky colors and semantics
+- **Real-time collaboration**: Multiple participants can work together simultaneously with live cursor presence
+- **Local-first persistence**: Work is automatically saved locally and syncs when connected
 - **Frictionless creation**: Minimal ceremony, immediate usability
 - **Professional aesthetic**: Refined design suitable for executive facilitation
 - **Open source**: MIT licensed, self-hosted, no vendor lock-in
 
 ## Features
 
-**Current (MVP):**
-- Infinite canvas with pan and zoom
-- Phase-based facilitation palette:
-  - Events (orange) → Hotspots (red) → Pivotal events (blue vertical lines) → Lanes (horizontal swimlanes) → Actors/Systems (yellow/lilac) → Opportunities (green) → Glossary (brown)
-- Sticky creation with EventStorming visual grammar
-- Centralized Zustand state management
-- TypeScript + React + Vite + TailwindCSS
-
-**In Progress:**
-- Canvas rendering and interaction
-- Real-time collaboration
+**Complete:**
+- Infinite canvas with pan and zoom (react-konva)
+- Phase-based facilitation palette
+- Real-time collaboration via Yjs CRDT + Cloudflare Workers
+- User presence (see who's online)
+- Local persistence (IndexedDB via Dexie)
 - Undo/redo system
-- Export/import functionality
+- Canvas rendering with viewport culling for performance
+
+**Sticky Types:**
+- Events (orange) → Hotspots (red) → Pivotal events (blue vertical lines) → Lanes (horizontal swimlanes) → Actors/Systems (yellow/lilac) → Opportunities (green) → Glossary (brown)
 
 **Planned:**
-- Local persistence (IndexedDB)
+- Export to PNG/PDF
 - Checkpoints and versioning
 - Theme area extraction
 - Breakout groups and participant tagging
+- Process-level elements (commands, policies, read models)
 - AI assistance (glossary generation, past-tense validation, clustering)
 
 See [docs/PLAN.md](docs/PLAN.md) for the full roadmap.
 
+## Tech Stack
+
+- **Frontend**: React 18 + TypeScript + Vite
+- **Rendering**: react-konva (canvas-based)
+- **Styling**: TailwindCSS
+- **State**: Zustand + Yjs CRDT
+- **Collaboration**: Cloudflare Workers + Durable Objects
+- **Persistence**: IndexedDB via Dexie
+
 ## Getting Started
 
+### Development
+
 ```bash
+# Install dependencies
 npm install
+
+# Start both frontend and collaboration server locally
 npm run dev
+
+# Or start them separately:
+npm run dev:vite     # Frontend only (port 5180)
+npm run dev:worker   # Collaboration server only (port 8800)
 ```
 
-This starts the Vite dev server and opens the app in your browser.
+### Production Build
+
+```bash
+npm run build        # Build frontend
+npm run deploy:worker # Deploy collaboration server to Cloudflare
+```
+
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for deployment details.
 
 ## Project Structure
 
-- `src/` – React app code (TypeScript + Vite)
-- `src/types/domain.ts` – Core domain model (Board, Sticky, Lines, Lanes, Themes)
-- `src/store/useBoardStore.ts` – Zustand store for board state
-- `src/components/` – React components (App, Canvas, FacilitationPalette, Sticky)
-- `docs/` – [VISION.md](docs/VISION.md), [SPEC.md](docs/SPEC.md), [PLAN.md](docs/PLAN.md), [ARCHITECTURE.md](docs/ARCHITECTURE.md)
+```
+src/
+├── components/        # React components (Canvas, FacilitationPalette, Sticky, etc.)
+├── store/
+│   ├── useBoardStore.ts    # Zustand store for board state
+│   └── useCollabStore.ts   # Yjs collaboration and presence
+├── types/
+│   └── domain.ts      # Core domain model (Board, Sticky, Lines, Lanes)
+└── lib/               # Utilities (nanoid, etc.)
+
+workers/
+└── server.ts          # Cloudflare Worker for real-time collaboration
+
+docs/
+├── VISION.md          # Product vision and principles
+├── SPEC.md            # Core behavior specification
+├── PLAN.md            # Milestone roadmap
+├── DEPLOYMENT.md      # Deployment guide
+└── ARCHITECTURE.md    # Technical architecture
+```
 
 ## EventStorming Visual Grammar
 
@@ -98,7 +150,7 @@ The palette automatically updates to show only the sticky types appropriate for 
 
 ## Project Status
 
-**Early MVP.** Core infrastructure is in place (types, store, component structure). Canvas interaction and real-time collaboration are in active development.
+**MVP Complete.** Real-time collaboration, canvas rendering, and local persistence are working. Currently implementing visual grammar completeness (Slice 5) and facilitation features (Slice 6).
 
 This is an open-source project welcoming contributions. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
