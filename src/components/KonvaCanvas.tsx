@@ -4,6 +4,7 @@ import type Konva from "konva";
 import { useCollabStore } from "@/store/useCollabStore";
 import { KonvaSticky } from "./KonvaSticky";
 import { KonvaLabel } from "./KonvaLabel";
+import { KonvaTheme } from "./KonvaTheme";
 import { UserCursor } from "./UserCursor";
 import type { StickyKind } from "@/types/domain";
 import { debugLog } from "@/lib/debug";
@@ -32,6 +33,8 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
   const deleteLane = useCollabStore((s) => s.deleteLane);
   const updateLabel = useCollabStore((s) => s.updateLabel);
   const deleteLabel = useCollabStore((s) => s.deleteLabel);
+  const updateTheme = useCollabStore((s) => s.updateTheme);
+  const deleteTheme = useCollabStore((s) => s.deleteTheme);
   const setActiveTool = useCollabStore((s) => s.setActiveTool);
   const updateCursor = useCollabStore((s) => s.updateCursor);
   const setInteractionMode = useCollabStore((s) => s.setInteractionMode);
@@ -46,7 +49,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
   const clearSelection = useCollabStore((s) => s.clearSelection);
   const isSelected = useCollabStore((s) => s.isSelected);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [selectedType, setSelectedType] = useState<'sticky' | 'vertical' | 'lane' | 'label' | null>(null);
+  const [selectedType, setSelectedType] = useState<'sticky' | 'vertical' | 'lane' | 'label' | 'theme' | null>(null);
   const [stagePos, setStagePos] = useState({ x: 0, y: 0 });
   const [scale, setScale] = useState(1);
   const [isPanning, setIsPanning] = useState(false);
@@ -284,9 +287,9 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
           debugLog('KonvaCanvas', `Creating label - Position: (${canvasX.toFixed(1)}, ${canvasY.toFixed(1)})`);
           addLabel(canvasX, canvasY, "Label");
         } else {
-          // Handle sticky creation
           const x = canvasX - 60;
-          const y = canvasY - 60;
+          const yOffset = activeTool === 'person' ? 30 : 60;
+          const y = canvasY - yOffset;
           debugLog('KonvaCanvas', `Creating sticky - Kind: ${activeTool}, Position: (${x.toFixed(1)}, ${y.toFixed(1)}), Scale: ${scale.toFixed(2)}`);
           addSticky({
             kind: activeTool as StickyKind,
@@ -381,9 +384,8 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
 
       const selected: Array<{ id: string; type: 'sticky' | 'vertical' | 'lane' | 'label' }> = [];
 
-      // Check stickies
       board.stickies?.forEach((sticky) => {
-        const stickyWidth = sticky.kind === 'person' ? 60 : 120;
+        const stickyWidth = 120;
         const stickyHeight = sticky.kind === 'person' ? 60 : 120;
 
         if (
@@ -544,6 +546,8 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
               deleteLane(el.id);
             } else if (el.type === 'label') {
               deleteLabel(el.id);
+            } else if (el.type === 'theme') {
+              deleteTheme(el.id);
             }
           });
           clearSelection();
@@ -561,6 +565,9 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
           } else if (selectedType === 'label') {
             debugLog('KonvaCanvas', `Deleting label - ID: ${selectedId}`);
             deleteLabel(selectedId);
+          } else if (selectedType === 'theme') {
+            debugLog('KonvaCanvas', `Deleting theme - ID: ${selectedId}`);
+            deleteTheme(selectedId);
           }
           setSelectedId(null);
           setSelectedType(null);
@@ -586,7 +593,7 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedId, selectedType, selectedElements, activeTool, interactionMode, board.stickies, deleteSticky, deleteVertical, deleteLane, deleteLabel, addSticky, setActiveTool, setInteractionMode, clearSelection]);
+  }, [selectedId, selectedType, selectedElements, activeTool, interactionMode, board.stickies, deleteSticky, deleteVertical, deleteLane, deleteLabel, deleteTheme, addSticky, setActiveTool, setInteractionMode, clearSelection]);
 
   // Get mode display text and color
   const getModeDisplay = () => {
@@ -963,28 +970,27 @@ export const KonvaCanvas: React.FC<KonvaCanvasProps> = ({ stageRef: externalStag
           )}
 
           {/* Themes */}
-          {board.themes?.map((t) => (
-            <React.Fragment key={t.id}>
-              <Rect
-                x={t.x}
-                y={t.y}
-                width={t.width}
-                height={t.height}
-                fill="#f0f9ff"
-                stroke="#bae6fd"
-                strokeWidth={2}
-                cornerRadius={12}
-                opacity={0.4}
-              />
-              <Text
-                x={t.x + 8}
-                y={t.y + 8}
-                text={t.name}
-                fontSize={12}
-                fontStyle="bold"
-                fill="#334155"
-              />
-            </React.Fragment>
+          {board.themes?.map((theme) => (
+            <KonvaTheme
+              key={theme.id}
+              theme={theme}
+              onSelect={(id, shiftKey) => {
+                if (interactionMode === 'select') {
+                  if (shiftKey) {
+                    toggleSelection(id, 'theme');
+                    setSelectedId(null);
+                    setSelectedType(null);
+                  } else {
+                    clearSelection();
+                    setSelectedId(id);
+                    setSelectedType('theme');
+                  }
+                }
+              }}
+              isSelected={isSelected(theme.id) || (theme.id === selectedId && selectedType === 'theme')}
+              selectedElements={selectedElements}
+              interactionMode={interactionMode}
+            />
           ))}
 
           {/* Selection box preview */}

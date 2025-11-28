@@ -22,29 +22,23 @@ export const KonvaLabel: React.FC<KonvaLabelProps> = ({
   selectedElements,
 }) => {
   const updateLabel = useCollabStore((s) => s.updateLabel);
+  const deleteLabel = useCollabStore((s) => s.deleteLabel);
   const board = useCollabStore((s) => s.board);
+  const locallyCreatedLabelIds = useCollabStore((s) => s.locallyCreatedLabelIds);
+  const clearLocalLabelTracking = useCollabStore((s) => s.clearLocalLabelTracking);
   const groupRef = useRef<Konva.Group>(null);
   const [isEditing, setIsEditing] = useState(false);
   const dragStartPositions = useRef<Map<string, any>>(new Map());
 
-  // Auto-edit on creation
   useEffect(() => {
-    const checkAutoEdit = () => {
-      if (board.labels && board.labels.length > 0) {
-        const sortedLabels = [...board.labels].sort(
-          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-        if (sortedLabels[0].id === label.id && label.text === "Label") {
-          setTimeout(() => {
-            setIsEditing(true);
-            onSelect(label.id, false);
-          }, 100);
-        }
-      }
-    };
-
-    checkAutoEdit();
-  }, [label.id, board.labels, label.text, onSelect]);
+    if (locallyCreatedLabelIds.has(label.id) && label.text === "Label") {
+      setTimeout(() => {
+        setIsEditing(true);
+        onSelect(label.id, false);
+        clearLocalLabelTracking(label.id);
+      }, 100);
+    }
+  }, [label.id, label.text, locallyCreatedLabelIds, clearLocalLabelTracking, onSelect]);
 
   const handleDragStart = () => {
     debugLog('KonvaLabel', `Drag started - ID: ${label.id}, Position: (${label.x}, ${label.y}), Multi-select: ${selectedElements.length > 0}`);
@@ -183,6 +177,10 @@ export const KonvaLabel: React.FC<KonvaLabelProps> = ({
           if (container.contains(input)) {
             container.removeChild(input);
           }
+          const inputText = input.value.trim();
+          if (label.text === "Label" || inputText === "" || inputText === "Label") {
+            deleteLabel(label.id);
+          }
         } else if (e.key === "Enter") {
           e.preventDefault();
           const newText = input.value.trim();
@@ -205,7 +203,7 @@ export const KonvaLabel: React.FC<KonvaLabelProps> = ({
         }
       };
     }
-  }, [isEditing, label.id, label.text, updateLabel]);
+  }, [isEditing, label.id, label.text, updateLabel, deleteLabel]);
 
   return (
     <Group

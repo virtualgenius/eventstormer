@@ -24,7 +24,7 @@ interface User {
 }
 
 export type InteractionMode = 'pan' | 'select' | 'add';
-export type ElementType = 'sticky' | 'vertical' | 'lane' | 'label';
+export type ElementType = 'sticky' | 'vertical' | 'lane' | 'label' | 'theme';
 
 export interface SelectedElement {
   id: string;
@@ -45,6 +45,7 @@ interface CollabState {
   users: Map<number, User>;
   hasUnsavedChanges: boolean;
   lastSavedAt: string | null;
+  locallyCreatedLabelIds: Set<string>;
 
   // Actions
   connect: (roomId: string) => void;
@@ -70,7 +71,10 @@ interface CollabState {
   addLabel: (x: number, y: number, text?: string) => void;
   updateLabel: (id: string, patch: Partial<Pick<Label, "x" | "y" | "text">>) => void;
   deleteLabel: (id: string) => void;
+  clearLocalLabelTracking: (id: string) => void;
   addTheme: (area: Omit<ThemeArea, "id">) => void;
+  updateTheme: (id: string, patch: Partial<Pick<ThemeArea, "name" | "x" | "y" | "width" | "height">>) => void;
+  deleteTheme: (id: string) => void;
   updateSticky: (id: string, patch: Partial<BaseSticky>) => void;
   saveToIndexedDB: () => Promise<void>;
   loadFromIndexedDB: (boardId: string) => Promise<void>;
@@ -201,6 +205,7 @@ export const useCollabStore = create<CollabState>((set, get) => {
     users: new Map(),
     hasUnsavedChanges: false,
     lastSavedAt: null,
+    locallyCreatedLabelIds: new Set<string>(),
 
     connect: (roomId: string) => {
       const host = import.meta.env.VITE_COLLAB_HOST || "localhost:8787";
@@ -406,8 +411,9 @@ export const useCollabStore = create<CollabState>((set, get) => {
 
     addLabel: (x, y, text = "Label") => {
       const labels = yboard.get("labels") as Y.Array<any>;
+      const id = nanoid();
       labels.push([{
-        id: nanoid(),
+        id,
         text,
         x,
         y,
@@ -415,6 +421,9 @@ export const useCollabStore = create<CollabState>((set, get) => {
         updatedAt: now()
       }]);
       yboard.set("updatedAt", now());
+      set(state => ({
+        locallyCreatedLabelIds: new Set([...state.locallyCreatedLabelIds, id])
+      }));
     },
 
     updateLabel: (id, patch) => {
@@ -438,10 +447,39 @@ export const useCollabStore = create<CollabState>((set, get) => {
       }
     },
 
+    clearLocalLabelTracking: (id) => {
+      set(state => {
+        const newSet = new Set(state.locallyCreatedLabelIds);
+        newSet.delete(id);
+        return { locallyCreatedLabelIds: newSet };
+      });
+    },
+
     addTheme: (area) => {
       const themes = yboard.get("themes") as Y.Array<any>;
       themes.push([{ id: nanoid(), ...area }]);
       yboard.set("updatedAt", now());
+    },
+
+    updateTheme: (id, patch) => {
+      const themes = yboard.get("themes") as Y.Array<any>;
+      const themeArray = themes.toArray();
+      const idx = themeArray.findIndex((t: ThemeArea) => t.id === id);
+      if (idx !== -1) {
+        themes.delete(idx, 1);
+        themes.insert(idx, [{ ...themeArray[idx], ...patch }]);
+        yboard.set("updatedAt", now());
+      }
+    },
+
+    deleteTheme: (id) => {
+      const themes = yboard.get("themes") as Y.Array<any>;
+      const themeArray = themes.toArray();
+      const idx = themeArray.findIndex((t: ThemeArea) => t.id === id);
+      if (idx !== -1) {
+        themes.delete(idx, 1);
+        yboard.set("updatedAt", now());
+      }
     },
 
     updateSticky: (id, patch) => {

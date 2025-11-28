@@ -35,7 +35,7 @@ export const KonvaSticky: React.FC<KonvaStickyProps> = ({ sticky, onSelect, isSe
 
   const colors = COLOR_MAP[sticky.kind] || { fill: "#f1f5f9", stroke: "#e2e8f0" };
   const STICKY_SIZE = 120;
-  const width = sticky.kind === 'person' ? STICKY_SIZE / 2 : STICKY_SIZE;
+  const width = STICKY_SIZE;
   const height = sticky.kind === 'person' ? STICKY_SIZE / 2 : STICKY_SIZE;
 
   // Listen for auto-edit event (triggered by Tab key from another sticky)
