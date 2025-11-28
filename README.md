@@ -46,19 +46,22 @@ Most EventStorming tools are either generic whiteboarding tools (Miro, Mural) or
 - Infinite canvas with pan and zoom (react-konva)
 - Phase-based facilitation palette
 - Real-time collaboration via Yjs CRDT + Cloudflare Workers
-- User presence (see who's online)
+- User presence with display names (see who's online)
+- Multi-board support (create, switch, delete boards)
+- URL-based board routing
 - Local persistence (IndexedDB via Dexie)
+- Export/import boards as JSON
+- Export canvas as PNG
 - Undo/redo system
 - Canvas rendering with viewport culling for performance
 
 **Sticky Types:**
-- Events (orange) → Hotspots (red) → Pivotal events (blue vertical lines) → Lanes (horizontal swimlanes) → Actors/Systems (yellow/lilac) → Opportunities (green) → Glossary (brown)
+- Events (orange) → Hotspots (red) → Pivotal events (blue vertical lines) → Lanes (horizontal swimlanes) → Actors/Systems (yellow/lilac) → Opportunities (green) → Glossary (brown) → Theme areas (grouping zones)
 
 **Planned:**
-- Export to PNG/PDF
 - Checkpoints and versioning
-- Theme area extraction
 - Breakout groups and participant tagging
+- Facilitator dashboard
 - Process-level elements (commands, policies, read models)
 - AI assistance (glossary generation, past-tense validation, clustering)
 
@@ -150,7 +153,7 @@ The palette automatically updates to show only the sticky types appropriate for 
 
 ## Project Status
 
-**MVP Complete.** Real-time collaboration, canvas rendering, and local persistence are working. Currently implementing visual grammar completeness (Slice 5) and facilitation features (Slice 6).
+**Slices 1-6 Complete.** Core features are production-ready: real-time collaboration, canvas rendering, local persistence, visual grammar, and multi-board support. Currently planning Slice 7 (facilitation features).
 
 This is an open-source project welcoming contributions. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 

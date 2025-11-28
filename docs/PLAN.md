@@ -176,37 +176,26 @@ Based on [M2-TECHNOLOGY-EVALUATION.md](M2-TECHNOLOGY-EVALUATION.md):
 
 ---
 
-### Slice 6: Multi-Board Support 🎯 NEXT
-**Goal:** Support multiple boards with a board listing/selection UI, and personalized user identity.
+### Slice 6: Multi-Board Support ✅ COMPLETE
+**Status:** Shipped (commit 50433ad)
 
-**User Value:** Users can create, switch between, and manage multiple EventStorming sessions. Participants see each other's names.
-
-**Deliverables:**
-- Board listing page (home screen)
-- Create new board functionality
-- Switch between boards
-- Board metadata (name, created date, last modified)
-- Delete board with confirmation
-- URL-based board routing
-- Name entry prompt when joining a board session
+**Delivered:**
+- Board listing page (home screen) with create/view/delete
+- URL-based routing (`/` for board list, `/board/:boardId` for boards)
+- Board metadata (name, last modified date/time)
+- Delete board with confirmation dialog
+- Name entry prompt on first join (persisted in localStorage)
 - Display user names in presence indicators
+- Fresh Y.Doc per board connection (prevents data bleed between boards)
+- IndexedDB persistence loaded on board connect
+- Export/import JSON functionality
 
 **Technical Approach:**
-- Add board list to IndexedDB persistence
-- Create BoardList component for home screen
-- Router integration for board URLs
-- Board metadata in Yjs and local storage
-- Name entry modal/prompt on board join
-- Store user name in localStorage for persistence
-- Update Yjs awareness to include user name
-
-**Success Criteria:**
-- Users can create multiple boards
-- Board list shows all available boards
-- Clicking a board opens it
-- Each board has its own collaboration room
-- Users prompted for name on first join
-- Other participants see user's display name
+- react-router-dom for URL-based navigation
+- BoardList component reads from IndexedDB
+- Each board gets isolated Y.Doc and collaboration room
+- User name stored in localStorage, passed to Yjs awareness
+- connectToBoard loads from IndexedDB before connecting to server
 
 ---
 
@@ -320,5 +309,5 @@ Based on [M2-TECHNOLOGY-EVALUATION.md](M2-TECHNOLOGY-EVALUATION.md):
 | **3: Canvas Migration** | ✅ Complete | 28ad383, dd5b035, 83f8e0a | - |
 | **4: Persistence** | ✅ Complete | 6560cb7 | - |
 | **5: Visual Grammar** | ✅ Complete | 1101473 | - |
-| **6: Multi-Board** | 🎯 Next | - | Board list, create/switch/delete boards |
-| **7: Facilitation** | 📝 Planned | - | Zones, phase progression, roles |
+| **6: Multi-Board** | ✅ Complete | 50433ad | - |
+| **7: Facilitation** | 🎯 Next | - | Zones, phase progression, roles |
