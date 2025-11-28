@@ -3,8 +3,10 @@ import { UndoManager } from 'yjs';
 import * as Y from 'yjs';
 import { debugLog } from '@/lib/debug';
 
-export function useUndoRedo(ydoc: Y.Doc) {
+export function useUndoRedo(ydoc: Y.Doc | null) {
   useEffect(() => {
+    if (!ydoc) return;
+
     const yboard = ydoc.getMap('board');
     const undoManager = new UndoManager([yboard], {
       trackedOrigins: new Set([null]), // Track all origins

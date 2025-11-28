@@ -135,6 +135,7 @@ export const BoardPage: React.FC = () => {
         `Import "${importedBoard.name}"? This will replace the current board content with ${importedBoard.stickies.length} stickies.`
       );
       if (!confirmImport) return;
+      if (!ydoc) return;
 
       // Load imported board data into Yjs document
       const yboard = ydoc.getMap("board");
@@ -207,7 +208,7 @@ export const BoardPage: React.FC = () => {
   };
 
   const handleSaveBoardName = () => {
-    if (editedBoardName.trim()) {
+    if (editedBoardName.trim() && ydoc) {
       setBoardName(editedBoardName.trim());
       const yboard = ydoc.getMap("board");
       yboard.set("name", editedBoardName.trim());
