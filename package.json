@@ -30,7 +30,7 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run dev:worker\" \"npm run dev:vite\"",
-    "dev:vite": "vite --port 5180",
+    "dev:vite": "vite --port 5173",
     "dev:worker": "wrangler dev workers/server.ts --port 8800",
     "build": "vite build",
     "preview": "vite preview",

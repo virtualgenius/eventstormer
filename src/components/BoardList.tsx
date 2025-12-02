@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, ExternalLink, Trash2, Calendar, Clock } from "lucide-react";
+import { Plus, ExternalLink, Trash2, Calendar, Clock, Pencil } from "lucide-react";
 import { nanoid } from "@/lib/nanoid";
 
 interface RecentBoard {
@@ -62,6 +62,8 @@ export const BoardList: React.FC = () => {
   const [roomIdInput, setRoomIdInput] = useState("");
   const [recentBoards, setRecentBoards] = useState<RecentBoard[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingBoardId, setEditingBoardId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState("");
 
   useEffect(() => {
     setRecentBoards(getRecentBoards());
@@ -82,6 +84,29 @@ export const BoardList: React.FC = () => {
     if (confirm(`Delete "${boardName}"? This will remove it from your recent boards.`)) {
       setRecentBoards(removeRecentBoard(boardId));
     }
+  };
+
+  const handleStartRename = (e: React.MouseEvent, board: RecentBoard) => {
+    e.stopPropagation();
+    setEditingBoardId(board.id);
+    setEditingName(board.name);
+  };
+
+  const handleSaveRename = (e: React.FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (editingBoardId && editingName.trim()) {
+      updateBoardName(editingBoardId, editingName.trim());
+      setRecentBoards(getRecentBoards());
+    }
+    setEditingBoardId(null);
+    setEditingName("");
+  };
+
+  const handleCancelRename = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditingBoardId(null);
+    setEditingName("");
   };
 
   const handleJoinBoard = (e: React.FormEvent) => {
@@ -158,36 +183,71 @@ export const BoardList: React.FC = () => {
 
         {recentBoards.length === 0 ? (
           <div className="text-center py-16 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg">
-            <div className="text-slate-500 dark:text-slate-400 mb-4">
-              No boards yet. Create your first EventStorming board!
+            <div className="text-slate-500 dark:text-slate-400">
+              No recent boards. Click "New Board" to create one!
             </div>
-            <button
-              onClick={handleCreateBoard}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-            >
-              <Plus className="w-4 h-4" />
-              Create Board
-            </button>
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
             {recentBoards.map((board) => (
               <div
                 key={board.id}
-                onClick={() => navigate(`/board/${board.id}`)}
+                onClick={() => editingBoardId !== board.id && navigate(`/board/${board.id}`)}
                 className="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md transition-all"
               >
                 <div className="flex items-start justify-between mb-3">
-                  <h3 className="font-semibold text-slate-900 dark:text-slate-100 truncate flex-1 mr-2">
-                    {board.name}
-                  </h3>
-                  <button
-                    onClick={(e) => handleDeleteBoard(e, board.id, board.name)}
-                    className="p-1.5 text-slate-400 hover:text-red-500 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity rounded hover:bg-slate-100 dark:hover:bg-slate-700"
-                    title="Delete board"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  {editingBoardId === board.id ? (
+                    <form onSubmit={handleSaveRename} className="flex-1 mr-2">
+                      <input
+                        type="text"
+                        value={editingName}
+                        onChange={(e) => setEditingName(e.target.value)}
+                        onClick={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => {
+                          if (e.key === "Escape") handleCancelRename(e as unknown as React.MouseEvent);
+                        }}
+                        autoFocus
+                        className="w-full px-2 py-1 text-sm font-semibold border border-blue-400 rounded bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                      <div className="flex gap-2 mt-2">
+                        <button
+                          type="submit"
+                          className="px-2 py-1 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded"
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleCancelRename}
+                          className="px-2 py-1 text-xs bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 rounded"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <h3 className="font-semibold text-slate-900 dark:text-slate-100 truncate flex-1 mr-2">
+                      {board.name}
+                    </h3>
+                  )}
+                  {editingBoardId !== board.id && (
+                    <div className="flex gap-1">
+                      <button
+                        onClick={(e) => handleStartRename(e, board)}
+                        className="p-1.5 text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity rounded hover:bg-slate-100 dark:hover:bg-slate-700"
+                        title="Rename board"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={(e) => handleDeleteBoard(e, board.id, board.name)}
+                        className="p-1.5 text-slate-400 hover:text-red-500 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity rounded hover:bg-slate-100 dark:hover:bg-slate-700"
+                        title="Delete board"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div className="text-xs text-slate-500 dark:text-slate-400 font-mono mb-2 truncate">
                   {board.id}
