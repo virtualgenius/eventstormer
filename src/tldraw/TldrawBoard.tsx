@@ -15,6 +15,9 @@ import {
   SystemStickyShapeUtil,
   OpportunityStickyShapeUtil,
   GlossaryStickyShapeUtil,
+  CommandStickyShapeUtil,
+  PolicyStickyShapeUtil,
+  ReadModelStickyShapeUtil,
 } from './shapes/StickyShapes'
 import { VerticalLineShapeUtil } from './shapes/VerticalLineShape'
 import { HorizontalLaneShapeUtil } from './shapes/HorizontalLaneShape'
@@ -24,6 +27,7 @@ import { useYjsStore } from './useYjsStore'
 import { useYjsPresence } from './useYjsPresence'
 import { isLegacyBoardFormat, convertLegacyBoardToShapes } from './importLegacyBoard'
 import { Download, Upload } from 'lucide-react'
+import * as Tooltip from '@radix-ui/react-tooltip'
 
 // Register all custom shape utils
 const customShapeUtils = [
@@ -33,13 +37,26 @@ const customShapeUtils = [
   SystemStickyShapeUtil,
   OpportunityStickyShapeUtil,
   GlossaryStickyShapeUtil,
+  CommandStickyShapeUtil,
+  PolicyStickyShapeUtil,
+  ReadModelStickyShapeUtil,
   VerticalLineShapeUtil,
   HorizontalLaneShapeUtil,
   ThemeAreaShapeUtil,
   LabelShapeUtil,
 ]
 
-// Facilitation phases
+// Workshop modes
+type WorkshopMode = 'big-picture' | 'process' | 'design' | 'team-flow'
+
+const WORKSHOP_MODES: { value: WorkshopMode; label: string; description: string }[] = [
+  { value: 'big-picture', label: 'Big Picture', description: 'Explore the entire business domain timeline with events, actors, and systems' },
+  { value: 'process', label: 'Process', description: 'Model a specific process with commands, policies, and read models' },
+  { value: 'design', label: 'Design', description: 'Design software components with commands, policies, and read models' },
+  { value: 'team-flow', label: 'Team Flow', description: 'Map team interactions and workflows across the organization' },
+]
+
+// Facilitation phases (only used for Big Picture and Team Flow)
 type FacilitationPhase =
   | 'chaotic-exploration'
   | 'enforce-timeline'
@@ -47,18 +64,107 @@ type FacilitationPhase =
   | 'problems-and-opportunities'
   | 'glossary'
 
+const ALL_PHASES: FacilitationPhase[] = [
+  'chaotic-exploration',
+  'enforce-timeline',
+  'people-and-systems',
+  'problems-and-opportunities',
+  'glossary',
+]
+
 // Tool definitions for the palette
 const TOOLS = {
-  'event-sticky': { label: 'Event', color: '#fed7aa', phases: ['chaotic-exploration', 'enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] },
-  'hotspot-sticky': { label: 'Hotspot', color: '#fecaca', phases: ['chaotic-exploration', 'enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] },
-  'vertical-line': { label: 'Pivotal', color: '#cbd5e1', phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] },
-  'horizontal-lane': { label: 'Swimlane', color: '#e2e8f0', phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] },
-  'person-sticky': { label: 'Person', color: '#fef9c3', phases: ['people-and-systems', 'problems-and-opportunities', 'glossary'] },
-  'system-sticky': { label: 'System', color: '#e9d5ff', phases: ['people-and-systems', 'problems-and-opportunities', 'glossary'] },
-  'opportunity-sticky': { label: 'Opportunity', color: '#bbf7d0', phases: ['problems-and-opportunities', 'glossary'] },
-  'glossary-sticky': { label: 'Glossary', color: '#f1f5f9', phases: ['glossary'] },
-  'theme-area': { label: 'Theme', color: 'rgba(226,232,240,0.5)', phases: ['chaotic-exploration', 'enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] },
-  'label': { label: 'Label', color: 'transparent', phases: ['chaotic-exploration', 'enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] },
+  'event-sticky': {
+    label: 'Event',
+    color: '#fed7aa',
+    description: 'A domain event that happened in the past (orange)',
+    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
+    phases: ['chaotic-exploration', 'enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
+  },
+  'hotspot-sticky': {
+    label: 'Hotspot',
+    color: '#fecaca',
+    description: 'A problem, risk, question, or area of uncertainty (red)',
+    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
+    phases: ['chaotic-exploration', 'enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
+  },
+  'vertical-line': {
+    label: 'Pivotal',
+    color: '#cbd5e1',
+    description: 'A pivotal event boundary separating process phases',
+    modes: ['big-picture', 'team-flow'] as WorkshopMode[],
+    phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
+  },
+  'horizontal-lane': {
+    label: 'Swimlane',
+    color: '#e2e8f0',
+    description: 'A horizontal lane to separate parallel processes',
+    modes: ['big-picture', 'team-flow'] as WorkshopMode[],
+    phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
+  },
+  'person-sticky': {
+    label: 'Person',
+    color: '#fef9c3',
+    description: 'An actor or persona who triggers or participates in events (yellow)',
+    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
+    phases: ['people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
+  },
+  'system-sticky': {
+    label: 'System',
+    color: '#fce7f3',
+    description: 'An external system that triggers or receives events (pink)',
+    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
+    phases: ['people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
+  },
+  'opportunity-sticky': {
+    label: 'Opportunity',
+    color: '#bbf7d0',
+    description: 'An improvement idea or business opportunity (green)',
+    modes: ['big-picture', 'team-flow'] as WorkshopMode[],
+    phases: ['problems-and-opportunities', 'glossary'] as FacilitationPhase[],
+  },
+  'glossary-sticky': {
+    label: 'Glossary',
+    color: '#f1f5f9',
+    description: 'A term definition for the ubiquitous language (gray)',
+    modes: ['big-picture', 'team-flow'] as WorkshopMode[],
+    phases: ['glossary'] as FacilitationPhase[],
+  },
+  'command-sticky': {
+    label: 'Command',
+    color: '#bfdbfe',
+    description: 'An action or intent that triggers an event (blue)',
+    modes: ['process', 'design'] as WorkshopMode[],
+    phases: ALL_PHASES,
+  },
+  'policy-sticky': {
+    label: 'Policy',
+    color: '#c4b5fd',
+    description: 'A business rule that reacts to events and triggers commands (purple)',
+    modes: ['process', 'design'] as WorkshopMode[],
+    phases: ALL_PHASES,
+  },
+  'readmodel-sticky': {
+    label: 'Read Model',
+    color: '#bbf7d0',
+    description: 'Data that an actor needs to make a decision (green)',
+    modes: ['process', 'design'] as WorkshopMode[],
+    phases: ALL_PHASES,
+  },
+  'theme-area': {
+    label: 'Theme',
+    color: 'rgba(226,232,240,0.5)',
+    description: 'A rectangular area to group related elements by theme',
+    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
+    phases: ALL_PHASES,
+  },
+  'label': {
+    label: 'Label',
+    color: 'transparent',
+    description: 'A free-form text annotation',
+    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
+    phases: ALL_PHASES,
+  },
 } as const
 
 type ToolType = keyof typeof TOOLS
@@ -71,6 +177,9 @@ const STICKY_TYPES: ToolType[] = [
   'system-sticky',
   'opportunity-sticky',
   'glossary-sticky',
+  'command-sticky',
+  'policy-sticky',
+  'readmodel-sticky',
 ]
 
 // Custom UI: hide tldraw chrome, keep share panel for presence avatars
@@ -93,6 +202,7 @@ interface TldrawBoardProps {
 
 export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
   const [editor, setEditor] = useState<Editor | null>(null)
+  const [workshopMode, setWorkshopMode] = useState<WorkshopMode>('big-picture')
   const [phase, setPhase] = useState<FacilitationPhase>('chaotic-exploration')
   const [activeTool, setActiveTool] = useState<ToolType | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -136,6 +246,9 @@ export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
     'system-sticky',
     'opportunity-sticky',
     'glossary-sticky',
+    'command-sticky',
+    'policy-sticky',
+    'readmodel-sticky',
     'theme-area',
     'label',
   ]
@@ -147,28 +260,32 @@ export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
     const viewportCenter = editor.getViewportScreenCenter()
     const pagePoint = editor.screenToPage(viewportCenter)
 
-    const isHalfHeight = type === 'person-sticky' || type === 'system-sticky'
+    const isHalfHeight = type === 'person-sticky'
 
-    const shapeConfig: Record<string, object> = {
+    const shapeConfig: Record<string, { w: number; h: number; text?: string; label?: string; name?: string }> = {
       'event-sticky': { text: '', w: 120, h: 100 },
       'hotspot-sticky': { text: '', w: 120, h: 100 },
       'person-sticky': { text: '', w: 120, h: 50 },
-      'system-sticky': { text: '', w: 120, h: 50 },
+      'system-sticky': { text: '', w: 240, h: 100 },
       'opportunity-sticky': { text: '', w: 120, h: 100 },
       'glossary-sticky': { text: '', w: 120, h: 100 },
+      'command-sticky': { text: '', w: 120, h: 100 },
+      'policy-sticky': { text: '', w: 240, h: 100 },
+      'readmodel-sticky': { text: '', w: 120, h: 100 },
       'vertical-line': { w: 8, h: 400, label: '' },
       'horizontal-lane': { w: 800, h: 8, label: '' },
       'theme-area': { w: 400, h: 300, name: '' },
       'label': { text: '', w: 100, h: 24 },
     }
 
+    const config = shapeConfig[type]
     const newId = createShapeId()
     editor.createShape({
       id: newId,
       type,
-      x: pagePoint.x - 60,
+      x: pagePoint.x - (config.w / 2),
       y: pagePoint.y - (isHalfHeight ? 25 : 50),
-      props: shapeConfig[type],
+      props: config,
     })
 
     // Select and enter edit mode for editable shapes
@@ -403,10 +520,15 @@ export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
     }
   }, [editor])
 
-  // Get tools available for current phase
-  const availableTools = Object.entries(TOOLS).filter(
-    ([_, config]) => (config.phases as readonly string[]).includes(phase)
-  )
+  // Check if phase selector should be shown (only for Big Picture and Team Flow)
+  const showPhaseSelector = workshopMode === 'big-picture' || workshopMode === 'team-flow'
+
+  // Get tools available for current mode and phase
+  const availableTools = Object.entries(TOOLS).filter(([_, config]) => {
+    if (!config.modes.includes(workshopMode)) return false
+    if (showPhaseSelector && !config.phases.includes(phase)) return false
+    return true
+  })
 
   // Connection status indicator
   const connectionStatus = storeWithStatus.status === 'synced-remote'
@@ -426,23 +548,58 @@ export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
   }, [renderHeaderRight, connectionStatus, roomId, handleExportJSON, handleImportJSON])
 
   return (
-    <div className="flex flex-col h-full w-full relative">
-      {/* Header bar with phase selector */}
+    <Tooltip.Provider delayDuration={0}>
+      <div className="flex flex-col h-full w-full relative">
+      {/* Header bar with mode and phase selector */}
       <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-slate-200 z-10">
-        {/* Phase Selector */}
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-slate-600">Big Picture:</span>
-          <select
-            value={phase}
-            onChange={(e) => setPhase(e.target.value as FacilitationPhase)}
-            className="px-3 py-1.5 text-sm border border-slate-200 rounded-md bg-white"
-          >
-          <option value="chaotic-exploration">1. Chaotic Exploration</option>
-          <option value="enforce-timeline">2. Enforce Timeline</option>
-          <option value="people-and-systems">3. People & Systems</option>
-          <option value="problems-and-opportunities">4. Problems & Opportunities</option>
-          <option value="glossary">5. Glossary</option>
-          </select>
+        {/* Mode Selector (Segmented Control) and Phase Selector */}
+        <div className="flex items-center gap-4">
+          {/* Workshop Mode Segmented Control */}
+          <div className="flex rounded-lg border border-slate-200 overflow-hidden">
+            {WORKSHOP_MODES.map((mode) => (
+              <Tooltip.Root key={mode.value}>
+                <Tooltip.Trigger asChild>
+                  <button
+                    onClick={() => setWorkshopMode(mode.value)}
+                    className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                      workshopMode === mode.value
+                        ? 'bg-slate-800 text-white'
+                        : 'bg-white text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    {mode.label}
+                  </button>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    className="bg-slate-800 text-white text-xs px-3 py-2 rounded-md shadow-lg max-w-xs"
+                    sideOffset={5}
+                  >
+                    {mode.description}
+                    <Tooltip.Arrow className="fill-slate-800" />
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+            ))}
+          </div>
+
+          {/* Phase Selector - only show for Big Picture and Team Flow */}
+          {showPhaseSelector && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-slate-500">Phase:</span>
+              <select
+                value={phase}
+                onChange={(e) => setPhase(e.target.value as FacilitationPhase)}
+                className="px-3 py-1.5 text-sm border border-slate-200 rounded-md bg-white"
+              >
+                <option value="chaotic-exploration">1. Chaotic Exploration</option>
+                <option value="enforce-timeline">2. Enforce Timeline</option>
+                <option value="people-and-systems">3. People & Systems</option>
+                <option value="problems-and-opportunities">4. Problems & Opportunities</option>
+                <option value="glossary">5. Glossary</option>
+              </select>
+            </div>
+          )}
         </div>
 
         {/* Render header right content if no external render prop */}
@@ -506,30 +663,48 @@ export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
       <div className="flex-1 relative">
         {/* Facilitation Palette */}
         <div className="absolute top-3 left-3 z-10 bg-white p-2 rounded-lg shadow-md flex flex-col gap-1">
-          {availableTools.map(([type, config]) => (
-            <button
-              key={type}
-              onClick={() => {
-                setActiveTool(type as ToolType)
-                createShape(type as ToolType)
-              }}
-              className={`flex items-center gap-2 px-3 py-2 rounded text-sm min-w-[120px] transition-colors ${
-                activeTool === type
-                  ? 'border-2 border-blue-500 bg-blue-50'
-                  : 'border border-slate-200 hover:bg-slate-50'
-              }`}
-            >
-              <div
-                className="w-5 rounded"
-                style={{
-                  height: type === 'person-sticky' || type === 'system-sticky' ? 10 : 20,
-                  backgroundColor: config.color,
-                  border: '1px solid rgba(0,0,0,0.1)',
-                }}
-              />
-              {config.label}
-            </button>
-          ))}
+          {availableTools.map(([type, config]) => {
+            const isHalfHeight = type === 'person-sticky'
+            const isDoubleWide = type === 'system-sticky' || type === 'policy-sticky'
+            return (
+              <Tooltip.Root key={type}>
+                <Tooltip.Trigger asChild>
+                  <button
+                    onClick={() => {
+                      setActiveTool(type as ToolType)
+                      createShape(type as ToolType)
+                    }}
+                    className={`flex items-center gap-2 px-3 py-2 rounded text-sm min-w-[120px] transition-colors ${
+                      activeTool === type
+                        ? 'border-2 border-blue-500 bg-blue-50'
+                        : 'border border-slate-200 hover:bg-slate-50'
+                    }`}
+                  >
+                    <div
+                      className="rounded"
+                      style={{
+                        width: isDoubleWide ? 28 : 20,
+                        height: isHalfHeight ? 10 : 20,
+                        backgroundColor: config.color,
+                        border: '1px solid rgba(0,0,0,0.1)',
+                      }}
+                    />
+                    {config.label}
+                  </button>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    className="bg-slate-800 text-white text-xs px-3 py-2 rounded-md shadow-lg max-w-xs"
+                    side="right"
+                    sideOffset={8}
+                  >
+                    {config.description}
+                    <Tooltip.Arrow className="fill-slate-800" />
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+            )
+          })}
         </div>
 
         {/* tldraw Canvas */}
@@ -543,6 +718,7 @@ export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
           }}
         />
       </div>
-    </div>
+      </div>
+    </Tooltip.Provider>
   )
 }

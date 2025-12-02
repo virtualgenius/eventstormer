@@ -26,6 +26,9 @@ type PersonStickyShape = TLBaseShape<'person-sticky', StickyProps>
 type SystemStickyShape = TLBaseShape<'system-sticky', StickyProps>
 type OpportunityStickyShape = TLBaseShape<'opportunity-sticky', StickyProps>
 type GlossaryStickyShape = TLBaseShape<'glossary-sticky', StickyProps>
+type CommandStickyShape = TLBaseShape<'command-sticky', StickyProps>
+type PolicyStickyShape = TLBaseShape<'policy-sticky', StickyProps>
+type ReadModelStickyShape = TLBaseShape<'readmodel-sticky', StickyProps>
 
 // Union type for any sticky shape
 type AnyStickyShape =
@@ -35,15 +38,21 @@ type AnyStickyShape =
   | SystemStickyShape
   | OpportunityStickyShape
   | GlossaryStickyShape
+  | CommandStickyShape
+  | PolicyStickyShape
+  | ReadModelStickyShape
 
 // Color configurations matching EventStormer
 const COLORS = {
   event: { fill: '#fed7aa', border: '#fdba74' },
   hotspot: { fill: '#fecaca', border: '#fca5a5' },
   person: { fill: '#fef9c3', border: '#fef08a' },
-  system: { fill: '#e9d5ff', border: '#d8b4fe' },
+  system: { fill: '#fce7f3', border: '#fbcfe8' },
   opportunity: { fill: '#bbf7d0', border: '#86efac' },
   glossary: { fill: '#f1f5f9', border: '#e2e8f0' },
+  command: { fill: '#bfdbfe', border: '#93c5fd' },
+  policy: { fill: '#c4b5fd', border: '#a78bfa' },
+  readmodel: { fill: '#bbf7d0', border: '#86efac' },
 }
 
 // Editable sticky component using tldraw's editing state
@@ -170,7 +179,8 @@ function EditableStickyComponent({
 function createStickyShapeUtil<T extends AnyStickyShape>(
   type: T['type'],
   colors: { fill: string; border: string },
-  defaultHeight: number = 100
+  defaultHeight: number = 100,
+  defaultWidth: number = 120
 ) {
   return class extends ShapeUtil<T> {
     static override type = type as T['type']
@@ -180,7 +190,7 @@ function createStickyShapeUtil<T extends AnyStickyShape>(
     override canEdit = () => true
 
     getDefaultProps(): T['props'] {
-      return { text: '', w: 120, h: defaultHeight } as T['props']
+      return { text: '', w: defaultWidth, h: defaultHeight } as T['props']
     }
 
     getGeometry(shape: T) {
@@ -223,7 +233,8 @@ export const PersonStickyShapeUtil = createStickyShapeUtil<PersonStickyShape>(
 export const SystemStickyShapeUtil = createStickyShapeUtil<SystemStickyShape>(
   'system-sticky',
   COLORS.system,
-  50
+  100,
+  240
 )
 
 export const OpportunityStickyShapeUtil = createStickyShapeUtil<OpportunityStickyShape>(
@@ -235,5 +246,24 @@ export const OpportunityStickyShapeUtil = createStickyShapeUtil<OpportunityStick
 export const GlossaryStickyShapeUtil = createStickyShapeUtil<GlossaryStickyShape>(
   'glossary-sticky',
   COLORS.glossary,
+  100
+)
+
+export const CommandStickyShapeUtil = createStickyShapeUtil<CommandStickyShape>(
+  'command-sticky',
+  COLORS.command,
+  100
+)
+
+export const PolicyStickyShapeUtil = createStickyShapeUtil<PolicyStickyShape>(
+  'policy-sticky',
+  COLORS.policy,
+  100,
+  240
+)
+
+export const ReadModelStickyShapeUtil = createStickyShapeUtil<ReadModelStickyShape>(
+  'readmodel-sticky',
+  COLORS.readmodel,
   100
 )

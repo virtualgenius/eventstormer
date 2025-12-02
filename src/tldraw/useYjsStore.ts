@@ -17,6 +17,9 @@ import {
   SystemStickyShapeUtil,
   OpportunityStickyShapeUtil,
   GlossaryStickyShapeUtil,
+  CommandStickyShapeUtil,
+  PolicyStickyShapeUtil,
+  ReadModelStickyShapeUtil,
 } from './shapes/StickyShapes'
 import { VerticalLineShapeUtil } from './shapes/VerticalLineShape'
 import { HorizontalLaneShapeUtil } from './shapes/HorizontalLaneShape'
@@ -30,6 +33,9 @@ const customShapeUtils = [
   SystemStickyShapeUtil,
   OpportunityStickyShapeUtil,
   GlossaryStickyShapeUtil,
+  CommandStickyShapeUtil,
+  PolicyStickyShapeUtil,
+  ReadModelStickyShapeUtil,
   VerticalLineShapeUtil,
   HorizontalLaneShapeUtil,
   ThemeAreaShapeUtil,
