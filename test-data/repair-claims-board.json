@@ -1,0 +1,412 @@
+{
+  "id": "repair-claims",
+  "name": "EventStorming - Repair Claims",
+  "stickies": [
+    {
+      "id": "e001",
+      "kind": "event",
+      "text": "Dishwasher purchased",
+      "x": 50,
+      "y": 220
+    },
+    {
+      "id": "e002",
+      "kind": "event",
+      "text": "Contact added to Leads",
+      "x": 200,
+      "y": 220
+    },
+    {
+      "id": "e003",
+      "kind": "event",
+      "text": "Letter sent to contact",
+      "x": 350,
+      "y": 220
+    },
+    {
+      "id": "e004",
+      "kind": "event",
+      "text": "Contact purchased extended warranty",
+      "x": 500,
+      "y": 220
+    },
+    {
+      "id": "e005",
+      "kind": "event",
+      "text": "Customer extended warranty pending",
+      "x": 650,
+      "y": 220
+    },
+    {
+      "id": "e006",
+      "kind": "event",
+      "text": "Manufacturer's 3 year warranty expired",
+      "x": 800,
+      "y": 220
+    },
+    {
+      "id": "e007",
+      "kind": "event",
+      "text": "Extended warranty effective date",
+      "x": 950,
+      "y": 220
+    },
+    {
+      "id": "e008",
+      "kind": "event",
+      "text": "Extended warranty expiration date",
+      "x": 1100,
+      "y": 220
+    },
+    {
+      "id": "e009",
+      "kind": "event",
+      "text": "Extended warranty expired",
+      "x": 1250,
+      "y": 220
+    },
+    {
+      "id": "e010",
+      "kind": "event",
+      "text": "Contract activated",
+      "x": 950,
+      "y": 350
+    },
+    {
+      "id": "e011",
+      "kind": "event",
+      "text": "Dishwasher stopped working",
+      "x": 700,
+      "y": 550
+    },
+    {
+      "id": "e012",
+      "kind": "event",
+      "text": "Customer called call center",
+      "x": 850,
+      "y": 550
+    },
+    {
+      "id": "e013",
+      "kind": "event",
+      "text": "Customer Information Found",
+      "x": 1000,
+      "y": 550
+    },
+    {
+      "id": "e014",
+      "kind": "event",
+      "text": "Call center opened a Claim",
+      "x": 1150,
+      "y": 550
+    },
+    {
+      "id": "e015",
+      "kind": "event",
+      "text": "Repair Need Identified",
+      "x": 1300,
+      "y": 550
+    },
+    {
+      "id": "e016",
+      "kind": "event",
+      "text": "Warranty Coverage Verified",
+      "x": 1000,
+      "y": 680
+    },
+    {
+      "id": "e017",
+      "kind": "event",
+      "text": "Repair PO created",
+      "x": 1300,
+      "y": 680
+    },
+    {
+      "id": "e018",
+      "kind": "event",
+      "text": "Coverage Period Validated",
+      "x": 1000,
+      "y": 810
+    },
+    {
+      "id": "e019",
+      "kind": "event",
+      "text": "PO sent to servicer management company",
+      "x": 1500,
+      "y": 550
+    },
+    {
+      "id": "e020",
+      "kind": "event",
+      "text": "Repair person fixed covered product",
+      "x": 1650,
+      "y": 550
+    },
+    {
+      "id": "e021",
+      "kind": "event",
+      "text": "Service manager reports back when repairs complete",
+      "x": 1800,
+      "y": 550
+    },
+    {
+      "id": "e022",
+      "kind": "event",
+      "text": "PO Updated",
+      "x": 2000,
+      "y": 550
+    },
+    {
+      "id": "e023",
+      "kind": "event",
+      "text": "Claim Closed",
+      "x": 2150,
+      "y": 550
+    },
+    {
+      "id": "e024",
+      "kind": "event",
+      "text": "Adjudicated Claim",
+      "x": 2300,
+      "y": 550
+    },
+    {
+      "id": "e025",
+      "kind": "event",
+      "text": "Liability Limit Exceeded",
+      "x": 2300,
+      "y": 850
+    },
+    {
+      "id": "e026",
+      "kind": "event",
+      "text": "Contract Terminated",
+      "x": 2450,
+      "y": 850
+    },
+    {
+      "id": "e027",
+      "kind": "event",
+      "text": "Store Credit Reimbursement Requested",
+      "x": 2600,
+      "y": 850
+    },
+    {
+      "id": "e028",
+      "kind": "event",
+      "text": "Email Finance Department To Send Customer Store Credit Voucher",
+      "x": 2750,
+      "y": 850
+    },
+    {
+      "id": "e029",
+      "kind": "event",
+      "text": "Send Store Credit Voucher to Customer Mailing Address",
+      "x": 2950,
+      "y": 850
+    },
+    {
+      "id": "e030",
+      "kind": "event",
+      "text": "Contract marked as FULFILLED",
+      "x": 2450,
+      "y": 980
+    },
+    {
+      "id": "h001",
+      "kind": "hotspot",
+      "text": "Terminology? \"Warranty\" or \"Contract\"",
+      "x": 800,
+      "y": 350
+    },
+    {
+      "id": "h002",
+      "kind": "hotspot",
+      "text": "How is the customers identity verified?",
+      "x": 1150,
+      "y": 450
+    },
+    {
+      "id": "h003",
+      "kind": "hotspot",
+      "text": "Assuming that servicer company reports back to us when repair is complete",
+      "x": 1800,
+      "y": 430
+    },
+    {
+      "id": "h004",
+      "kind": "hotspot",
+      "text": "When was a claim closed, after a repair / PO reopened?",
+      "x": 2000,
+      "y": 430
+    },
+    {
+      "id": "h005",
+      "kind": "hotspot",
+      "text": "Can a claim be reopened after it has been closed?",
+      "x": 2150,
+      "y": 430
+    },
+    {
+      "id": "h006",
+      "kind": "hotspot",
+      "text": "Claim was already closed, did CSR re-open it? How can she close it twice?",
+      "x": 2150,
+      "y": 680
+    },
+    {
+      "id": "h007",
+      "kind": "hotspot",
+      "text": "Is this where this is supposed to be in the process?",
+      "x": 2300,
+      "y": 680
+    },
+    {
+      "id": "h008",
+      "kind": "hotspot",
+      "text": "Limit of liability total of all claims cannot exceed % of purchase price",
+      "x": 2300,
+      "y": 1000
+    },
+    {
+      "id": "p001",
+      "kind": "person",
+      "text": "CSR - Customer Service Representative",
+      "x": 2450,
+      "y": 680
+    },
+    {
+      "id": "g001",
+      "kind": "glossary",
+      "text": "Event",
+      "x": 1600,
+      "y": 40
+    },
+    {
+      "id": "g002",
+      "kind": "glossary",
+      "text": "?",
+      "x": 1750,
+      "y": 40
+    },
+    {
+      "id": "g003",
+      "kind": "glossary",
+      "text": "Definition",
+      "x": 1900,
+      "y": 40
+    }
+  ],
+  "verticals": [
+    {
+      "id": "v001",
+      "x": 480,
+      "y1": 200,
+      "y2": 340
+    },
+    {
+      "id": "v002",
+      "x": 930,
+      "y1": 200,
+      "y2": 400
+    },
+    {
+      "id": "v003",
+      "x": 1280,
+      "y1": 500,
+      "y2": 750
+    },
+    {
+      "id": "v004",
+      "x": 1480,
+      "y1": 500,
+      "y2": 620
+    },
+    {
+      "id": "v005",
+      "x": 1780,
+      "y1": 500,
+      "y2": 620
+    },
+    {
+      "id": "v006",
+      "x": 1980,
+      "y1": 500,
+      "y2": 620
+    },
+    {
+      "id": "v007",
+      "x": 2280,
+      "y1": 500,
+      "y2": 750
+    },
+    {
+      "id": "v008",
+      "x": 2730,
+      "y1": 800,
+      "y2": 920
+    }
+  ],
+  "lanes": [],
+  "labels": [
+    {
+      "id": "l001",
+      "text": "SALES",
+      "x": 50,
+      "y": 180
+    },
+    {
+      "id": "l002",
+      "text": "WARRANTY ADMIN",
+      "x": 500,
+      "y": 180
+    },
+    {
+      "id": "l003",
+      "text": "CLAIM PROCESSING",
+      "x": 850,
+      "y": 500
+    },
+    {
+      "id": "l004",
+      "text": "SERVICING MANAGEMENT",
+      "x": 1500,
+      "y": 500
+    },
+    {
+      "id": "l005",
+      "text": "CLAIMS PROCESSING",
+      "x": 2000,
+      "y": 500
+    },
+    {
+      "id": "l006",
+      "text": "CUSTOMER REIMBURSEMENT",
+      "x": 2450,
+      "y": 800
+    },
+    {
+      "id": "l007",
+      "text": "FINANCE",
+      "x": 2950,
+      "y": 800
+    },
+    {
+      "id": "l008",
+      "text": "EVENTSTORMING - REPAIR CLAIMS",
+      "x": 50,
+      "y": 30
+    },
+    {
+      "id": "l009",
+      "text": "HTTPS://LEANPUB.COM/EVENTSTORMING_HANDBOOK",
+      "x": 2600,
+      "y": 50
+    }
+  ],
+  "themes": [],
+  "sessionMode": "big-picture",
+  "phase": "glossary",
+  "createdAt": "2025-12-02T00:00:00.000Z",
+  "updatedAt": "2025-12-02T00:00:00.000Z"
+}

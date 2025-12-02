@@ -1,0 +1,4513 @@
+{
+  "id": "perf-test-EtgCWkO1Zt3qc2vYSkbnZ",
+  "name": "Performance Test (500 stickies)",
+  "stickies": [
+    {
+      "id": "KrhGyGzeqdvzPqF11gwUz",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 101.33053220160743,
+      "y": 103.92648687799941,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "H4iHNHwFTYwg2eETs27ji",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 247.66186539863676,
+      "y": 89.48795421855748,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "CPFf609vXv7VjldmQJaj6",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 391.1305967565916,
+      "y": 98.62368330877581,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "fQ9RMWapQGzqlGQP6ZJKC",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 524.6231399745475,
+      "y": 111.89109530279046,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ALDGcADZZ0MOqkVGZNyBt",
+      "kind": "event",
+      "text": "Session started",
+      "x": 660.3697307833269,
+      "y": 94.25228902144232,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "cDEhj4aOtBJKXaYO2r9E4",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 809.127011873657,
+      "y": 85.10290218110637,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "mf9nHN5r78zbIgozSD8gI",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 946.852935739256,
+      "y": 91.8918782770541,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "DYvGEyja6dzlTjbLYfsTX",
+      "kind": "event",
+      "text": "Profile updated",
+      "x": 1091.0461477436659,
+      "y": 90.64572609518822,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "WI9jfvkPcRKaFLJMsqjay",
+      "kind": "glossary",
+      "text": "Term 44",
+      "x": 1212.168455361159,
+      "y": 107.6178421178847,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "8Eedr6Spuk5sMAWs1OXug",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 1347.4019325640115,
+      "y": 108.27826867123665,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "YGruGwGkKiR1cuuYg5fpW",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 1505.1247508396607,
+      "y": 105.42529730021226,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "deNyKQLo2pH97NtxIMLIH",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 1644.6501798038485,
+      "y": 109.57427502944043,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "w7KSIqh16DX9x7wqeaRKi",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 1778.2373913638355,
+      "y": 95.79793451816904,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "W9iinjQiYFFSMMFPM88UE",
+      "kind": "hotspot",
+      "text": "Missing validation",
+      "x": 1917.6110425648478,
+      "y": 114.00556260552273,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "qtn7wpu79Ktb3v7JuD23w",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 2069.5791978270267,
+      "y": 102.85004028572048,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "t01lboaMKPA4JEhTQuxzd",
+      "kind": "event",
+      "text": "Payment processed",
+      "x": 2196.528159304686,
+      "y": 102.70694793829632,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "i1W0FACAVfE3tsXktye5e",
+      "kind": "hotspot",
+      "text": "Error handling needed",
+      "x": 2345.0968126601256,
+      "y": 107.62377774634429,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "42apJu9MB5MGef0ON9MDB",
+      "kind": "event",
+      "text": "Checkout started",
+      "x": 2478.273957090851,
+      "y": 86.10970140843992,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ZnRhNt1yj1EhdhsyyL8zX",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 2608.642436918101,
+      "y": 90.1273013212893,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "fzy0xKi4PLVYFK7z7sGg7",
+      "kind": "person",
+      "text": "Support Agent",
+      "x": 2771.863446943741,
+      "y": 92.8373233832955,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "1MHg2oe9gV8xv59k1gTST",
+      "kind": "event",
+      "text": "Payment processed",
+      "x": 2893.8779516157533,
+      "y": 109.69461453930506,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ysycyWkHtKv7jiA1uuQ1n",
+      "kind": "event",
+      "text": "Profile updated",
+      "x": 3047.7817491610567,
+      "y": 100.12554280691229,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "zFgCoMqQplaaN9sYSci3Y",
+      "kind": "event",
+      "text": "Email sent",
+      "x": 3175.4124770107433,
+      "y": 109.94254101837355,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "S0jWISGnZNjkYbXdoxxjH",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 3329.7908882735974,
+      "y": 111.58246882563084,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "B5bjSHLKq85LWYSg6hmie",
+      "kind": "event",
+      "text": "Password reset requested",
+      "x": 3472.8772498357557,
+      "y": 90.13636488698552,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "DwmsENrQM3NbxCmC9kHY1",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 3599.383805240052,
+      "y": 94.58189641193353,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "X22CefiSwl87zW4C9mdvY",
+      "kind": "hotspot",
+      "text": "User confusion here",
+      "x": 3737.770230627801,
+      "y": 97.74337080196773,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "cAoZ6BAs53sfqLy8nxS7v",
+      "kind": "event",
+      "text": "Session started",
+      "x": 3893.492451012403,
+      "y": 106.26024136206715,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "LdT7EhC4uC8fTnu7uP4gK",
+      "kind": "hotspot",
+      "text": "Security concern",
+      "x": 4005.3552258731484,
+      "y": 104.74289670997781,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "oo0kAElDDE4UMcUFzBrEw",
+      "kind": "glossary",
+      "text": "Term 53",
+      "x": 4162.520450793955,
+      "y": 107.13119222672002,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "s4sKeR8dQNLOjybHza5i4",
+      "kind": "glossary",
+      "text": "Term 11",
+      "x": 4288.5386612958855,
+      "y": 111.8303943328633,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "RuN8C5orKtVyrIevUNGuN",
+      "kind": "glossary",
+      "text": "Term 53",
+      "x": 4440.836421463734,
+      "y": 104.80787691196531,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "NyUOJxMujpXaEUirf0C60",
+      "kind": "event",
+      "text": "Review submitted",
+      "x": 4584.68936928039,
+      "y": 102.36684089232556,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "9ID7YKWz5m7DwheUCU0Y4",
+      "kind": "system",
+      "text": "Email Service",
+      "x": 4724.692030447902,
+      "y": 100.1631777420021,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "qyD5Qd98WhLwK5kVN6VnP",
+      "kind": "event",
+      "text": "Password reset requested",
+      "x": 4860.170124388042,
+      "y": 113.8271843019907,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "IvWhZwsItjET93lKwyTjP",
+      "kind": "system",
+      "text": "Search Engine",
+      "x": 4990.70317271719,
+      "y": 92.93369413428704,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "VfXTDw2TAoPu8oSEkNWol",
+      "kind": "event",
+      "text": "File uploaded",
+      "x": 5146.310681582387,
+      "y": 88.50788230678212,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "nGBcX8AOhz4h2Umg7ZCtw",
+      "kind": "person",
+      "text": "Analyst",
+      "x": 5288.693675952337,
+      "y": 98.37540894789016,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "PCVcwEAsmbcExclSvYpzj",
+      "kind": "hotspot",
+      "text": "UX improvement needed",
+      "x": 5408.306227444014,
+      "y": 103.9545493087179,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "RUxmxUdnt6zd0SkokJtNi",
+      "kind": "hotspot",
+      "text": "Security concern",
+      "x": 5566.100590164945,
+      "y": 91.24864292812407,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "KOo1EjBv5SdTqclfNRgGi",
+      "kind": "event",
+      "text": "File uploaded",
+      "x": 5714.873803357442,
+      "y": 95.59747565782513,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "1np32yBINuCmFHX76RLZ6",
+      "kind": "event",
+      "text": "Review submitted",
+      "x": 5854.9905693655655,
+      "y": 103.71233202608519,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "thJmJ0aOj67I1p8r9ClLm",
+      "kind": "system",
+      "text": "ERP",
+      "x": 5966.371890462258,
+      "y": 98.8102958559411,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "DVCmGvj6ch6Y7IFxvoJGv",
+      "kind": "event",
+      "text": "Review submitted",
+      "x": 6132.624941270111,
+      "y": 97.33007177973364,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "pfV6NAdTtPJeW7n6SeaJy",
+      "kind": "hotspot",
+      "text": "Error handling needed",
+      "x": 6264.947358641044,
+      "y": 85.36375478079641,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "or2aI2posbZQRwzOIq4eR",
+      "kind": "event",
+      "text": "Shipment dispatched",
+      "x": 6387.750502079213,
+      "y": 90.35418507005433,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "KejK6I81yd3wDRB02Zr9v",
+      "kind": "event",
+      "text": "Notification sent",
+      "x": 6534.025130532614,
+      "y": 96.07620837188522,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "eWCPp5i4ng87yyduIbh6T",
+      "kind": "hotspot",
+      "text": "Data inconsistency",
+      "x": 6681.690473185535,
+      "y": 100.60732232305834,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "8ovRV4KnDVF3EnAJwbM29",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 6814.444722931274,
+      "y": 86.42915989757182,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "RJm5aODDNKxjsbVV4IIj9",
+      "kind": "hotspot",
+      "text": "Error handling needed",
+      "x": 6967.542500529678,
+      "y": 91.31975388508495,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "DhPFd8rUjAjd42w0l2TVy",
+      "kind": "event",
+      "text": "Checkout started",
+      "x": 90.69820028143734,
+      "y": 256.5682469153829,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "tFroXMALDARHEsLG4YaLJ",
+      "kind": "system",
+      "text": "Email Service",
+      "x": 237.98872921177784,
+      "y": 251.47765464789384,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "sjbWr74A2HylVR9m0aRGE",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 378.14650900452085,
+      "y": 261.7646610284939,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "JBFP35A5RlSZI26tQ2ptG",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 519.7145864449715,
+      "y": 260.0267571183207,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "s8ogwjJd4juzKeksGma6w",
+      "kind": "event",
+      "text": "Notification sent",
+      "x": 652.7832251455727,
+      "y": 274.33583431718426,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "RWsIjMbm6gaSavkmi1iT1",
+      "kind": "person",
+      "text": "Manager",
+      "x": 812.2229644751676,
+      "y": 258.578398167671,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "vqUf3cAXK7pS8MeRw8YOf",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 935.3118788510081,
+      "y": 253.92888283651436,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "BDKtpGfecMKCIR7NFUarE",
+      "kind": "hotspot",
+      "text": "Missing validation",
+      "x": 1080.1088582523562,
+      "y": 251.0075259268701,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "or5PdbWa1qHI49XWiqPhd",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 1225.1470575277185,
+      "y": 247.8284741610956,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "2zpfLdDfmBN3Xhl0HkCt5",
+      "kind": "person",
+      "text": "Analyst",
+      "x": 1345.0399662179154,
+      "y": 271.63967915407943,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "a1yw87xvPVenIRtuS0H7y",
+      "kind": "system",
+      "text": "Database",
+      "x": 1487.566013563853,
+      "y": 248.29326571814954,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "YrsGEQMXIXVdyy7FiPngE",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 1644.1864152982375,
+      "y": 250.5623042099609,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "H4T4Gz4FAqc5AxxQawh2S",
+      "kind": "glossary",
+      "text": "Term 22",
+      "x": 1769.638633193864,
+      "y": 267.4791230525609,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "xDO3ip5NYJ5lPeISIkRM8",
+      "kind": "event",
+      "text": "Password reset requested",
+      "x": 1927.1350408917426,
+      "y": 245.40500949904046,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "XjFTj1oPeuFg5sKTrl02K",
+      "kind": "hotspot",
+      "text": "User confusion here",
+      "x": 2074.1403953486715,
+      "y": 272.1314015513754,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "CwlLRGNSi3bEoO2nMrKUg",
+      "kind": "event",
+      "text": "Review submitted",
+      "x": 2185.8605586768654,
+      "y": 248.60915374386948,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ifmCgEdZUXLmdJu4ERVdb",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 2349.576753770658,
+      "y": 266.12923117940403,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "983rYX53pm7Nl3nBDnP1T",
+      "kind": "event",
+      "text": "Email sent",
+      "x": 2478.7199333847957,
+      "y": 269.8975770913727,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "fRiLHUvJj0FWOM8O5xcI1",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 2621.6705977638135,
+      "y": 270.21668794613953,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "7f2ULsIhcZsiylfpIcHIv",
+      "kind": "hotspot",
+      "text": "Missing validation",
+      "x": 2751.521949757831,
+      "y": 258.1223247571134,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "1rjkq3tpDCuxhNBYMFCHt",
+      "kind": "glossary",
+      "text": "Term 74",
+      "x": 2897.1342056727676,
+      "y": 270.46119185711854,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "4W0CIYCwxi1Y1TLtsimUD",
+      "kind": "system",
+      "text": "Database",
+      "x": 3030.984009780888,
+      "y": 251.2570389060454,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "KfyGoLvTAbDvbVrV1iaEb",
+      "kind": "event",
+      "text": "File uploaded",
+      "x": 3193.8884923713804,
+      "y": 250.41816430239174,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "2Y1XlhrqPQBCUmyderNut",
+      "kind": "event",
+      "text": "Checkout started",
+      "x": 3334.734308556425,
+      "y": 262.278640290615,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "uyfUMXi60dXg4nqAB6OtL",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 3473.078332598841,
+      "y": 272.1430196475145,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "LE0HKxFL6t9LPrOF3gDRS",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 3586.533705571398,
+      "y": 263.83677896798855,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "GuV4AxdX1DlK1rweBBsHg",
+      "kind": "person",
+      "text": "Support Agent",
+      "x": 3732.9946834080247,
+      "y": 267.5547002415479,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "46KdcaRrawAaKsZX5uv7b",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 3870.1530887622957,
+      "y": 271.93268193352515,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "wzAERy8bPfkmBhsREDG2b",
+      "kind": "event",
+      "text": "Checkout started",
+      "x": 4016.354927520531,
+      "y": 265.7822190786028,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "hHQ9YBnGXkTYY0H5Gv4Lq",
+      "kind": "hotspot",
+      "text": "Missing validation",
+      "x": 4165.358367953133,
+      "y": 266.19276168509344,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "c6bmimOdCp1HGYE8n1ctO",
+      "kind": "person",
+      "text": "Analyst",
+      "x": 4313.0670074690315,
+      "y": 248.24180796096815,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "pdNfdaITLGwy41mfW89p1",
+      "kind": "system",
+      "text": "Analytics",
+      "x": 4428.409811412079,
+      "y": 264.03476626853313,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "BhprEPjcDbq1gF4h3xnCV",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 4592.957238315506,
+      "y": 256.43976678955187,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "TliNpqTWBPBnutwi4s7hU",
+      "kind": "event",
+      "text": "Password reset requested",
+      "x": 4713.137389030546,
+      "y": 266.2912015412135,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "O0JQQVqAZ3JN3O0KpZjtb",
+      "kind": "event",
+      "text": "Profile updated",
+      "x": 4858.828089729947,
+      "y": 265.74859567126254,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "CBc99sXoqnKfNSp0DBffT",
+      "kind": "opportunity",
+      "text": "Opportunity 36",
+      "x": 5013.589253574525,
+      "y": 262.3986264106517,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "rL7bwgPx5mVnIozjBuvVs",
+      "kind": "system",
+      "text": "Payment Gateway",
+      "x": 5143.946759592571,
+      "y": 272.9652989055219,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "wHznuZOo6R1AOIxWXUxcf",
+      "kind": "event",
+      "text": "Password reset requested",
+      "x": 5293.474215650024,
+      "y": 269.33875095781787,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "lHkQpsdRXx3sodbwE3sjM",
+      "kind": "event",
+      "text": "File uploaded",
+      "x": 5428.514317128292,
+      "y": 273.95589853731224,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "s1xsh3AQKBySzzipPWQY8",
+      "kind": "system",
+      "text": "Email Service",
+      "x": 5560.268623263328,
+      "y": 250.81209417540146,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ylR1er920OW1ga0f30MrE",
+      "kind": "event",
+      "text": "Profile updated",
+      "x": 5700.519211044382,
+      "y": 271.02479462966613,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "GDVWGYyo1PKnHXkNijlyj",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 5842.915766545822,
+      "y": 252.58618689537957,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "wP8AFGnEBFkB8Rh8y1Mv2",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 5976.9642602601325,
+      "y": 257.2011404747862,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "FXboEWvahCbdcewCTuVvK",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 6121.282294172371,
+      "y": 247.3777158640619,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "HEeh5OvjgNH3QgKP6jWgV",
+      "kind": "event",
+      "text": "Password reset requested",
+      "x": 6259.990665686936,
+      "y": 253.74503360774997,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ePkOF3gSZu31BnRxmJiHw",
+      "kind": "hotspot",
+      "text": "Integration issue",
+      "x": 6399.05160882214,
+      "y": 245.73491050594683,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "nv03AiOlgyIeiawFyJ7K3",
+      "kind": "event",
+      "text": "Review submitted",
+      "x": 6540.892919774595,
+      "y": 273.0759166311457,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "wvLFOfNPcjt0BBwcQwV6W",
+      "kind": "hotspot",
+      "text": "Technical debt",
+      "x": 6674.717576952793,
+      "y": 266.35751945499345,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "tLvpeXtbzu6ONYerrDtiR",
+      "kind": "event",
+      "text": "Email sent",
+      "x": 6816.569150040167,
+      "y": 251.1188530222079,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "VEgqtQkmdC49BMDzHi66W",
+      "kind": "hotspot",
+      "text": "UX improvement needed",
+      "x": 6969.089882307337,
+      "y": 257.3439481553915,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "5yYfCjR6NAfNAvUyudgi7",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 95.80036466722645,
+      "y": 409.3959272822084,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "kYL8Lahh0Lwkdt0WdDjMX",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 240.37233303106524,
+      "y": 411.3206354993916,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "FXhy08U1RzP0LlMJ0qAut",
+      "kind": "hotspot",
+      "text": "User confusion here",
+      "x": 386.2189823449081,
+      "y": 412.5482417397051,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ztx4ScMhcXnHtZVbtzS9F",
+      "kind": "event",
+      "text": "Review submitted",
+      "x": 513.3269227430375,
+      "y": 416.00530094799365,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "gCo4242ek5i0U2wIbt6ep",
+      "kind": "event",
+      "text": "Payment processed",
+      "x": 653.3404853201873,
+      "y": 410.6149008453179,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "5XKRQavGzeKVVG2nzNKdK",
+      "kind": "event",
+      "text": "Notification sent",
+      "x": 803.5494486257022,
+      "y": 408.9086579746752,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "4JG8qvR9S0dpJ9xL3EdZR",
+      "kind": "hotspot",
+      "text": "UX improvement needed",
+      "x": 949.292147494289,
+      "y": 412.5060410225206,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Uz5nzGK9sljh1DFzrr5PQ",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 1089.3634916937244,
+      "y": 431.9772409031346,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "xzHVWm68Eh8fpKxSeHhRy",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 1215.7462087714143,
+      "y": 432.32286106999413,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "vFeDPs5bmxq4PLvCc2Xsh",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 1371.3889213952464,
+      "y": 430.6554541358364,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "txvnZ1W5hykI1sxgbyOh6",
+      "kind": "event",
+      "text": "Checkout started",
+      "x": 1512.8898871019612,
+      "y": 426.8328232512256,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "wzZFxCtEKlM4vpx9KNFBL",
+      "kind": "person",
+      "text": "Customer",
+      "x": 1635.5198483350082,
+      "y": 408.1772573844513,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "fNyhSeoyqhxqS7KVyOvmY",
+      "kind": "opportunity",
+      "text": "Opportunity 63",
+      "x": 1770.4297454249152,
+      "y": 407.2506767266445,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "dBv5kp1O4ylzhfBXH5WLs",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 1933.0463900015393,
+      "y": 416.7682771419673,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "w9NdUT39vf1x4MyDWQ0xq",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 2061.219460198545,
+      "y": 432.9009924545414,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "WYiAFgzRZXVfF0dcmG5rz",
+      "kind": "hotspot",
+      "text": "Integration issue",
+      "x": 2198.267580017575,
+      "y": 422.9775283263572,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "xWlhIbMQPlDab7QinstM7",
+      "kind": "system",
+      "text": "Email Service",
+      "x": 2340.599046412829,
+      "y": 427.81726110199804,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "CL4z8VlsYPUgBdTruqYxM",
+      "kind": "hotspot",
+      "text": "Slow response time",
+      "x": 2493.527926656822,
+      "y": 408.1329071049399,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "qdrs5VrttLMq7ztMSAzey",
+      "kind": "event",
+      "text": "Password reset requested",
+      "x": 2611.791697674457,
+      "y": 406.3800513507571,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Z5YPz8899S2omUYYdPX8O",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 2749.2154097625958,
+      "y": 418.5257550998657,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "BwXKhWVqdunOx7l0Evhqe",
+      "kind": "system",
+      "text": "Email Service",
+      "x": 2909.047571597397,
+      "y": 425.4336966549844,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "C4yI5ADijPC118RtdGUVt",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 3037.047485456042,
+      "y": 425.69184643734894,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "vQYQkcltst8NQnh4OdQuD",
+      "kind": "hotspot",
+      "text": "Performance bottleneck",
+      "x": 3167.378197453825,
+      "y": 419.1942924123179,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "DK2UuITKeQF0eSDw5HeZa",
+      "kind": "hotspot",
+      "text": "Technical debt",
+      "x": 3325.0668056974528,
+      "y": 434.2874693146539,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "h7CLZSLuHAy1UkWHSvafy",
+      "kind": "glossary",
+      "text": "Term 16",
+      "x": 3462.664054623752,
+      "y": 410.8634639640524,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "SWNVGZ9guUShpyxQ27cGl",
+      "kind": "event",
+      "text": "File uploaded",
+      "x": 3595.3159521256257,
+      "y": 426.70863692390174,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "G74yBRkuLEDEdKHUhHcoA",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 3739.513021508444,
+      "y": 412.06903038690575,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "1nSpdF5p8XSilZj9BU3Ch",
+      "kind": "person",
+      "text": "Guest User",
+      "x": 3865.0853985228314,
+      "y": 414.9720225431783,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "imfwZJONj6GOGlOORLsiW",
+      "kind": "system",
+      "text": "Cache",
+      "x": 4029.4008596163876,
+      "y": 421.9071063932034,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "F8oT9aGBu9Ss6okeXhSzh",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 4146.674887093665,
+      "y": 406.06349982221684,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "92QDWHVyoryBXbjJmjtmp",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 4309.544261633118,
+      "y": 434.4796072709818,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "9uIGjcVAXcdqPuS5tqI14",
+      "kind": "system",
+      "text": "Database",
+      "x": 4451.972665100593,
+      "y": 428.6947087737217,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Ygo5U0mQ5nPb070pgf594",
+      "kind": "event",
+      "text": "Payment processed",
+      "x": 4594.18056338966,
+      "y": 432.09454993311493,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "hYNF5JeOsIHD0Di9wER2Z",
+      "kind": "event",
+      "text": "Session started",
+      "x": 4732.736505200505,
+      "y": 417.33827096009804,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "qsgLczFTHYgIl2EhWRqzA",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 4872.460721670345,
+      "y": 411.3735494810088,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "dky4Wp8FnOsqmDshkjAG0",
+      "kind": "person",
+      "text": "Manager",
+      "x": 5002.946967824979,
+      "y": 429.18619223916,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "MozWQZ0GF61CEcT0z1PR9",
+      "kind": "hotspot",
+      "text": "Security concern",
+      "x": 5142.8727377999185,
+      "y": 424.60565178844155,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Equb7gO1Z2MRANNCXtJP2",
+      "kind": "hotspot",
+      "text": "Slow response time",
+      "x": 5276.170859420517,
+      "y": 415.60827120036026,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "6PpJb77iPVbL4zKTcujJV",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 5418.607954808909,
+      "y": 414.100369435669,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "N3IXRQOjbl4KI5iSHWlZR",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 5566.769315301921,
+      "y": 428.2890202783894,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "bRI0LsBMSNdiKBju0C52t",
+      "kind": "event",
+      "text": "Shipment dispatched",
+      "x": 5697.7224025318965,
+      "y": 418.8902824761818,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "UI55saExc1vmXSfoN52UG",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 5831.719435342059,
+      "y": 408.19774111556535,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "w76N5a9lawvxOpJaNhgQ9",
+      "kind": "system",
+      "text": "Search Engine",
+      "x": 5967.497859371557,
+      "y": 418.8673165085078,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "uebLHCOPp7haJvqmqaOG2",
+      "kind": "event",
+      "text": "Shipment dispatched",
+      "x": 6122.784587439857,
+      "y": 433.941694797655,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "bUgqiA0Jgotqm3rj71kQT",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 6268.388225906468,
+      "y": 429.61706520392045,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "S6DKMgQXFvlS1u9x3G3Cy",
+      "kind": "person",
+      "text": "Manager",
+      "x": 6407.220385310128,
+      "y": 406.68434638704616,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "mI2qkqI6WxXcW3wz61pAw",
+      "kind": "system",
+      "text": "ERP",
+      "x": 6552.9784680392395,
+      "y": 422.7550352260532,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "OPXukJSQ7pAs0kg1myCbb",
+      "kind": "event",
+      "text": "Profile updated",
+      "x": 6692.935239102451,
+      "y": 428.23029457835463,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "BBdl3McNhXrUR4fteeAfs",
+      "kind": "event",
+      "text": "Session started",
+      "x": 6810.200770538261,
+      "y": 431.58161950337814,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "FIFDtnomtD75DnQWmpH0z",
+      "kind": "event",
+      "text": "Payment processed",
+      "x": 6964.9577275887095,
+      "y": 417.76724886140056,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Ju1zQ61ilDIPlpptmp9VO",
+      "kind": "hotspot",
+      "text": "Data inconsistency",
+      "x": 99.31910574777405,
+      "y": 593.0822606550909,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "4sOFZRmndqBprEMQVhnJW",
+      "kind": "glossary",
+      "text": "Term 77",
+      "x": 243.0428145708093,
+      "y": 592.848619982526,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Oob1ppLUO2sSoiAwZtMTN",
+      "kind": "hotspot",
+      "text": "Error handling needed",
+      "x": 370.0196731381419,
+      "y": 566.3454625686609,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Sd8vrqvI7IpL7KjCqNjeQ",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 512.5950883445884,
+      "y": 587.2876852003255,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "52LfREXRb4u4LgvtbSIoY",
+      "kind": "person",
+      "text": "Manager",
+      "x": 645.8156481598644,
+      "y": 574.2097492746227,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "n3rbyF5B9bfXu7j5yo6o0",
+      "kind": "event",
+      "text": "Review submitted",
+      "x": 793.7221665657472,
+      "y": 593.5708758594575,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "QB7dxB90HVYLNbXAcIjS4",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 930.5018539893244,
+      "y": 582.4253284534472,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "DSbUJHJCzycsSAumV6tOS",
+      "kind": "event",
+      "text": "Session started",
+      "x": 1075.9403179501626,
+      "y": 565.3968573331871,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "lFU4fIk0Uv3HlPInSvADJ",
+      "kind": "event",
+      "text": "Password reset requested",
+      "x": 1211.7961977404077,
+      "y": 587.0334631081188,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "eYcmPW2aP2ZCWlCYIFkwb",
+      "kind": "system",
+      "text": "Payment Gateway",
+      "x": 1360.2930261964898,
+      "y": 582.5347726332105,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "0WuV8CC9qNHmvjrrO1bgr",
+      "kind": "hotspot",
+      "text": "User confusion here",
+      "x": 1493.9683020007005,
+      "y": 585.677919231443,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "YBbCEs2YN5fpQNvlWAYdf",
+      "kind": "system",
+      "text": "Cache",
+      "x": 1632.7295246179403,
+      "y": 582.0628370476634,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "OyxLkJQKbMYQDoGb7deA1",
+      "kind": "system",
+      "text": "Analytics",
+      "x": 1773.17762908814,
+      "y": 571.2638398956547,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "RvK7bLWkRIS83nMVqym6a",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 1913.185310889175,
+      "y": 569.1531479406958,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "bK8KhRRirz9hQuatEyPfx",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 2068.52374160544,
+      "y": 582.3087422683911,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "mViZPV5VfHx9Acp3o7eM4",
+      "kind": "opportunity",
+      "text": "Opportunity 13",
+      "x": 2191.913487012235,
+      "y": 583.2184445086586,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "GypwK2XwguZQL4EXyjLc9",
+      "kind": "opportunity",
+      "text": "Opportunity 87",
+      "x": 2335.6092722725775,
+      "y": 591.7834567271556,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "VGChreoE5k2DucpncBciU",
+      "kind": "event",
+      "text": "Payment processed",
+      "x": 2482.336827804761,
+      "y": 587.3291726728144,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "61qBq5jd7T6rmTosxUoHF",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 2623.260291809809,
+      "y": 585.7608200648933,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Kybll7pVfikfd2qF3RfKu",
+      "kind": "system",
+      "text": "Cache",
+      "x": 2767.7792588154994,
+      "y": 577.2200743465157,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Uz95aDGlb0CqVmcGhYmnQ",
+      "kind": "person",
+      "text": "Analyst",
+      "x": 2891.9723507876183,
+      "y": 594.6316469765035,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "j00JglBtonsQ9Z6G2JkKL",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 3035.517223369801,
+      "y": 572.4693775299735,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "LwfGtUAgFBwDLr033mjXx",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 3187.9260303199685,
+      "y": 576.209594756844,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "n6BLVCs0V0vF57emCrCFB",
+      "kind": "hotspot",
+      "text": "Technical debt",
+      "x": 3325.065857948421,
+      "y": 570.2610755209018,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "9DVZlRf4Xe17rBO9GjMuI",
+      "kind": "hotspot",
+      "text": "Technical debt",
+      "x": 3461.8351597127785,
+      "y": 582.1175557696221,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Roe4mBwpkf0Pfv9UjcW6j",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 3589.554476233349,
+      "y": 590.901133166131,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "B82Sm0ZGhxSPHHN0LIDs6",
+      "kind": "event",
+      "text": "Shipment dispatched",
+      "x": 3735.681053102657,
+      "y": 589.1703222959608,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "OuS9j5wa6IGUZ4OH5HtZC",
+      "kind": "person",
+      "text": "Guest User",
+      "x": 3880.0689264935277,
+      "y": 577.7450208488781,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "KTW7fv75zpq0rbQmAt3ww",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 4033.1843436051536,
+      "y": 587.1266249293096,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "qipTqisUBVZje3BkErF2x",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 4145.610612434167,
+      "y": 578.9978136791862,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "jlNBqViE5gWWKoo8IMYUv",
+      "kind": "opportunity",
+      "text": "Opportunity 98",
+      "x": 4299.953839515896,
+      "y": 584.0552395374733,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "eQGTApRkdFiMmcx7EyyzV",
+      "kind": "person",
+      "text": "Admin",
+      "x": 4446.142328569308,
+      "y": 567.879946511894,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "pExu09XEIGHjQ7s5APY0Q",
+      "kind": "hotspot",
+      "text": "Security concern",
+      "x": 4567.084843821385,
+      "y": 573.040075013873,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "2iqNN3lHmNf6obj8KKm1w",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 4719.3839666892945,
+      "y": 568.2687364430241,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "7OhMR3LA98EYqwEzoR6fe",
+      "kind": "person",
+      "text": "Analyst",
+      "x": 4849.12483753327,
+      "y": 567.6919722152314,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "OeTzO3YKcl5LkTiszBtJs",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 5002.201720506437,
+      "y": 582.8119013811132,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Fw1rIyJ3B7BG9vxHzPRJ6",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 5139.3034286426155,
+      "y": 590.6193358044357,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "8PyNHEnaW0TEEhEwRQM40",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 5293.59259204467,
+      "y": 574.1623993227637,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "U7lSmpL7CF6mVHElGYsVx",
+      "kind": "opportunity",
+      "text": "Opportunity 59",
+      "x": 5406.7746146967975,
+      "y": 586.9889221465618,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "fSnP4UHBgaT2sQwN125Xp",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 5571.894003601343,
+      "y": 587.7074067736913,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "B0EqvLOe0Jgs7drYxZW9L",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 5689.681714680439,
+      "y": 566.5474064936938,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "limvPtTFHoSoEaLU2cxgu",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 5843.14910118951,
+      "y": 579.17275853678,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "O3fDHRB1vH0YIpU0vlBff",
+      "kind": "system",
+      "text": "ERP",
+      "x": 5968.518823515981,
+      "y": 567.9340248847386,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ivjh99xsBgbDITQa1wGHP",
+      "kind": "opportunity",
+      "text": "Opportunity 57",
+      "x": 6109.649506498492,
+      "y": 586.9163384735434,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "RSew8yICDVGeM8ApynPbM",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 6257.92264492862,
+      "y": 577.7201136771583,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "lslQ8g30S24EXo9cnEm17",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 6385.871152872096,
+      "y": 572.6214734652877,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "CQx7IvdI02QpoJHLKvZjt",
+      "kind": "hotspot",
+      "text": "Error handling needed",
+      "x": 6547.9718734574435,
+      "y": 579.7817933959649,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "84l9ClkHUMGIk8drAsWuu",
+      "kind": "opportunity",
+      "text": "Opportunity 0",
+      "x": 6691.730732189229,
+      "y": 593.8703854615031,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "DhG03JP6HdzKczmDcXfng",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 6821.348452354469,
+      "y": 589.5041333242456,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "9YZLgZI0rFU238JI9uPgk",
+      "kind": "hotspot",
+      "text": "UX improvement needed",
+      "x": 6951.059025268187,
+      "y": 578.1483744730431,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "kzjY4VEns1HpqSfIeRP6Z",
+      "kind": "hotspot",
+      "text": "Missing validation",
+      "x": 87.31946369640035,
+      "y": 741.4105671235321,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "fP2MZ5zo4WZIco1M3qow2",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 248.16749754426314,
+      "y": 732.5185317762644,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "AcJM1vHqvC9o4u80i0jJ4",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 387.83007797571133,
+      "y": 734.233175230187,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "uQ28iEy3dQM3DvrbTCtAV",
+      "kind": "hotspot",
+      "text": "User confusion here",
+      "x": 526.7369732821205,
+      "y": 746.8553531387472,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "f1Yw14ExPZ9oJh066ETcP",
+      "kind": "person",
+      "text": "Analyst",
+      "x": 647.0747419653493,
+      "y": 752.8485079915497,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "1gK0jxLQnAA8MmtPllbVd",
+      "kind": "event",
+      "text": "File uploaded",
+      "x": 803.7530154774428,
+      "y": 754.4562388960308,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "lux150Z4JYCuXwW5msuWq",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 930.8641200871915,
+      "y": 749.0014469296497,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "0z4cDIPf0vA0PeY9gYONZ",
+      "kind": "hotspot",
+      "text": "Integration issue",
+      "x": 1094.2533433409321,
+      "y": 725.8400013309665,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "uqzTorACl0h2948POEyXl",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 1220.0058009135125,
+      "y": 745.1937489070394,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "oPTEB9UBXZXcMAoyLgumt",
+      "kind": "hotspot",
+      "text": "Security concern",
+      "x": 1350.0112960982651,
+      "y": 733.3337657488083,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "XAb04ziZyA0GbS0sVBTfL",
+      "kind": "event",
+      "text": "Payment processed",
+      "x": 1512.6385286051996,
+      "y": 725.646665827602,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "IPtrwYl3C3Vvf0LPpI4er",
+      "kind": "event",
+      "text": "Payment processed",
+      "x": 1647.9308972080557,
+      "y": 748.1400261816301,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Vj0oDYyAmy3WoLru0pfTa",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 1776.90525451267,
+      "y": 739.7213796795667,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "odM8H1jrKNNyVDxKIghiL",
+      "kind": "system",
+      "text": "Email Service",
+      "x": 1919.4003902534482,
+      "y": 747.3172989917942,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "WKomVLIBwgMr2TVJ6oVD9",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 2070.551254485835,
+      "y": 746.1807021324753,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "e2yVnVVzrWKtiFX1xisqx",
+      "kind": "hotspot",
+      "text": "Performance bottleneck",
+      "x": 2188.8040959846617,
+      "y": 741.196358421056,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "R7FTE2JYlO8aZmOrmCHz7",
+      "kind": "hotspot",
+      "text": "User confusion here",
+      "x": 2327.0630629859534,
+      "y": 725.4716243598963,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "E7pC0RITGZkXvwTvWhqQP",
+      "kind": "hotspot",
+      "text": "Error handling needed",
+      "x": 2481.6309157515198,
+      "y": 742.71547801267,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "hEjTjoudmn3rEc3aDSHJZ",
+      "kind": "hotspot",
+      "text": "Integration issue",
+      "x": 2608.286671210124,
+      "y": 727.9893242067942,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "8UFqSAJeUJUhbgvsvNM7g",
+      "kind": "event",
+      "text": "Email sent",
+      "x": 2766.290674359598,
+      "y": 746.4919879277413,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "npLmVV535Yd0tGccrtlLO",
+      "kind": "opportunity",
+      "text": "Opportunity 66",
+      "x": 2890.622446248892,
+      "y": 754.8367258542387,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "2yGtoY5bw0cTb5ZdSMRvK",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 3044.8200987582586,
+      "y": 744.1682575069523,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "wSUFA3BivipIJs5eVJikQ",
+      "kind": "hotspot",
+      "text": "UX improvement needed",
+      "x": 3187.3175330737918,
+      "y": 749.3570537344506,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "3fY8NrXUBVngLmDfGayin",
+      "kind": "hotspot",
+      "text": "Performance bottleneck",
+      "x": 3313.714887800767,
+      "y": 728.0068811439368,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "0j3awy9UhSKYxEq09a9ip",
+      "kind": "system",
+      "text": "ERP",
+      "x": 3446.308111107881,
+      "y": 753.2508496176375,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "csRUu97YFzcwm64rUmqiD",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 3595.2996975520737,
+      "y": 734.1066345290104,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "tZo7rWJ6SVcaLmV2Zgutk",
+      "kind": "hotspot",
+      "text": "UX improvement needed",
+      "x": 3743.301766555837,
+      "y": 731.9685050014109,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "97HvnK1RYH5LwmTbDcBm4",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 3887.036595103567,
+      "y": 734.7809019303875,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ycfF6oTl4dV5yH2r2Zu8n",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 4016.9286558163953,
+      "y": 754.5088178432749,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "XaaeARKK5C5eUlDYAGezU",
+      "kind": "hotspot",
+      "text": "User confusion here",
+      "x": 4158.315449813592,
+      "y": 738.0979587966863,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "tIbxkRPKUqrExYgd0AwF3",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 4302.585465907285,
+      "y": 745.0809018787012,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "iHPmUJWwHxawDgxTtbyWZ",
+      "kind": "event",
+      "text": "Notification sent",
+      "x": 4436.100661941417,
+      "y": 754.3734117840019,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ljE30OVNJ9jlFwUPfUoUP",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 4581.797388755189,
+      "y": 730.7781643269402,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "YUPAnEQvgRbYS9nJlONqE",
+      "kind": "hotspot",
+      "text": "Technical debt",
+      "x": 4715.0145796183815,
+      "y": 739.4885763987583,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "SGKnIe29aiNKE2quzFOlU",
+      "kind": "person",
+      "text": "Manager",
+      "x": 4867.792102505988,
+      "y": 747.3094692244772,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "yEj8I76Pam30CpEZrTRTx",
+      "kind": "person",
+      "text": "Premium User",
+      "x": 4999.207239900579,
+      "y": 750.3192500546609,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "rPF4WIFrrQMX2npw4srPc",
+      "kind": "event",
+      "text": "Payment processed",
+      "x": 5147.219982116005,
+      "y": 738.4276205308817,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "2epgbV5UQTUhyHorl1wJP",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 5269.886640213455,
+      "y": 753.8398035581728,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "sqbvv3eEUokA86JpDZLZH",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 5429.117559687191,
+      "y": 728.1135352704862,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "egaPRvhFAcVOcf3f7mW36",
+      "kind": "event",
+      "text": "Session started",
+      "x": 5568.640308329531,
+      "y": 735.2831708068427,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "hqZuqYw9ia2o6jeJpZzfE",
+      "kind": "event",
+      "text": "Session started",
+      "x": 5713.803091649395,
+      "y": 746.3121583549685,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "OacybZ3MYxdyN7rWTKQld",
+      "kind": "event",
+      "text": "Email sent",
+      "x": 5848.109021184035,
+      "y": 731.3343133996434,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "3mxxzSufQ5jtynT6ppWsc",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 5968.493310154987,
+      "y": 731.803245273375,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "0ry6VFMKk0kNqFh8fi70i",
+      "kind": "event",
+      "text": "Payment processed",
+      "x": 6126.970663129976,
+      "y": 735.5877476920417,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "VR6JP6Qo48b5ibyT0ooYA",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 6254.698729866397,
+      "y": 751.4047474001159,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "f7ugm0vnGtglSaAGJIz3p",
+      "kind": "event",
+      "text": "Email sent",
+      "x": 6395.48995600381,
+      "y": 727.8085019403849,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "uRsN4sirrk7uqLPpdi6Il",
+      "kind": "event",
+      "text": "File uploaded",
+      "x": 6532.93311253532,
+      "y": 744.7652288334945,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "fL66uL7pweSjIEjxRouRh",
+      "kind": "hotspot",
+      "text": "User confusion here",
+      "x": 6690.996229385362,
+      "y": 740.0909303090176,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Hw44ewmtCkaxcbcXIEQY1",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 6808.783250139073,
+      "y": 740.3997201639888,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "fSwiATcyq3jVeaD3jRYav",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 6964.732011112349,
+      "y": 745.9528641535452,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "mEduAaIywuycj7F7zR7E0",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 92.22511653841508,
+      "y": 911.3277435796477,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "rgOEiINQzaoRNIJ76FXTV",
+      "kind": "event",
+      "text": "File uploaded",
+      "x": 252.8146398006643,
+      "y": 885.0260174125436,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "zcs7oEuz6QoSFOFqNcERh",
+      "kind": "event",
+      "text": "Account created",
+      "x": 392.2387990841642,
+      "y": 901.5226831734034,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "dakFYiv27wfsZb1RwBfx0",
+      "kind": "glossary",
+      "text": "Term 22",
+      "x": 508.019158379815,
+      "y": 890.5904810613516,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "mFutX8g6u6ySrlwKQSszQ",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 656.7919534957797,
+      "y": 890.3460975785739,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "6a0FcRXknVq9tSuLTwfGa",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 793.4729404168838,
+      "y": 889.332412363125,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "5DrNALruBhBVJHXs60WTY",
+      "kind": "event",
+      "text": "Session started",
+      "x": 945.9150936122714,
+      "y": 909.1382899140057,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "eJ2sDQs7jCsB59C4HELW3",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 1072.5704836166292,
+      "y": 892.4264695640055,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "YGtFH0mFeHRytgIZ7BE6K",
+      "kind": "opportunity",
+      "text": "Opportunity 1",
+      "x": 1230.0162094797424,
+      "y": 903.6686673625177,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Zkqeow6678WF3dp3P6njg",
+      "kind": "event",
+      "text": "Profile updated",
+      "x": 1367.9963407666933,
+      "y": 898.1768328511553,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "M8DMZOX5AV2o90g6ZS3aZ",
+      "kind": "opportunity",
+      "text": "Opportunity 34",
+      "x": 1505.5249390676233,
+      "y": 906.0920188948974,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "vSw5rYlNSFKjDJNrUfk72",
+      "kind": "event",
+      "text": "Email sent",
+      "x": 1630.9855226785385,
+      "y": 894.197171042887,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ilteUVRoo5Tw5L2SXeDkF",
+      "kind": "event",
+      "text": "Checkout started",
+      "x": 1790.550185712769,
+      "y": 911.9744840258301,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "SDA2kouuxCJPjKk9S0qWe",
+      "kind": "event",
+      "text": "Email sent",
+      "x": 1918.9390521172002,
+      "y": 902.500332679612,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "QSnyNnpFkqoCol8fpjseE",
+      "kind": "event",
+      "text": "File uploaded",
+      "x": 2057.1810120189207,
+      "y": 888.9032716860968,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "CMkAxU8AcnuE60zuBMjjN",
+      "kind": "hotspot",
+      "text": "Missing validation",
+      "x": 2187.772186213203,
+      "y": 901.3508896648688,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "J9au6sVfwQAho24taHofJ",
+      "kind": "person",
+      "text": "Admin",
+      "x": 2327.369641853901,
+      "y": 892.1923824882537,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "v9kzStb767Cw3lsYWsNDr",
+      "kind": "hotspot",
+      "text": "Performance bottleneck",
+      "x": 2468.956933034689,
+      "y": 885.972950183023,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "zuxtBVaipe77dSca0k2LY",
+      "kind": "glossary",
+      "text": "Term 59",
+      "x": 2605.895462473544,
+      "y": 886.2464545158091,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "krHx1JikOJEf1TF1mUHBK",
+      "kind": "event",
+      "text": "Review submitted",
+      "x": 2770.168162844618,
+      "y": 901.5378194726538,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "gatBrqrkXkcFb8tGxcoOZ",
+      "kind": "event",
+      "text": "Notification sent",
+      "x": 2890.4603409245847,
+      "y": 897.020159134562,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "yKNLBIrYnMNB8HPHEuErs",
+      "kind": "hotspot",
+      "text": "Performance bottleneck",
+      "x": 3034.0741358942287,
+      "y": 913.0113354772733,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "3sZRfOTTtS5pfwjOiOLis",
+      "kind": "hotspot",
+      "text": "Integration issue",
+      "x": 3180.638772422514,
+      "y": 908.5950994425064,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "SkgnSwPRDHWko31Xnoj8P",
+      "kind": "system",
+      "text": "Cache",
+      "x": 3334.4186893388955,
+      "y": 913.7349876142229,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "h3gPEIY3E7OXY8ebHLwrd",
+      "kind": "glossary",
+      "text": "Term 51",
+      "x": 3463.0174708877653,
+      "y": 885.0717415376744,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "BI7azfqrBB3NybwLHyafY",
+      "kind": "event",
+      "text": "Checkout started",
+      "x": 3608.0376505853974,
+      "y": 889.8131478240404,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "DUasuBrsKW2hGh4wktUS9",
+      "kind": "event",
+      "text": "Password reset requested",
+      "x": 3725.372167021616,
+      "y": 903.968737869831,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "G7ZfeVZBRp4yinv8hLxqn",
+      "kind": "hotspot",
+      "text": "Security concern",
+      "x": 3888.9814991659855,
+      "y": 900.5921815451137,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "YDwbCwJ8oPNfWIRVCueYs",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 4009.213015978155,
+      "y": 890.7148014150335,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "QFnqVztlZGydNOiE1MUCC",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 4169.0054327941625,
+      "y": 907.1812544701675,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "WJlSzH1V0ifh0RVE94TN7",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 4291.857584554652,
+      "y": 886.186137380313,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "XPCRgveHy9XtsYgd2XoLE",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 4428.966401798152,
+      "y": 890.141749900955,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "7yPtQquBktMg7B8Xik579",
+      "kind": "hotspot",
+      "text": "Integration issue",
+      "x": 4592.029673754249,
+      "y": 904.5687778393653,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "VXQz1nbHbSkWIRTnEnTYq",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 4711.947793768556,
+      "y": 910.9952791080598,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "mwPpW3wEANCn8OVAp7PqE",
+      "kind": "system",
+      "text": "Database",
+      "x": 4874.547246073661,
+      "y": 905.9719225492121,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "jp0aaHEWXllzSqbopE4Y2",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 5000.098800139617,
+      "y": 913.4293812935874,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "KfdweconLkjuue2Z44tUF",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 5146.750280073431,
+      "y": 890.6438358721596,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "V5opqOHwfH22C45gNfpyz",
+      "kind": "event",
+      "text": "Payment processed",
+      "x": 5266.836268231644,
+      "y": 887.6471376646055,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "JxxLl5QNbOE61jbYFCFES",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 5417.571575319638,
+      "y": 895.6699364868675,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "mCb06nHJJRGsSkQBa5vnT",
+      "kind": "system",
+      "text": "Database",
+      "x": 5571.763677230919,
+      "y": 906.745729010674,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "sGq3r9E97IxvqU3F3tnNv",
+      "kind": "hotspot",
+      "text": "Integration issue",
+      "x": 5708.817995323186,
+      "y": 897.9034032735165,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "yVooaaaJlfDzBE2u7mtPj",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 5837.920980069185,
+      "y": 902.3962911438804,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "gnHGH8RkPbD2vfQM9cB9g",
+      "kind": "opportunity",
+      "text": "Opportunity 92",
+      "x": 5965.021344320635,
+      "y": 891.4521605497987,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "sQWE4sNsfUXLdzX3YWMtm",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 6128.028796642243,
+      "y": 891.0451541529737,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "CUyENPAv8yWRpRjfQJ89D",
+      "kind": "event",
+      "text": "File uploaded",
+      "x": 6251.223926461335,
+      "y": 905.4678645146973,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Nrck0IjGt6v1shGUUTWYQ",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 6401.66664033086,
+      "y": 901.8173082571318,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "j5Y1TZO7Om6TCOiPoTQzV",
+      "kind": "event",
+      "text": "Email sent",
+      "x": 6541.881369461141,
+      "y": 913.8265099559046,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "zS77BKKR9pvJYShb8x1GC",
+      "kind": "glossary",
+      "text": "Term 58",
+      "x": 6682.393704555935,
+      "y": 908.8735043723875,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Hy7TmXKP94U9rQpjrKV8f",
+      "kind": "glossary",
+      "text": "Term 52",
+      "x": 6817.14960943257,
+      "y": 889.4245458975536,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "akCh308WvgMVryJDKMNIQ",
+      "kind": "system",
+      "text": "ERP",
+      "x": 6969.020803815207,
+      "y": 902.2551602754686,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "cExlYATssE7udYrDNJYbb",
+      "kind": "event",
+      "text": "Payment processed",
+      "x": 101.08276569357832,
+      "y": 1054.0377803952265,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "3bqqa1GPe7djGhS1BnH1A",
+      "kind": "event",
+      "text": "File uploaded",
+      "x": 236.52193055973106,
+      "y": 1063.7128413658584,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ir8HbBkm1xtRRKU7xtzC2",
+      "kind": "event",
+      "text": "Password reset requested",
+      "x": 373.2880396810503,
+      "y": 1062.0489272032598,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "lGNzZE51CFnuDGvdr0tAO",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 506.4993882033993,
+      "y": 1060.3105125766708,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Dyw8abL4V0cKX2eKyLAqI",
+      "kind": "opportunity",
+      "text": "Opportunity 91",
+      "x": 667.8101717912219,
+      "y": 1048.795018361399,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "JABbnfLRFrun0fr3lZvEQ",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 812.4372281856586,
+      "y": 1066.209719124137,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "lsa9V6Gen1qqQAf03yWOt",
+      "kind": "event",
+      "text": "Account created",
+      "x": 945.9147583188239,
+      "y": 1048.9981647005864,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "c4LwvjZEt6tPvuTbr5bd0",
+      "kind": "event",
+      "text": "Shipment dispatched",
+      "x": 1092.374812073635,
+      "y": 1057.7221395963813,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ebLWVI0Cq15XZZ4YmsFEK",
+      "kind": "event",
+      "text": "File uploaded",
+      "x": 1211.6115452930133,
+      "y": 1055.8398589051355,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ponpyOrKqYf5xXIenuxSs",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 1359.4526606543318,
+      "y": 1064.2279184003903,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "xaFrt3vfLp6k1RY7W4jow",
+      "kind": "event",
+      "text": "Email sent",
+      "x": 1493.5642566748381,
+      "y": 1046.0832386307493,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ku4A9dMuYiGYBHjOj7dQC",
+      "kind": "person",
+      "text": "Customer",
+      "x": 1633.4732615613973,
+      "y": 1058.2772062159481,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "z8HKxdqdcUQichBskqQcV",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 1774.2547451716605,
+      "y": 1058.6192032527529,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "gk2E9op4vYFfTRcajByMV",
+      "kind": "event",
+      "text": "Shipment dispatched",
+      "x": 1913.0275911614356,
+      "y": 1064.2135486318193,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "VzMt1ufyawSaq3uU4KCHW",
+      "kind": "system",
+      "text": "Analytics",
+      "x": 2054.199228998464,
+      "y": 1062.0538040725069,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "U2KyoSUza8iKxhC1RppSU",
+      "kind": "event",
+      "text": "Payment processed",
+      "x": 2201.119458344676,
+      "y": 1072.7407874655016,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "DzYbB1h21ruXLHfxZY6Va",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 2347.1722291463507,
+      "y": 1074.644794416898,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "4m3FVsxTXpF8PTdKk4HtC",
+      "kind": "person",
+      "text": "Customer",
+      "x": 2471.8360999782544,
+      "y": 1060.836672101301,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "QUviv3fgy8gaqtg7DLl6i",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 2630.6291284240897,
+      "y": 1048.3445633612328,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "QuD0yRaQrTOBqiBJRaSyv",
+      "kind": "person",
+      "text": "Guest User",
+      "x": 2761.719336220958,
+      "y": 1071.2557851115334,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "pKPdchjEhlZ022GmzbAaH",
+      "kind": "event",
+      "text": "Account created",
+      "x": 2911.689626261043,
+      "y": 1050.9223121439586,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "9CmVahkPZwD5ueR5Aj1Nl",
+      "kind": "hotspot",
+      "text": "User confusion here",
+      "x": 3047.7008701679947,
+      "y": 1061.3751001658272,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Etuol0keKAnS0jpodaua6",
+      "kind": "event",
+      "text": "Account created",
+      "x": 3180.6480109444233,
+      "y": 1070.33118269878,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "LXCirFZjPpC6N3WPPbqrq",
+      "kind": "event",
+      "text": "Session started",
+      "x": 3331.928188520953,
+      "y": 1055.4177934261375,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "GIznIHVTGqlQ7BTutUNdd",
+      "kind": "event",
+      "text": "Notification sent",
+      "x": 3465.120582982941,
+      "y": 1045.3291758263904,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "oILzNArptXK6otPbV2JK2",
+      "kind": "hotspot",
+      "text": "User confusion here",
+      "x": 3589.4091374614354,
+      "y": 1050.380417110377,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "UbJ8lNeMYHOdniUOSCnOl",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 3732.324613213438,
+      "y": 1054.6555883928033,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "F3c7mUy7NILOwN8mAN1yj",
+      "kind": "glossary",
+      "text": "Term 89",
+      "x": 3876.599142244043,
+      "y": 1058.2215949960578,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "3gagrWUA0y4b3FUoKhg3X",
+      "kind": "event",
+      "text": "Review submitted",
+      "x": 4021.618323093384,
+      "y": 1051.1972162053062,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "L3qRSf5qG4df0GuCYrCsH",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 4150.055687476659,
+      "y": 1068.5438724079168,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Vn3MYOePyzInUyBs1UXWg",
+      "kind": "system",
+      "text": "Analytics",
+      "x": 4297.307515334659,
+      "y": 1067.3280668349691,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "qksALMu06L8eQBknVD1OC",
+      "kind": "hotspot",
+      "text": "User confusion here",
+      "x": 4428.030370780416,
+      "y": 1048.1740462784296,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "MtIYSwxhTlzSvxsteXHdv",
+      "kind": "hotspot",
+      "text": "UX improvement needed",
+      "x": 4575.425628016114,
+      "y": 1064.3041457657887,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Dk0P4WdgZcRSyN8Q9bqQJ",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 4721.153707578907,
+      "y": 1072.8264139271007,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "C2GkK92ZJOuWWGPVFygzU",
+      "kind": "event",
+      "text": "Account created",
+      "x": 4856.483739236296,
+      "y": 1048.7528709859077,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "esZw9JAcTjqpbEnzynEIr",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 4986.177010933682,
+      "y": 1048.1781465868355,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "M5oRn7eZNguKcmDHn1sLB",
+      "kind": "glossary",
+      "text": "Term 63",
+      "x": 5129.574449059086,
+      "y": 1046.4448731938999,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "bGjOP10Yi1JZ6Xk9m7vvG",
+      "kind": "event",
+      "text": "Checkout started",
+      "x": 5275.626975071745,
+      "y": 1051.282702870541,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "EV4XHveXqU4UWbJtNHcIb",
+      "kind": "event",
+      "text": "Password reset requested",
+      "x": 5415.917678245574,
+      "y": 1054.0945877238844,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "cB1kEDwIZ37wpZKZustnL",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 5548.734812405698,
+      "y": 1049.6643663428817,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "6T83dBoR5v50bdUq9XMwS",
+      "kind": "event",
+      "text": "Review submitted",
+      "x": 5685.649680187496,
+      "y": 1057.6376722191435,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "XfqFAHhppWo3T4zOVRJor",
+      "kind": "event",
+      "text": "Review submitted",
+      "x": 5851.850072604195,
+      "y": 1071.23896424927,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "HCknjLTPwqHLl4ymiWZmT",
+      "kind": "person",
+      "text": "Analyst",
+      "x": 5988.106059587795,
+      "y": 1053.106791221514,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Wk7nRjyksc0geGbmSYPUc",
+      "kind": "event",
+      "text": "File uploaded",
+      "x": 6119.980309925776,
+      "y": 1059.0545554249554,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "1THRp5m6rcDNFY61dTnid",
+      "kind": "person",
+      "text": "Guest User",
+      "x": 6250.205574783364,
+      "y": 1052.6568902046624,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "pY7p8I6UNbgZgKTYR1anc",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 6390.956963876918,
+      "y": 1050.8275075543513,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "cUi18wZ11IMt3U5JTAspy",
+      "kind": "event",
+      "text": "Notification sent",
+      "x": 6538.563692032482,
+      "y": 1056.7184611575478,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "msXkXARfjQKOSBDx3HOsF",
+      "kind": "system",
+      "text": "Cache",
+      "x": 6686.908289870838,
+      "y": 1069.5525970889207,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "mWuWBWFdSRYBzHeV63h9b",
+      "kind": "event",
+      "text": "Email sent",
+      "x": 6822.0622124710635,
+      "y": 1056.432520535795,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "iIu8hBoF2IBRGWLxLxM7E",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 6948.826337817601,
+      "y": 1073.3593905743685,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "yYxOqWyv09lfqUkhv8QgX",
+      "kind": "system",
+      "text": "Email Service",
+      "x": 109.68301738897223,
+      "y": 1209.711701115165,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "glsELfJIoMtnajeR1LUAD",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 245.2461674493665,
+      "y": 1220.8764175108197,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ugbJnEFHyC8n4wGEdb6rw",
+      "kind": "event",
+      "text": "Account created",
+      "x": 377.410670210964,
+      "y": 1214.251937474613,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "IfD8LZ0thw3QAfjTpPAFC",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 516.6686182134055,
+      "y": 1232.5004135118104,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "3vdo6r4RQMedHKRIQP08T",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 646.8778214374812,
+      "y": 1223.203504231847,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "jCbSToF0PrtzgR2QP7qRi",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 804.5454013959153,
+      "y": 1217.095519161294,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "48Odl3mIhRUt4A366x2WL",
+      "kind": "person",
+      "text": "Analyst",
+      "x": 932.1411620609374,
+      "y": 1213.8543819768015,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ncAzNTbjdkSW60KhfWwkV",
+      "kind": "event",
+      "text": "Email sent",
+      "x": 1078.7712437200234,
+      "y": 1230.6154741026212,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "9nTR2uOYtXEyc0L6oN3dJ",
+      "kind": "opportunity",
+      "text": "Opportunity 72",
+      "x": 1212.5241631782667,
+      "y": 1214.1768276273335,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "3JBAdX0yTzGaFp82SM6Wr",
+      "kind": "event",
+      "text": "Profile updated",
+      "x": 1367.8911783241495,
+      "y": 1224.6816473918018,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "p5JWk9hAQjlrSvH7eXVNh",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 1486.1268217864522,
+      "y": 1230.0015257887335,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "cDdWOqisDRMFw1VaafHzS",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 1630.786845337428,
+      "y": 1231.3284992170004,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "5ido1SQvkN5KuSp8s1AXv",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 1775.6112757023814,
+      "y": 1209.4878114602845,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "imH7EEjiq43YWfsNfCfhr",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 1928.989890637475,
+      "y": 1215.1100204376885,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "mqu9adcsNAzhBuqlKJzbc",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 2067.440231524931,
+      "y": 1217.8000333767425,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "rwpxtcHYYlsyx8Lv3oFXo",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 2200.9216981817053,
+      "y": 1227.4621666660823,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "oo5qcPJhzHYbObrcXpeBC",
+      "kind": "person",
+      "text": "Customer",
+      "x": 2349.2087962835867,
+      "y": 1206.4165175279607,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "m0GSikj6XNYta0KFv9KZ4",
+      "kind": "hotspot",
+      "text": "Integration issue",
+      "x": 2467.050178689834,
+      "y": 1226.8521220317637,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "StX1182J9WcXLoPI6JBUZ",
+      "kind": "hotspot",
+      "text": "Slow response time",
+      "x": 2607.2984788180775,
+      "y": 1212.1968160082106,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "4JNmSupjQIJ3DI2Zbzxq8",
+      "kind": "event",
+      "text": "Profile updated",
+      "x": 2762.3707530076235,
+      "y": 1212.5173800532273,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "EoVxuAf3FjWBS9AbzWpM2",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 2913.544653967888,
+      "y": 1211.3695431833494,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "KyHfSKZIOxmiFtaNeIvmL",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 3031.66996050912,
+      "y": 1214.5416836856516,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "g12fhMxS7JcSo9WT7nQRm",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 3182.2037656630014,
+      "y": 1210.7186041960706,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "AZ5FXV0ZUpf1LzuNBqjSY",
+      "kind": "event",
+      "text": "Checkout started",
+      "x": 3323.3343286178533,
+      "y": 1218.923890517682,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "az4GgExrXqV3MfxG36kHQ",
+      "kind": "system",
+      "text": "Database",
+      "x": 3454.141375926072,
+      "y": 1222.6720602081455,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "4r5Q2Zw1ID2cg9VyxBHWQ",
+      "kind": "event",
+      "text": "Checkout started",
+      "x": 3590.7483293616033,
+      "y": 1230.443895787108,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "PdhK4x5kdWkkTSLje91OS",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 3729.0413129735957,
+      "y": 1212.2440255855336,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "SPG41CJaHaRr1RhfMHJRJ",
+      "kind": "person",
+      "text": "Manager",
+      "x": 3878.5223556760066,
+      "y": 1221.886190742287,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Z60EHes7exXciD07y7NXt",
+      "kind": "hotspot",
+      "text": "Integration issue",
+      "x": 4022.990118554974,
+      "y": 1214.6544660918055,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "1oenhP7QT0bP2mQsbsqHS",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 4157.551606943681,
+      "y": 1206.022767415364,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "w9WsDlIIX9JvbH4HytMXL",
+      "kind": "opportunity",
+      "text": "Opportunity 55",
+      "x": 4287.037681088911,
+      "y": 1216.5713734515048,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "P73vpkbHcZktNsEIkf4Es",
+      "kind": "person",
+      "text": "Customer",
+      "x": 4439.057361608701,
+      "y": 1231.0412289332414,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "gNqLXYHSfy4j1G8YIFR30",
+      "kind": "event",
+      "text": "Session started",
+      "x": 4574.576008406964,
+      "y": 1223.600252529133,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Xb0S8lEzUlxIVjg7P1lv4",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 4719.213125614148,
+      "y": 1215.122351890836,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "0A1GNA0yz7AJID9Q1gxz7",
+      "kind": "person",
+      "text": "Guest User",
+      "x": 4865.247317134612,
+      "y": 1232.8683431343336,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "KY4XBsNwIIJjNntwi0lHf",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 4985.516245117411,
+      "y": 1226.0010634072034,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "B2jycGrobn1VQ4Vrr4ugf",
+      "kind": "glossary",
+      "text": "Term 23",
+      "x": 5134.452380661698,
+      "y": 1206.7519926638636,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "tMWdw3xIBk8OZWv7Iw0sc",
+      "kind": "opportunity",
+      "text": "Opportunity 71",
+      "x": 5287.014468150491,
+      "y": 1218.2387694502672,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "JJqbraq0fyYNF3zqkSxQC",
+      "kind": "event",
+      "text": "Account created",
+      "x": 5412.11743108016,
+      "y": 1207.25256692043,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "z81pqc4UEWwgA4unZsIGY",
+      "kind": "event",
+      "text": "Review submitted",
+      "x": 5568.767983771062,
+      "y": 1222.0193147989364,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "08HZatdJYXAiszcTpveSC",
+      "kind": "event",
+      "text": "Password reset requested",
+      "x": 5687.376661451705,
+      "y": 1219.0249607594526,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "DmkKgpXSm9UkJSmIJC2sk",
+      "kind": "opportunity",
+      "text": "Opportunity 69",
+      "x": 5833.594036987451,
+      "y": 1228.9379230708807,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "8BVcGZVMR6tBTH55Qia5z",
+      "kind": "glossary",
+      "text": "Term 95",
+      "x": 5970.43156768503,
+      "y": 1228.9295998983619,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Q4gNGbAlUfcY8fTrOdLNV",
+      "kind": "event",
+      "text": "Password reset requested",
+      "x": 6111.63068463524,
+      "y": 1226.679163657221,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "g5pWVHVIpzydeZX5yz8RE",
+      "kind": "person",
+      "text": "Analyst",
+      "x": 6256.088909531411,
+      "y": 1231.6734903812069,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ZphrKFooVgcC4F9c9BdQS",
+      "kind": "glossary",
+      "text": "Term 58",
+      "x": 6393.369679749147,
+      "y": 1218.04008775239,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "eRaQjTwVvR59iA4lmex5C",
+      "kind": "event",
+      "text": "Review submitted",
+      "x": 6537.542870317424,
+      "y": 1234.5282202667609,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "fwyZyBvPAAbwoCWW2bauS",
+      "kind": "hotspot",
+      "text": "Missing validation",
+      "x": 6691.671285081963,
+      "y": 1227.1983298040498,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "r5aXeT0qn2NgzGVWWcafl",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 6807.401337766268,
+      "y": 1233.2436267664782,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "pnjc17F6ShsjTKcXAyMzt",
+      "kind": "event",
+      "text": "File uploaded",
+      "x": 6954.894145821987,
+      "y": 1208.3655117053918,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "A5MLWinw6m5wfjs6Z6ciy",
+      "kind": "system",
+      "text": "Payment Gateway",
+      "x": 99.16570242849497,
+      "y": 1391.7207000061248,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Ybn4hGV487R8k6pXXa4sH",
+      "kind": "event",
+      "text": "Payment processed",
+      "x": 251.4282085223882,
+      "y": 1367.1207606870298,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "2DpGdOU2iPqctLtJKuikv",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 389.31457021504986,
+      "y": 1374.9026687053993,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "CPjdSjVJt6sXivfeic9Iv",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 510.08822150450544,
+      "y": 1384.0091080667864,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "DwimY4psHaj9O49Vx1hZ4",
+      "kind": "event",
+      "text": "Checkout started",
+      "x": 660.1646108576502,
+      "y": 1386.2196575214075,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "kFSqHriYjtqULz2hpTRzi",
+      "kind": "event",
+      "text": "Shipment dispatched",
+      "x": 814.2059867093733,
+      "y": 1385.5916198166954,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "zJVzfUFPhK5hBXGvCgLiM",
+      "kind": "event",
+      "text": "Account created",
+      "x": 937.792001970364,
+      "y": 1392.9711898842986,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "VOj7AHkglPSNbREG1ba1P",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 1091.0421711078707,
+      "y": 1378.201212694256,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "6w8Sc3AQ07uoamwzqmvTh",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 1232.4348417798146,
+      "y": 1374.1718086712835,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "j3vt4ZhqZ7rNRGqHC2JnR",
+      "kind": "opportunity",
+      "text": "Opportunity 52",
+      "x": 1372.2331408593045,
+      "y": 1381.0612878148681,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "1Gt4rMrNdoYplfmTFwNL2",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 1509.5111061829111,
+      "y": 1389.3009183476254,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "EPb1PeyEf5ywrUWLUw6s5",
+      "kind": "hotspot",
+      "text": "Error handling needed",
+      "x": 1638.3748858400083,
+      "y": 1379.6700157368289,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "XaedTs7oYQuDskXFB5JrI",
+      "kind": "event",
+      "text": "Shipment dispatched",
+      "x": 1768.3168379415886,
+      "y": 1388.8058694386675,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "hh18vlABoWTqeZYCGpnm9",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 1928.587369936839,
+      "y": 1380.4021180409056,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "oNRjhFYcT9T7a36BYWj6H",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 2059.121325733852,
+      "y": 1370.1000001543434,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "CXaP9Zu5qBjOuAD9EYh10",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 2207.634307149229,
+      "y": 1393.6417083357994,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "5yJ7W4n8UNIAjwpezlX1I",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 2346.210836324983,
+      "y": 1389.4724828007388,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "5XpIOCYHoG4AlFT9qKRgK",
+      "kind": "event",
+      "text": "Notification sent",
+      "x": 2472.2233000149295,
+      "y": 1390.2236636899866,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "kRdEWRbxxwYn4nwStYF9O",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 2620.0439319843003,
+      "y": 1372.1799436814138,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "1Z1hHvjbnWyQleqYJsRCv",
+      "kind": "event",
+      "text": "Session started",
+      "x": 2773.9869827631132,
+      "y": 1389.843152943037,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "3n3XJIMb56nKF3KTjiXcY",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 2905.8431905428843,
+      "y": 1373.9545862406617,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "DpCxpNYfardICq0LoTRaq",
+      "kind": "event",
+      "text": "Checkout started",
+      "x": 3036.811938186367,
+      "y": 1384.497763394543,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "P3dYu2LUWDyuIYhSge6ww",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 3178.486396317409,
+      "y": 1393.2451382212403,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "rgQtnHhuh0QPqraB1d39d",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 3321.8498118788366,
+      "y": 1387.3495190565027,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "giiYfLk3nG39BO81FTUXv",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 3448.352172222378,
+      "y": 1370.3733094044467,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "VLv7AKwkiMzcZZb0SQ8i0",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 3590.578915323629,
+      "y": 1379.077592497357,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "RVLwXvdsaAIrpe4gknR3X",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 3733.2660818493,
+      "y": 1394.9195488080077,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "di3xRi7q1GTXMJ9AEgsxS",
+      "kind": "event",
+      "text": "Profile updated",
+      "x": 3874.8104483567577,
+      "y": 1372.1224131479946,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "aozo4TDiVMXpQgDSPnPc0",
+      "kind": "event",
+      "text": "Password reset requested",
+      "x": 4030.452228873699,
+      "y": 1366.2953304356438,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "EK4gzjHLG9ii4uAEjctez",
+      "kind": "hotspot",
+      "text": "Security concern",
+      "x": 4167.017346363588,
+      "y": 1369.197816941325,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "2w5WsXE5XI7ULCrOCAbwN",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 4298.856271015218,
+      "y": 1377.0334630720042,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "nesqaPQxopqH2mu61JITO",
+      "kind": "glossary",
+      "text": "Term 58",
+      "x": 4447.904357663427,
+      "y": 1394.8138645630854,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "72o5oOvLTCSuuxOj50YXG",
+      "kind": "hotspot",
+      "text": "Slow response time",
+      "x": 4589.655244012857,
+      "y": 1389.427559250741,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "aswEB5hsOwVM9B6hjeIdR",
+      "kind": "hotspot",
+      "text": "Slow response time",
+      "x": 4722.470994185267,
+      "y": 1365.4893817110205,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "pP1KRLvyL2L0VVwwnCK2n",
+      "kind": "glossary",
+      "text": "Term 0",
+      "x": 4854.192655329079,
+      "y": 1381.4831514890052,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "uvSB6wIub11NeB5xsa4t1",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 5002.562405783965,
+      "y": 1378.855397277578,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "CUhbliorTaQXWW93fi16y",
+      "kind": "event",
+      "text": "Account created",
+      "x": 5146.475280009308,
+      "y": 1378.471727092716,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "uhIr0eu4vKtIBipO554WB",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 5271.448808165623,
+      "y": 1376.9372576216617,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "4eXRWi97gxM5fvnxMvHNa",
+      "kind": "person",
+      "text": "Analyst",
+      "x": 5421.863705469179,
+      "y": 1394.2115440382604,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "iYxGdZzdmUVS07QJ3B6wo",
+      "kind": "event",
+      "text": "Payment processed",
+      "x": 5546.296257539333,
+      "y": 1390.326195634896,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "BfBAQr7nuOhdcWDHmGGoq",
+      "kind": "hotspot",
+      "text": "Security concern",
+      "x": 5693.695900108031,
+      "y": 1381.980655509441,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "iGV0BANQLKgNrtRl6ojBR",
+      "kind": "event",
+      "text": "Notification sent",
+      "x": 5853.66884760253,
+      "y": 1387.89073128441,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "lYWUfUCmMJrWYdKPCVIjC",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 5984.099118069221,
+      "y": 1376.1754830983198,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "tsFf8UfGSiLCDAaNIk7Q8",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 6111.280914626219,
+      "y": 1384.9755620453473,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "8xBLkRDFFsAiqp0Q8XkTS",
+      "kind": "event",
+      "text": "Shipment dispatched",
+      "x": 6247.636099918845,
+      "y": 1378.1721284579662,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Um9VewspZvtCs0uY3BmSE",
+      "kind": "system",
+      "text": "Cache",
+      "x": 6408.02870742512,
+      "y": 1384.4462890316956,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "bqimTRowW5FmH2AKe8zeL",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 6545.338629281139,
+      "y": 1385.5440837676017,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "2A1U3jmEQl3xyk9ztc07v",
+      "kind": "system",
+      "text": "Cache",
+      "x": 6694.315087666354,
+      "y": 1376.2904987724517,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "tajcaehLolAQKG9afcCui",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 6833.9104752593785,
+      "y": 1392.0194197228277,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "CFslwwpNr3SQKGwo6F4Gm",
+      "kind": "event",
+      "text": "Email sent",
+      "x": 6974.728470244205,
+      "y": 1383.4266595936874,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "mQ4eUUXFvPyXd3elkUfMj",
+      "kind": "event",
+      "text": "Payment processed",
+      "x": 99.8084879979744,
+      "y": 1543.5114475542211,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "LDzwpgYrAuuScnDYFtWPR",
+      "kind": "hotspot",
+      "text": "Performance bottleneck",
+      "x": 243.7349801626781,
+      "y": 1530.522271792071,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "giKmetbvtTqkwVfywu47d",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 383.98101578347865,
+      "y": 1540.72032922124,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "WcxNPRAg5UPbo8E3Ggf28",
+      "kind": "opportunity",
+      "text": "Opportunity 47",
+      "x": 513.8402080737219,
+      "y": 1530.9472246196403,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "o14spsStekNsj50GXfmVR",
+      "kind": "event",
+      "text": "Notification sent",
+      "x": 674.3398646431815,
+      "y": 1545.6238022136274,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "vrWActuNCsCicvYcSZyFj",
+      "kind": "hotspot",
+      "text": "UX improvement needed",
+      "x": 802.7166253545846,
+      "y": 1549.5658549201173,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "iItkNnCP22BzVYRA1TEdT",
+      "kind": "event",
+      "text": "Shipment dispatched",
+      "x": 945.2789415731445,
+      "y": 1548.8932408200626,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "YEusd2Hs1IPOpY1xfoo4P",
+      "kind": "event",
+      "text": "Password reset requested",
+      "x": 1078.7004468223943,
+      "y": 1538.480859469953,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "uOT2Zqmg9Hc2xWBYUEN6J",
+      "kind": "hotspot",
+      "text": "Technical debt",
+      "x": 1220.4013817391242,
+      "y": 1533.633499563759,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ZN9IOcx3Pbs3BQXKHnVfk",
+      "kind": "opportunity",
+      "text": "Opportunity 59",
+      "x": 1367.9795002400942,
+      "y": 1533.5857027596112,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "IiOq7LZYUAhhay0Dk30dy",
+      "kind": "event",
+      "text": "Email sent",
+      "x": 1500.5733889327062,
+      "y": 1538.1065816780674,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "g5u8o1byEipGOziCvdgxN",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 1635.2128051566722,
+      "y": 1536.9343638988394,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "zPxAB8tKGiI6yzsp1bhKX",
+      "kind": "event",
+      "text": "Profile updated",
+      "x": 1784.4934897288501,
+      "y": 1543.8018461101437,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "3kia6XOpMugdmknNivCfw",
+      "kind": "event",
+      "text": "Payment processed",
+      "x": 1923.5902516285632,
+      "y": 1539.4154674085487,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "qLnsHNjVuxsmgx4Weu72F",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 2060.9333223985086,
+      "y": 1540.9930763485504,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "W4qnLrZQp9yyCuheLjZEm",
+      "kind": "system",
+      "text": "Database",
+      "x": 2200.6416249150384,
+      "y": 1533.5193756781034,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "dpXNyJHunJEH9mnhRWHJ5",
+      "kind": "event",
+      "text": "Email sent",
+      "x": 2327.9142393325264,
+      "y": 1552.714453435259,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Paly2yp9B7JmZKEwfp2sf",
+      "kind": "event",
+      "text": "Shipment dispatched",
+      "x": 2479.76472546305,
+      "y": 1531.2271287281035,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "mR6BD4IOoFp6K8DYnLNqv",
+      "kind": "person",
+      "text": "Analyst",
+      "x": 2620.109334453065,
+      "y": 1553.4253206674448,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "p4N5GZCwKPtFfNiIY4WCV",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 2762.6519471338374,
+      "y": 1526.040684828191,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "SG30dVsbgPGWwkLeJJOaw",
+      "kind": "system",
+      "text": "Analytics",
+      "x": 2898.892109344223,
+      "y": 1535.4140916179667,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "wKXHjGWNHXa50Gm0m72fa",
+      "kind": "event",
+      "text": "Session started",
+      "x": 3046.712200814475,
+      "y": 1549.7505203676492,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "JT0P98TpTys9fMgD6Rhbp",
+      "kind": "opportunity",
+      "text": "Opportunity 16",
+      "x": 3165.721038707121,
+      "y": 1541.0871010803291,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "5RTHDVhGElr2QHHHC6rYF",
+      "kind": "hotspot",
+      "text": "Integration issue",
+      "x": 3320.9895673533233,
+      "y": 1536.2040676535587,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "cWZBhXVy4vRCJaZP75ZMv",
+      "kind": "opportunity",
+      "text": "Opportunity 85",
+      "x": 3470.8943672918545,
+      "y": 1540.8738554970514,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "OLZUOHXoeMZpzWZwDr5oA",
+      "kind": "event",
+      "text": "Session started",
+      "x": 3614.454573480289,
+      "y": 1528.0877749032225,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "MMJzi0Ujjnxszen10i7ki",
+      "kind": "event",
+      "text": "File uploaded",
+      "x": 3732.1292526044276,
+      "y": 1539.8943890091773,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "gv42PFIxEmdWudykL0oyY",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 3888.055866017064,
+      "y": 1552.4062911261392,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "HKtaA6eN4v8JqLlMYLXey",
+      "kind": "system",
+      "text": "Cache",
+      "x": 4005.5247393739282,
+      "y": 1553.0910720624968,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Np9FizzcFDkuDW5mJ3hy5",
+      "kind": "hotspot",
+      "text": "Technical debt",
+      "x": 4166.237900681956,
+      "y": 1535.1616681379994,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "KBT8AdZ2EIOOMlMM8QZUy",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 4286.636726132907,
+      "y": 1548.6865798368365,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "Hfm5dIeimJ0M5I6xZtxYx",
+      "kind": "event",
+      "text": "Notification sent",
+      "x": 4443.888741118349,
+      "y": 1537.9423055753073,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ruWITl4V4v5HxfgxauQZe",
+      "kind": "hotspot",
+      "text": "Error handling needed",
+      "x": 4586.787518366733,
+      "y": 1546.732282827532,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "bcDAHIkojPItVZCr51Wb0",
+      "kind": "system",
+      "text": "Payment Gateway",
+      "x": 4705.529216161104,
+      "y": 1544.7467534517116,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "V1qZHas0ddLW9qVIJYQXp",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 4861.741124400054,
+      "y": 1534.7392401752925,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "gPtbbu3BW6VdRz8bGLGB2",
+      "kind": "glossary",
+      "text": "Term 12",
+      "x": 4995.448610805542,
+      "y": 1542.7838082352096,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "3snlHbdm3LdfvR1gzAYru",
+      "kind": "hotspot",
+      "text": "User confusion here",
+      "x": 5138.265619227625,
+      "y": 1547.8662471254097,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "3Rw7j13OEm07xYIaNRccP",
+      "kind": "person",
+      "text": "Premium User",
+      "x": 5286.519482486975,
+      "y": 1552.315096674836,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "bTFbVhW1n4LEB4G0Ud74Y",
+      "kind": "event",
+      "text": "File uploaded",
+      "x": 5409.336573093725,
+      "y": 1527.3788845080192,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "gERMCRfA835tL00v8gDVQ",
+      "kind": "event",
+      "text": "Email sent",
+      "x": 5566.24514837049,
+      "y": 1553.5108380484705,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "4rzOJLyBndFPrBUVV3InY",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 5708.716613858262,
+      "y": 1554.7035807183224,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "N5xGtR1QVgNQgusue6i0L",
+      "kind": "hotspot",
+      "text": "Technical debt",
+      "x": 5827.665067861651,
+      "y": 1539.1453402685963,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "MqUYSvjDAbTf9wDR8tfF8",
+      "kind": "person",
+      "text": "Premium User",
+      "x": 5967.558925732536,
+      "y": 1541.531349234434,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ABidgUmpoA0JTVzP6yq5z",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 6115.990228300179,
+      "y": 1531.424339919525,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "9g7tgHQ5VXFLUFLG4dlPC",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 6267.935153072082,
+      "y": 1533.7256891447653,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "l5Fn0uyuLd7YZrMqD6fEL",
+      "kind": "event",
+      "text": "Shipment dispatched",
+      "x": 6397.477892969454,
+      "y": 1526.6319779025253,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "y4AiUD3bK2Gzp3mmZPX9s",
+      "kind": "event",
+      "text": "Payment processed",
+      "x": 6542.722583869301,
+      "y": 1543.70113843957,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "ewfOADw7ZTksF8nEqUDx3",
+      "kind": "event",
+      "text": "Email sent",
+      "x": 6667.923108284402,
+      "y": 1552.7212011916529,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "1TXqEVrxiaF4PrE5QrAlD",
+      "kind": "event",
+      "text": "Session started",
+      "x": 6823.625298023581,
+      "y": 1531.785716201652,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    },
+    {
+      "id": "w7YjLF0AkL9k1pEq4YE8J",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 6952.671209684282,
+      "y": 1548.3195455263333,
+      "createdAt": "2025-12-02T10:11:44.035Z",
+      "updatedAt": "2025-12-02T10:11:44.035Z"
+    }
+  ],
+  "verticals": [],
+  "lanes": [],
+  "labels": [],
+  "themes": [],
+  "phase": "chaotic-exploration",
+  "createdAt": "2025-12-02T10:11:44.035Z",
+  "updatedAt": "2025-12-02T10:11:44.035Z"
+}

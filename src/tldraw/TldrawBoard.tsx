@@ -22,6 +22,7 @@ import { ThemeAreaShapeUtil } from './shapes/ThemeAreaShape'
 import { LabelShapeUtil } from './shapes/LabelShape'
 import { useYjsStore } from './useYjsStore'
 import { useYjsPresence } from './useYjsPresence'
+import { isLegacyBoardFormat, convertLegacyBoardToShapes } from './importLegacyBoard'
 import { Download, Upload } from 'lucide-react'
 
 // Register all custom shape utils
@@ -76,6 +77,7 @@ const STICKY_TYPES: ToolType[] = [
 const components: TLComponents = {
   TopPanel: () => null,
   MenuPanel: () => null,
+  StylePanel: () => null,
   SharePanel: DefaultSharePanel,
 }
 
@@ -309,36 +311,52 @@ export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
 
     try {
       const text = await file.text()
-      const snapshot = JSON.parse(text)
+      const data = JSON.parse(text)
 
-      // Get the store from the snapshot
-      const store = snapshot.store || snapshot.document?.store
-      if (!store) {
-        throw new Error('Invalid snapshot format: missing store data')
-      }
-
-      // Get all current shape/page IDs to remove (except camera and page:page)
+      // Delete existing shapes first
       const currentIds = editor.getCurrentPageShapeIds()
-
-      // Delete existing shapes
       if (currentIds.size > 0) {
         editor.deleteShapes([...currentIds])
       }
 
+      // Check if this is legacy format (pre-tldraw migration)
+      if (isLegacyBoardFormat(data)) {
+        const shapes = convertLegacyBoardToShapes(data)
+        if (shapes.length > 0) {
+          editor.createShapes(shapes.map((shape) => ({
+            id: createShapeId(),
+            type: shape.type,
+            x: shape.x,
+            y: shape.y,
+            props: shape.props,
+          })))
+        }
+        console.log(`Imported ${shapes.length} shapes from legacy format`)
+        return
+      }
+
+      // Handle tldraw snapshot format
+      const store = data.store || data.document?.store || data
+
+      // Check if this is a direct store format (keys are record IDs)
+      const firstKey = Object.keys(store)[0]
+      const isDirectStore = firstKey && (firstKey.startsWith('shape:') || firstKey.startsWith('page:') || firstKey.startsWith('document:'))
+
+      if (!isDirectStore && !data.store && !data.document?.store) {
+        throw new Error('Invalid snapshot format: missing store data')
+      }
+
       // Filter and add new records from snapshot
       const recordsToAdd = Object.values(store).filter((record: any) => {
-        // Skip document, page, and camera records - keep existing ones
         if (record.typeName === 'document') return false
         if (record.typeName === 'page') return false
         if (record.typeName === 'camera') return false
         if (record.typeName === 'instance') return false
         if (record.typeName === 'instance_page_state') return false
         if (record.typeName === 'pointer') return false
-        // Only add shapes
         return record.typeName === 'shape'
       })
 
-      // Create the shapes
       if (recordsToAdd.length > 0) {
         editor.createShapes(recordsToAdd.map((record: any) => ({
           id: record.id,
@@ -352,15 +370,14 @@ export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
         })))
       }
 
-      console.log(`Imported ${recordsToAdd.length} shapes`)
+      console.log(`Imported ${recordsToAdd.length} shapes from tldraw format`)
     } catch (error) {
       console.error('Failed to import board:', error)
       alert('Failed to import board JSON. Please check the file format.')
-    }
-
-    // Reset file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
+    } finally {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
     }
   }, [editor])
 

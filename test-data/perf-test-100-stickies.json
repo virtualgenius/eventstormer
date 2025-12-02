@@ -1,0 +1,913 @@
+{
+  "id": "perf-test-TCHpfwk08JMp92vof22LK",
+  "name": "Performance Test (100 stickies)",
+  "stickies": [
+    {
+      "id": "Y9sf2EAiZyQgU4dGbTvkE",
+      "kind": "person",
+      "text": "Manager",
+      "x": 99.717296281157,
+      "y": 93.18375586337083,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "F1eYe3ByBSrl97qruyST4",
+      "kind": "glossary",
+      "text": "Term 6",
+      "x": 235.49412553465547,
+      "y": 104.45225954081589,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "Rq47p2KnLQAOX120J6f2t",
+      "kind": "system",
+      "text": "Analytics",
+      "x": 379.19037523018034,
+      "y": 98.02854773808127,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "4ElM3yz6yeHYt8TYTL6X6",
+      "kind": "event",
+      "text": "File uploaded",
+      "x": 521.7652947111073,
+      "y": 94.07348672494811,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "ujhWNqeYAZ2w0tm5YlcKw",
+      "kind": "person",
+      "text": "Guest User",
+      "x": 665.9427978774479,
+      "y": 86.69449244005638,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "eJYmdvhqaMLpxYxjdH5SV",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 797.7148394842765,
+      "y": 113.75910240938086,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "FkbP84NxMic9FQuqtc96z",
+      "kind": "event",
+      "text": "Shipment dispatched",
+      "x": 954.5658231561898,
+      "y": 105.2871960930784,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "eWj794bXNGZAcgxFQWEEE",
+      "kind": "event",
+      "text": "Password reset requested",
+      "x": 1094.9449564156153,
+      "y": 100.69354180533087,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "FiDFS4VzLkfWQu3vvaHmy",
+      "kind": "hotspot",
+      "text": "Performance bottleneck",
+      "x": 1218.1039270320987,
+      "y": 95.00674448049843,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "84qKRzZaF9ZQMsuxqzPXU",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 1368.0354737707707,
+      "y": 104.1456810676579,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "po6kFGhkT6QlrRebJuse1",
+      "kind": "opportunity",
+      "text": "Opportunity 88",
+      "x": 1494.60063012156,
+      "y": 111.49470812929337,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "uoNffgO6wyfvZsCDSNBXB",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 1653.4043541493927,
+      "y": 91.24396001729848,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "FZvBDMPimDL7oJdfI5IGK",
+      "kind": "hotspot",
+      "text": "Missing validation",
+      "x": 1787.469477411122,
+      "y": 93.22497010106086,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "wQqx9cL8qpmH91AjEuWZY",
+      "kind": "person",
+      "text": "Guest User",
+      "x": 1905.574815116649,
+      "y": 98.24728270244188,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "TQSBRw4SHzzUxug1rF7ek",
+      "kind": "opportunity",
+      "text": "Opportunity 55",
+      "x": 2065.3887206413824,
+      "y": 108.87699799140405,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "8mmdJQDj5Y2LY7o8QRdj5",
+      "kind": "person",
+      "text": "Developer",
+      "x": 2203.0493920319277,
+      "y": 89.84050917093853,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "BMF7d4jhyTlHU7zyp9kjm",
+      "kind": "event",
+      "text": "Profile updated",
+      "x": 2352.4051624219733,
+      "y": 110.17171430802956,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "93BbiMOBEZEX4rKPw30Pk",
+      "kind": "hotspot",
+      "text": "UX improvement needed",
+      "x": 2480.421083987189,
+      "y": 108.47183584352148,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "DrKn11Teohn1PKruu23T9",
+      "kind": "event",
+      "text": "Session started",
+      "x": 2608.11457606162,
+      "y": 111.85046014300232,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "RQFFHGNkxbGKIq6mMcvH1",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 2751.4937507802792,
+      "y": 107.26161280560646,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "0hGTU5tCobTbwnOScWXv7",
+      "kind": "event",
+      "text": "Account created",
+      "x": 2894.9957405330188,
+      "y": 109.23203732624988,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "Z6adwgrTQLEbYMKeeCK8L",
+      "kind": "hotspot",
+      "text": "Security concern",
+      "x": 3043.402317948729,
+      "y": 87.16756867537127,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "jM3ujSjMiSr9fLHK8KyQ2",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 3187.790575563265,
+      "y": 113.05468790900395,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "mPRUlE1hfCzqijzBxDlwR",
+      "kind": "event",
+      "text": "Profile updated",
+      "x": 3324.3831986704236,
+      "y": 85.92206708103575,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "36U521COCMSfLS84oOK97",
+      "kind": "event",
+      "text": "Email sent",
+      "x": 3453.9626357864904,
+      "y": 87.5603442972981,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "w980yaNfqUQjMknlMvp5O",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 3605.3331529705674,
+      "y": 100.84027538819639,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "C1hOjLyPIqsRCqTULYj3K",
+      "kind": "event",
+      "text": "Session started",
+      "x": 3744.6786470820193,
+      "y": 112.14271714066689,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "Laf9Zb6mme74dX2IDXSbr",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 3893.5241914021453,
+      "y": 105.69537512350207,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "BUHcGY25IE7JnMnCsfZvp",
+      "kind": "person",
+      "text": "Analyst",
+      "x": 4016.7081336208125,
+      "y": 101.5401216937232,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "ixVTPWa9w73DTg3SsLQfY",
+      "kind": "hotspot",
+      "text": "Security concern",
+      "x": 4161.05022619954,
+      "y": 108.35160115383715,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "RkUSItm8lIexGircy5pNT",
+      "kind": "event",
+      "text": "Delivery completed",
+      "x": 4305.7463317969505,
+      "y": 93.81060214795748,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "QwZ2rLxiRjeNYx1lqZJbo",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 4445.883867869702,
+      "y": 96.28144846754358,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "YxtssJ3O3gfQRBLYMvkcq",
+      "kind": "hotspot",
+      "text": "Error handling needed",
+      "x": 4579.216315052818,
+      "y": 99.09437073213404,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "UkJhL7AyrQBtSq18skcFM",
+      "kind": "event",
+      "text": "Checkout started",
+      "x": 4730.6398537661635,
+      "y": 99.24614055818765,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "irRtbDzY6KSQYBMfZoGcb",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 4870.537604325717,
+      "y": 91.49703199450497,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "EnvTkpVjAUmmOVHvQYZZd",
+      "kind": "opportunity",
+      "text": "Opportunity 26",
+      "x": 5002.53603991502,
+      "y": 105.8247238385369,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "6zLO2782ltrRtRh4mNDaW",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 5146.772838443256,
+      "y": 105.07279771827933,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "RG3KPd2ymqj22UPHup4Rp",
+      "kind": "event",
+      "text": "Session started",
+      "x": 5284.392817603651,
+      "y": 90.65650698688549,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "lISFq9D4iAzlCC71rgHY4",
+      "kind": "hotspot",
+      "text": "Performance bottleneck",
+      "x": 5433.069848878422,
+      "y": 101.69048134917048,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "FtUXEVDRUhozYbBsnCQ1o",
+      "kind": "person",
+      "text": "Analyst",
+      "x": 5561.882134046085,
+      "y": 99.60164954490573,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "FAH1rIHKLcjv42NGRzn2Z",
+      "kind": "hotspot",
+      "text": "Data inconsistency",
+      "x": 5705.557353436388,
+      "y": 100.85111337203969,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "jzSVY77tXlo4An01I3g7v",
+      "kind": "hotspot",
+      "text": "Integration issue",
+      "x": 5830.659290489056,
+      "y": 94.05536257809821,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "fmPepJqMpnSyFM3PjFLfq",
+      "kind": "event",
+      "text": "Account created",
+      "x": 5984.667068600973,
+      "y": 96.11725725609686,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "Xe98BIjQn1aNhrMcXMNMO",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 6122.753311481954,
+      "y": 90.53548451546745,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "cJY8XYeSnZo87GK2iOu1K",
+      "kind": "event",
+      "text": "Session started",
+      "x": 6250.691026038119,
+      "y": 109.24760901036456,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "XDb5pBCYf1d7gumM11DDe",
+      "kind": "person",
+      "text": "Support Agent",
+      "x": 6403.9451918760105,
+      "y": 99.50076620995385,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "QTCK7CUWpX2b2XgXmLKfr",
+      "kind": "event",
+      "text": "Search performed",
+      "x": 6530.534513917017,
+      "y": 100.24256558619987,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "enWQpNxVcfwqfOD6Lzey2",
+      "kind": "system",
+      "text": "Email Service",
+      "x": 6672.348280679825,
+      "y": 109.67353001320527,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "a4Z4W7JiX6h6ORu1LZiKx",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 6807.674870797767,
+      "y": 109.55049147065596,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "503vRs2lzGIFRMIM3vOWG",
+      "kind": "hotspot",
+      "text": "Performance bottleneck",
+      "x": 6951.341886742525,
+      "y": 88.73562888009982,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "173gq7N4xsgigPpHsGzUn",
+      "kind": "person",
+      "text": "Support Agent",
+      "x": 101.0423881863903,
+      "y": 256.6805168353805,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "vAEMxLvFbWFWL3bVgSLN4",
+      "kind": "system",
+      "text": "CRM",
+      "x": 240.3471501115512,
+      "y": 255.93511664964467,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "dspSn5TSQMdl46mU1H96H",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 370.06996783773883,
+      "y": 261.14276266491504,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "kBpCkisNOvB7qk4oMrCPd",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 512.9146528750322,
+      "y": 253.2061831219792,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "Ner4mZ8711ie1086zdgy1",
+      "kind": "hotspot",
+      "text": "UX improvement needed",
+      "x": 655.90143544473,
+      "y": 245.2939698755431,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "JQXQqF1j8hEEqB5PjZjv3",
+      "kind": "event",
+      "text": "Shipment dispatched",
+      "x": 810.2499306924801,
+      "y": 260.264466761655,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "jRTyKmVI2u5hpvFzhKhq7",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 943.0221657412789,
+      "y": 262.6479776420869,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "gfXLsCClj70xTG5M4a5s7",
+      "kind": "event",
+      "text": "File uploaded",
+      "x": 1069.3018242669712,
+      "y": 252.77649102676787,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "glbjcoxmnAJcSt8rfNv29",
+      "kind": "event",
+      "text": "Review submitted",
+      "x": 1224.8071950643387,
+      "y": 269.55015933615215,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "9tiV7hSlpJ6Kjy20EAZw5",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 1363.5616160496143,
+      "y": 263.17326108236625,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "dXmPlNo7xBj8oEV4ezAxY",
+      "kind": "hotspot",
+      "text": "Slow response time",
+      "x": 1491.0735388239907,
+      "y": 268.8662793090453,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "BxPLuY9HPcInCtafPOdAl",
+      "kind": "hotspot",
+      "text": "Technical debt",
+      "x": 1628.042342928349,
+      "y": 251.81171124768449,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "T1OGE2pzDV077qdCBf9C8",
+      "kind": "event",
+      "text": "Refund requested",
+      "x": 1790.465340280055,
+      "y": 264.63744774204275,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "1U4N7QXeYExo9oXWJljqQ",
+      "kind": "event",
+      "text": "Subscription renewed",
+      "x": 1908.6746762801101,
+      "y": 273.0110474267482,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "ayqGEIRNdvRGX3V7A8vWp",
+      "kind": "event",
+      "text": "Review submitted",
+      "x": 2071.667815300403,
+      "y": 267.2892443998697,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "EWDgVLC5AmA1se4sBksTQ",
+      "kind": "hotspot",
+      "text": "Integration issue",
+      "x": 2213.5716050880073,
+      "y": 259.3616134509437,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "pwi7suP0dC1wNB6HR2Otn",
+      "kind": "event",
+      "text": "Notification sent",
+      "x": 2345.3590944875414,
+      "y": 248.48407738726675,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "OL3dXOKA9BgAYWat8e21k",
+      "kind": "glossary",
+      "text": "Term 67",
+      "x": 2474.811975159618,
+      "y": 251.24801494528833,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "xFs6U6htQNTN2dOiPTurg",
+      "kind": "system",
+      "text": "Email Service",
+      "x": 2616.7437092981586,
+      "y": 245.48293542675597,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "ShbX0saRpqr0Ps7A8rhKH",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 2768.196818376281,
+      "y": 257.2327142265015,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "LWmsZ6M7MsHPSPd4wNj6p",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 2897.147083633453,
+      "y": 272.6596545002932,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "SPDykHH1XMoCTW1jUS14F",
+      "kind": "event",
+      "text": "Item added to cart",
+      "x": 3054.4115379110794,
+      "y": 256.97817940199775,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "qq7SlNEbvhzxxlpTZmnwA",
+      "kind": "event",
+      "text": "Notification sent",
+      "x": 3184.154203618459,
+      "y": 258.1401910297457,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "KkrXIfmOXoLcc8S7D1IIB",
+      "kind": "system",
+      "text": "Payment Gateway",
+      "x": 3310.7768252538667,
+      "y": 258.1151321024257,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "58PUfq3lf16puVQF7YaAa",
+      "kind": "system",
+      "text": "Analytics",
+      "x": 3467.6339533456385,
+      "y": 268.096690881454,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "FGb8SY6CBRdWGAzTpd5kk",
+      "kind": "system",
+      "text": "Database",
+      "x": 3602.675871361052,
+      "y": 254.16433661996507,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "zGp1DG3HGThaaFVBb360Q",
+      "kind": "hotspot",
+      "text": "Security concern",
+      "x": 3744.7517562589446,
+      "y": 268.0092580192723,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "1aSb5Pe4WIljeVhccMfOK",
+      "kind": "hotspot",
+      "text": "Performance bottleneck",
+      "x": 3889.286047619561,
+      "y": 271.46038358182295,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "yoFcq1GsRrWCrm7oQQMCm",
+      "kind": "system",
+      "text": "CRM",
+      "x": 4033.372584489241,
+      "y": 252.83147252394104,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "B0qqYIprhF2OvxpDjSqFH",
+      "kind": "event",
+      "text": "Report generated",
+      "x": 4165.905743046855,
+      "y": 271.08370808150033,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "sgXGqNsqgg3JlwUXprBup",
+      "kind": "hotspot",
+      "text": "UX improvement needed",
+      "x": 4313.525573891481,
+      "y": 256.11485959652174,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "sWGLpPSWALOzWF9gfBVvW",
+      "kind": "event",
+      "text": "Notification sent",
+      "x": 4441.990626080625,
+      "y": 262.66294119127735,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "twq6wlycOFUK0rAV15wIJ",
+      "kind": "person",
+      "text": "Customer",
+      "x": 4580.042829367008,
+      "y": 248.14445490870511,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "h5ilCnm0EDhUp5UIwJRsC",
+      "kind": "system",
+      "text": "Search Engine",
+      "x": 4705.636494698273,
+      "y": 252.45595770540504,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "gGnKtd1I95gT0eMBDbBYb",
+      "kind": "event",
+      "text": "User submitted form",
+      "x": 4855.019626288843,
+      "y": 255.05507352937656,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "hfu9SQPUnLldxAGaYVY3s",
+      "kind": "hotspot",
+      "text": "UX improvement needed",
+      "x": 5003.159081566809,
+      "y": 262.571382559806,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "wtBRAtpREPrXF7szSvc0t",
+      "kind": "hotspot",
+      "text": "Missing validation",
+      "x": 5128.492987202835,
+      "y": 260.17149378166,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "PABk9i6hrl6vS8loADL0O",
+      "kind": "person",
+      "text": "Premium User",
+      "x": 5285.658693119829,
+      "y": 273.7357691040252,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "kx6DZdzpkMrMK4eDyCrS1",
+      "kind": "hotspot",
+      "text": "Data inconsistency",
+      "x": 5431.087810715591,
+      "y": 263.4346756798916,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "lFcPPveOsrIiuzd3kycSm",
+      "kind": "system",
+      "text": "Payment Gateway",
+      "x": 5570.243853225771,
+      "y": 258.4726696332426,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "w1POP9uL8jW4uHcwZgkOZ",
+      "kind": "hotspot",
+      "text": "Integration issue",
+      "x": 5703.98093465618,
+      "y": 268.22273649527403,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "T2oI3TmqaWiMJA6uK6Dng",
+      "kind": "hotspot",
+      "text": "Technical debt",
+      "x": 5847.281567301234,
+      "y": 254.97463213332315,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "LMFRLaN5pwoGbDcMnEMfo",
+      "kind": "event",
+      "text": "Profile updated",
+      "x": 5966.239475941452,
+      "y": 270.4537020350781,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "pJKmqOcft2DgV98TeEaMR",
+      "kind": "event",
+      "text": "Shipment dispatched",
+      "x": 6129.872858795564,
+      "y": 266.9349993847767,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "KcTG3MipI1QZqOKU6wV1t",
+      "kind": "event",
+      "text": "Data exported",
+      "x": 6248.299728217679,
+      "y": 259.4080507522393,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "ndpfzlyRBWw38UchPktWA",
+      "kind": "event",
+      "text": "Order confirmed",
+      "x": 6410.523949120031,
+      "y": 272.7042411406076,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "m6F7Rf4NdzViiKxx4c2oD",
+      "kind": "person",
+      "text": "Guest User",
+      "x": 6543.10333482056,
+      "y": 253.04272919999474,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "Uof7wNA9SfcakLu3ThBiz",
+      "kind": "event",
+      "text": "Checkout started",
+      "x": 6685.89317553933,
+      "y": 253.59671532396533,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "ZuvEBT7x3fjwRpqepnYWa",
+      "kind": "system",
+      "text": "CRM",
+      "x": 6819.006830875757,
+      "y": 266.1183194108071,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    },
+    {
+      "id": "qZviPAXF1XTZzKjNrn6Mp",
+      "kind": "hotspot",
+      "text": "Error handling needed",
+      "x": 6954.798968484908,
+      "y": 260.7475690440098,
+      "createdAt": "2025-12-02T10:11:44.033Z",
+      "updatedAt": "2025-12-02T10:11:44.033Z"
+    }
+  ],
+  "verticals": [],
+  "lanes": [],
+  "labels": [],
+  "themes": [],
+  "phase": "chaotic-exploration",
+  "createdAt": "2025-12-02T10:11:44.033Z",
+  "updatedAt": "2025-12-02T10:11:44.033Z"
+}
