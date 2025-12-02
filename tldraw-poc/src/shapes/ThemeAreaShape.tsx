@@ -186,24 +186,19 @@ export class ThemeAreaShapeUtil extends ShapeUtil<ThemeAreaShape> {
     return resizeBox(shape, info)
   }
 
-  // Allow shapes to be dropped into this theme area
-  canDropShapes = (_shape: ThemeAreaShape, _shapes: TLShape[]) => {
-    return true
-  }
-
-  // When shapes are dragged into this theme, reparent them
-  override onDragShapesOver = (
+  // When shapes are first dragged into this theme, reparent them
+  // Using onDragShapesIn (fires once on entry) instead of onDragShapesOver (fires repeatedly)
+  override onDragShapesIn = (
     shape: ThemeAreaShape,
     shapes: TLShape[]
   ) => {
-    // Skip if all shapes are already children of this theme
-    if (shapes.every((s) => s.parentId === shape.id)) return
+    // Filter to shapes that need reparenting
+    const shapesToReparent = shapes.filter(
+      (s) => s.parentId !== shape.id && s.type !== 'theme-area'
+    )
 
     // Don't allow theme areas to be nested
     if (shapes.some((s) => this.editor.hasAncestor(shape, s.id))) return
-
-    // Filter out theme areas - they shouldn't be reparented
-    const shapesToReparent = shapes.filter((s) => s.type !== 'theme-area')
 
     if (shapesToReparent.length > 0) {
       this.editor.reparentShapes(shapesToReparent, shape.id)
@@ -213,8 +208,12 @@ export class ThemeAreaShapeUtil extends ShapeUtil<ThemeAreaShape> {
   // When shapes are dragged out, reparent them back to the page
   override onDragShapesOut = (
     shape: ThemeAreaShape,
-    shapes: TLShape[]
+    shapes: TLShape[],
+    info: { nextDraggingOverShapeId?: string | null }
   ) => {
+    // Only reparent back to page if not being dragged to another container
+    if (info.nextDraggingOverShapeId) return
+
     const shapesToReparent = shapes.filter(
       (s) => s.parentId === shape.id && s.type !== 'theme-area'
     )
