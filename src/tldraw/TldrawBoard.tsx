@@ -310,7 +310,49 @@ export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
     try {
       const text = await file.text()
       const snapshot = JSON.parse(text)
-      editor.loadSnapshot(snapshot)
+
+      // Get the store from the snapshot
+      const store = snapshot.store || snapshot.document?.store
+      if (!store) {
+        throw new Error('Invalid snapshot format: missing store data')
+      }
+
+      // Get all current shape/page IDs to remove (except camera and page:page)
+      const currentIds = editor.getCurrentPageShapeIds()
+
+      // Delete existing shapes
+      if (currentIds.size > 0) {
+        editor.deleteShapes([...currentIds])
+      }
+
+      // Filter and add new records from snapshot
+      const recordsToAdd = Object.values(store).filter((record: any) => {
+        // Skip document, page, and camera records - keep existing ones
+        if (record.typeName === 'document') return false
+        if (record.typeName === 'page') return false
+        if (record.typeName === 'camera') return false
+        if (record.typeName === 'instance') return false
+        if (record.typeName === 'instance_page_state') return false
+        if (record.typeName === 'pointer') return false
+        // Only add shapes
+        return record.typeName === 'shape'
+      })
+
+      // Create the shapes
+      if (recordsToAdd.length > 0) {
+        editor.createShapes(recordsToAdd.map((record: any) => ({
+          id: record.id,
+          type: record.type,
+          x: record.x,
+          y: record.y,
+          rotation: record.rotation,
+          props: record.props,
+          parentId: record.parentId,
+          index: record.index,
+        })))
+      }
+
+      console.log(`Imported ${recordsToAdd.length} shapes`)
     } catch (error) {
       console.error('Failed to import board:', error)
       alert('Failed to import board JSON. Please check the file format.')
