@@ -81,9 +81,15 @@ const components: TLComponents = {
 
 interface TldrawBoardProps {
   roomId: string
+  renderHeaderRight?: (props: {
+    connectionStatus: string
+    roomId: string
+    onExport: () => void
+    onImport: () => void
+  }) => React.ReactNode
 }
 
-export function TldrawBoard({ roomId }: TldrawBoardProps) {
+export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
   const [editor, setEditor] = useState<Editor | null>(null)
   const [phase, setPhase] = useState<FacilitationPhase>('chaotic-exploration')
   const [activeTool, setActiveTool] = useState<ToolType | null>(null)
@@ -326,62 +332,22 @@ export function TldrawBoard({ roomId }: TldrawBoardProps) {
     ? storeWithStatus.connectionStatus
     : storeWithStatus.status
 
+  // Notify parent of state changes via render prop callback
+  useEffect(() => {
+    if (renderHeaderRight) {
+      renderHeaderRight({
+        connectionStatus,
+        roomId,
+        onExport: handleExportJSON,
+        onImport: handleImportJSON,
+      })
+    }
+  }, [renderHeaderRight, connectionStatus, roomId, handleExportJSON, handleImportJSON])
+
   return (
     <div className="flex flex-col h-full w-full relative">
-      {/* Header bar with phase selector and connection status */}
+      {/* Header bar with phase selector */}
       <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-slate-200 z-10">
-        <div className="flex items-center gap-4">
-          {/* Connection Status */}
-          <div className="flex items-center gap-2">
-            <div
-              className={`w-2 h-2 rounded-full ${
-                connectionStatus === 'online' ? 'bg-green-500' :
-                connectionStatus === 'offline' ? 'bg-red-500' :
-                connectionStatus === 'loading' ? 'bg-yellow-500' : 'bg-slate-400'
-              }`}
-            />
-            <span className="text-xs text-slate-500">
-              {connectionStatus === 'online' ? 'Connected' :
-               connectionStatus === 'offline' ? 'Offline' :
-               connectionStatus === 'loading' ? 'Connecting...' :
-               connectionStatus === 'not-synced' ? 'Syncing...' : 'Loading...'}
-            </span>
-          </div>
-
-          {/* Room ID */}
-          <span className="text-xs text-slate-400">
-            Room: {roomId}
-          </span>
-
-          {/* Import/Export Buttons */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleExportJSON}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 rounded transition-colors"
-              title="Export board as JSON"
-            >
-              <Download className="w-3.5 h-3.5" />
-              Export
-            </button>
-            <button
-              onClick={handleImportJSON}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 rounded transition-colors"
-              title="Import board from JSON"
-            >
-              <Upload className="w-3.5 h-3.5" />
-              Import
-            </button>
-          </div>
-
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".json"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-        </div>
-
         {/* Phase Selector */}
         <select
           value={phase}
@@ -394,7 +360,63 @@ export function TldrawBoard({ roomId }: TldrawBoardProps) {
           <option value="problems-and-opportunities">4. Problems & Opportunities</option>
           <option value="glossary">5. Glossary</option>
         </select>
+
+        {/* Render header right content if no external render prop */}
+        {!renderHeaderRight && (
+          <div className="flex items-center gap-4">
+            {/* Connection Status */}
+            <div className="flex items-center gap-2">
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  connectionStatus === 'online' ? 'bg-green-500' :
+                  connectionStatus === 'offline' ? 'bg-red-500' :
+                  connectionStatus === 'loading' ? 'bg-yellow-500' : 'bg-slate-400'
+                }`}
+              />
+              <span className="text-xs text-slate-500">
+                {connectionStatus === 'online' ? 'Connected' :
+                 connectionStatus === 'offline' ? 'Offline' :
+                 connectionStatus === 'loading' ? 'Connecting...' :
+                 connectionStatus === 'not-synced' ? 'Syncing...' : 'Loading...'}
+              </span>
+            </div>
+
+            {/* Room ID */}
+            <span className="text-xs text-slate-400">
+              Room: {roomId}
+            </span>
+
+            {/* Import/Export Buttons */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleExportJSON}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 rounded transition-colors"
+                title="Export board as JSON"
+              >
+                <Download className="w-3.5 h-3.5" />
+                Export
+              </button>
+              <button
+                onClick={handleImportJSON}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 rounded transition-colors"
+                title="Import board from JSON"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                Import
+              </button>
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* Hidden file input for import */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".json"
+        onChange={handleFileChange}
+        className="hidden"
+      />
 
       {/* Main content area */}
       <div className="flex-1 relative">

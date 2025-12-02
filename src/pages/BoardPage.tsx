@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { TldrawBoard } from "@/tldraw/TldrawBoard";
 import { NamePrompt } from "@/components/NamePrompt";
 import { addRecentBoard, getBoardName } from "@/components/BoardList";
-import { Home } from "lucide-react";
+import { Home, Download, Upload } from "lucide-react";
 
 const USER_NAME_KEY = "eventstormer-user-name";
 
@@ -14,6 +14,11 @@ export const BoardPage: React.FC = () => {
   const [userName, setUserName] = useState<string | null>(null);
   const [showNamePrompt, setShowNamePrompt] = useState(false);
   const [boardName, setBoardName] = useState<string | null>(null);
+  const [connectionStatus, setConnectionStatus] = useState<string>('loading');
+  const [boardHandlers, setBoardHandlers] = useState<{
+    onExport: () => void;
+    onImport: () => void;
+  } | null>(null);
 
   // Check for stored user name on mount
   useEffect(() => {
@@ -43,6 +48,20 @@ export const BoardPage: React.FC = () => {
     navigate('/');
   };
 
+  const handleBoardReady = useCallback((props: {
+    connectionStatus: string;
+    roomId: string;
+    onExport: () => void;
+    onImport: () => void;
+  }) => {
+    setConnectionStatus(props.connectionStatus);
+    setBoardHandlers({
+      onExport: props.onExport,
+      onImport: props.onImport,
+    });
+    return null;
+  }, []);
+
   if (showNamePrompt) {
     return <NamePrompt onSubmit={handleNameSubmit} />;
   }
@@ -66,12 +85,59 @@ export const BoardPage: React.FC = () => {
             {boardName || `Board ${boardId?.slice(0, 6)}`}
           </span>
         </div>
-        <div className="flex items-center gap-2 text-xs text-slate-500">
+        <div className="flex items-center gap-4 text-xs text-slate-500">
+          {/* Connection Status */}
+          <div className="flex items-center gap-2">
+            <div
+              className={`w-2 h-2 rounded-full ${
+                connectionStatus === 'online' ? 'bg-green-500' :
+                connectionStatus === 'offline' ? 'bg-red-500' :
+                connectionStatus === 'loading' ? 'bg-yellow-500' : 'bg-slate-400'
+              }`}
+            />
+            <span>
+              {connectionStatus === 'online' ? 'Connected' :
+               connectionStatus === 'offline' ? 'Offline' :
+               connectionStatus === 'loading' ? 'Connecting...' :
+               connectionStatus === 'not-synced' ? 'Syncing...' : 'Loading...'}
+            </span>
+          </div>
+
+          {/* Room ID */}
+          <span className="text-slate-400">
+            Room: {boardId}
+          </span>
+
+          {/* Import/Export Buttons */}
+          {boardHandlers && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={boardHandlers.onExport}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded transition-colors"
+                title="Export board as JSON"
+              >
+                <Download className="w-3.5 h-3.5" />
+                Export
+              </button>
+              <button
+                onClick={boardHandlers.onImport}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded transition-colors"
+                title="Import board from JSON"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                Import
+              </button>
+            </div>
+          )}
+
           <span>Welcome, {userName}</span>
         </div>
       </header>
       <main className="flex-1 overflow-hidden">
-        <TldrawBoard roomId={boardId} />
+        <TldrawBoard
+          roomId={boardId}
+          renderHeaderRight={handleBoardReady}
+        />
       </main>
     </div>
   );
