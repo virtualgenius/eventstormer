@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import {
   createTLStore,
   TLRecord,
@@ -6,6 +6,7 @@ import {
   TLStoreWithStatus,
   defaultShapeUtils,
   defaultBindingUtils,
+  TLStore,
 } from 'tldraw'
 import * as Y from 'yjs'
 import YProvider from 'y-partyserver/provider'
@@ -45,31 +46,39 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): TLStoreWithSt
     status: 'loading',
   })
 
-  const { yDoc, yRecords, room } = useMemo(() => {
-    const yDoc = new Y.Doc()
-    const yRecords = yDoc.getMap<TLRecord>('tldraw-records')
-
-    const host = hostUrl || (import.meta as any).env?.VITE_COLLAB_HOST || 'localhost:8800'
-    const room = new YProvider(host, `tldraw-${roomId}`, yDoc, {
-      connect: true,
-      party: 'yjs-room',
-    })
-
-    return { yDoc, yRecords, room }
-  }, [roomId, hostUrl])
+  const storeRef = useRef<TLStore | null>(null)
+  const roomRef = useRef<YProvider | null>(null)
+  const yDocRef = useRef<Y.Doc | null>(null)
 
   useEffect(() => {
-    setStoreWithStatus({ status: 'loading' })
-
+    // Create the store
     const store = createTLStore({
       shapeUtils: [...defaultShapeUtils, ...customShapeUtils],
       bindingUtils: defaultBindingUtils,
     })
+    storeRef.current = store
+
+    // Create Yjs doc
+    const yDoc = new Y.Doc()
+    yDocRef.current = yDoc
+    const yRecords = yDoc.getMap<TLRecord>('tldraw-records')
+
+    // Create YProvider
+    const host = hostUrl || (import.meta as any).env?.VITE_COLLAB_HOST || 'localhost:8800'
+    console.log('[useYjsStore] Creating YProvider with host:', host, 'roomId:', `tldraw-${roomId}`)
+
+    const room = new YProvider(host, `tldraw-${roomId}`, yDoc, {
+      connect: true,
+      party: 'yjs-room',
+    })
+    roomRef.current = room
 
     const unsubs: (() => void)[] = []
     let didConnect = false
 
     const handleSync = (isSynced: boolean) => {
+      console.log('[useYjsStore] handleSync called:', isSynced, 'didConnect:', didConnect)
+
       if (!isSynced) {
         setStoreWithStatus({ status: 'not-synced', store })
         return
@@ -81,6 +90,7 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): TLStoreWithSt
       // Initialize store from Yjs if there are existing records
       store.mergeRemoteChanges(() => {
         const existingRecords = Array.from(yRecords.values())
+        console.log('[useYjsStore] Loading', existingRecords.length, 'existing records from Yjs')
         if (existingRecords.length > 0) {
           store.put(existingRecords as TLRecord[])
         }
@@ -145,6 +155,7 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): TLStoreWithSt
         store.listen(handleStoreChange, { source: 'user', scope: 'document' })
       )
 
+      console.log('[useYjsStore] Setting status to synced-remote')
       setStoreWithStatus({
         status: 'synced-remote',
         store,
@@ -153,8 +164,12 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): TLStoreWithSt
     }
 
     const handleStatus = ({ status }: { status: string }) => {
+      console.log('[useYjsStore] status event:', status, 'room.synced:', room.synced)
       if (status === 'connected') {
-        handleSync(room.synced)
+        // When connected, if already synced, handle it immediately
+        if (room.synced) {
+          handleSync(true)
+        }
       } else {
         setStoreWithStatus(prev => {
           if (prev.status === 'synced-remote') {
@@ -165,21 +180,27 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): TLStoreWithSt
       }
     }
 
+    // Set up event listeners BEFORE checking initial state
     room.on('status', handleStatus)
     room.on('sync', handleSync)
 
-    // If already connected and synced
+    console.log('[useYjsStore] Listeners attached, checking initial state - synced:', room.synced)
+
+    // Check if already synced (connection established before listeners)
     if (room.synced) {
+      console.log('[useYjsStore] Already synced!')
       handleSync(true)
     }
 
     return () => {
+      console.log('[useYjsStore] Cleanup')
       unsubs.forEach(fn => fn())
       room.off('status', handleStatus)
       room.off('sync', handleSync)
       room.disconnect()
+      yDoc.destroy()
     }
-  }, [yDoc, yRecords, room])
+  }, [roomId, hostUrl])
 
   return storeWithStatus
 }
