@@ -7,9 +7,13 @@
     "build": "vite build"
   },
   "dependencies": {
+    "nanoid": "^5.1.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "tldraw": "^4.2.0"
+    "tldraw": "^4.2.0",
+    "y-partyserver": "^0.0.51",
+    "yjs": "^13.6.27",
+    "zustand": "^5.0.9"
   },
   "devDependencies": {
     "@types/react": "^19.2.7",

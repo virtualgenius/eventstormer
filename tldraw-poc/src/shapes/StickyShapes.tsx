@@ -5,17 +5,19 @@ import {
   HTMLContainer,
   Rectangle2d,
   T,
-  RecordProps,
+  RecordPropsType,
   useEditor,
   useValue,
 } from 'tldraw'
 
-// Base sticky shape props
-type StickyProps = {
-  text: string
-  w: number
-  h: number
+// Shared props schema - define validators first, then derive types
+const stickyShapeProps = {
+  text: T.string,
+  w: T.number,
+  h: T.number,
 }
+
+type StickyProps = RecordPropsType<typeof stickyShapeProps>
 
 // Type definitions for each sticky kind
 type EventStickyShape = TLBaseShape<'event-sticky', StickyProps>
@@ -33,13 +35,6 @@ type AnyStickyShape =
   | SystemStickyShape
   | OpportunityStickyShape
   | GlossaryStickyShape
-
-// Shared props schema
-const stickyShapeProps: RecordProps<StickyProps> = {
-  text: T.string,
-  w: T.number,
-  h: T.number,
-}
 
 // Color configurations matching EventStormer
 const COLORS = {

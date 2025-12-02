@@ -5,25 +5,20 @@ import {
   HTMLContainer,
   Rectangle2d,
   T,
-  RecordProps,
+  RecordPropsType,
   useEditor,
   useValue,
 } from 'tldraw'
 
 // Label props (w/h kept for schema compatibility but not used)
-type LabelProps = {
-  text: string
-  w: number
-  h: number
-}
-
-type LabelShape = TLBaseShape<'label', LabelProps>
-
-const labelProps: RecordProps<LabelProps> = {
+const labelProps = {
   text: T.string,
   w: T.number,
   h: T.number,
 }
+
+type LabelProps = RecordPropsType<typeof labelProps>
+type LabelShape = TLBaseShape<'label', LabelProps>
 
 // Editable label component
 function EditableLabelComponent({ shape }: { shape: LabelShape }) {

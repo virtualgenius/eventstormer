@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import {
   Tldraw,
   TLComponents,
@@ -19,6 +19,7 @@ import { VerticalLineShapeUtil } from './shapes/VerticalLineShape'
 import { HorizontalLaneShapeUtil } from './shapes/HorizontalLaneShape'
 import { ThemeAreaShapeUtil } from './shapes/ThemeAreaShape'
 import { LabelShapeUtil } from './shapes/LabelShape'
+import { useYjsStore } from './useYjsStore'
 
 // Register all custom shape utils
 const customShapeUtils = [
@@ -89,11 +90,28 @@ const components: TLComponents = {
   TopPanel: () => null,
 }
 
+// Get room ID from URL or generate one
+function getRoomId(): string {
+  const params = new URLSearchParams(window.location.search)
+  let roomId = params.get('room')
+
+  if (!roomId) {
+    roomId = Math.random().toString(36).substring(2, 10)
+    const newUrl = `${window.location.pathname}?room=${roomId}`
+    window.history.replaceState({}, '', newUrl)
+  }
+
+  return roomId
+}
+
 export default function App() {
   const [editor, setEditor] = useState<Editor | null>(null)
   const [shapeCount, setShapeCount] = useState(0)
   const [phase, setPhase] = useState<FacilitationPhase>('chaotic-exploration')
   const [activeTool, setActiveTool] = useState<ToolType | null>(null)
+
+  const roomId = useMemo(() => getRoomId(), [])
+  const storeWithStatus = useYjsStore({ roomId })
 
   const handleMount = useCallback((editor: Editor) => {
     setEditor(editor)
@@ -339,8 +357,13 @@ export default function App() {
 
   // Get tools available for current phase
   const availableTools = Object.entries(TOOLS).filter(
-    ([_, config]) => config.phases.includes(phase)
+    ([_, config]) => (config.phases as readonly string[]).includes(phase)
   )
+
+  // Connection status indicator
+  const connectionStatus = storeWithStatus.status === 'synced-remote'
+    ? storeWithStatus.connectionStatus
+    : storeWithStatus.status
 
   return (
     <div style={{ position: 'fixed', inset: 0 }}>
@@ -362,6 +385,29 @@ export default function App() {
         <span style={{ fontWeight: 700, fontSize: 18 }}>EventStormer</span>
         <span style={{ color: '#64748b' }}>|</span>
         <span style={{ color: '#64748b', fontSize: 14 }}>Shapes: {shapeCount}</span>
+
+        {/* Connection Status */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{
+            width: 8,
+            height: 8,
+            borderRadius: '50%',
+            background: connectionStatus === 'online' ? '#22c55e' :
+                       connectionStatus === 'offline' ? '#ef4444' :
+                       connectionStatus === 'loading' ? '#eab308' : '#94a3b8',
+          }} />
+          <span style={{ color: '#64748b', fontSize: 12 }}>
+            {connectionStatus === 'online' ? 'Connected' :
+             connectionStatus === 'offline' ? 'Offline' :
+             connectionStatus === 'loading' ? 'Connecting...' :
+             connectionStatus === 'not-synced' ? 'Syncing...' : 'Loading...'}
+          </span>
+        </div>
+
+        {/* Room ID */}
+        <span style={{ color: '#94a3b8', fontSize: 12 }}>
+          Room: {roomId}
+        </span>
 
         {/* Phase Selector */}
         <select
@@ -440,6 +486,7 @@ export default function App() {
       {/* tldraw Canvas */}
       <div style={{ position: 'absolute', top: 48, left: 0, right: 0, bottom: 0 }}>
         <Tldraw
+          store={storeWithStatus}
           shapeUtils={customShapeUtils}
           components={components}
           onMount={handleMount}

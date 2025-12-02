@@ -5,30 +5,23 @@ import {
   HTMLContainer,
   Rectangle2d,
   T,
-  RecordProps,
-  TLOnResizeHandler,
+  RecordPropsType,
   resizeBox,
+  TLResizeInfo,
   useEditor,
   useValue,
   TLShape,
-  TLDragShapesInInfo,
-  TLDragShapesOutInfo,
 } from 'tldraw'
 
 // Theme area props
-type ThemeAreaProps = {
-  w: number
-  h: number
-  name: string
-}
-
-type ThemeAreaShape = TLBaseShape<'theme-area', ThemeAreaProps>
-
-const themeAreaProps: RecordProps<ThemeAreaProps> = {
+const themeAreaProps = {
   w: T.number,
   h: T.number,
   name: T.string,
 }
+
+type ThemeAreaProps = RecordPropsType<typeof themeAreaProps>
+type ThemeAreaShape = TLBaseShape<'theme-area', ThemeAreaProps>
 
 // Theme area background - renders BELOW child shapes
 function ThemeAreaBackground({ shape }: { shape: ThemeAreaShape }) {
@@ -164,7 +157,6 @@ export class ThemeAreaShapeUtil extends ShapeUtil<ThemeAreaShape> {
 
   override canEdit = () => true
   override canResize = () => true
-  override canResizeChildren = () => false
 
   getDefaultProps(): ThemeAreaShape['props'] {
     return { w: 400, h: 300, name: 'New Theme' }
@@ -190,29 +182,28 @@ export class ThemeAreaShapeUtil extends ShapeUtil<ThemeAreaShape> {
     return <rect width={shape.props.w} height={shape.props.h} rx={8} />
   }
 
-  override onResize: TLOnResizeHandler<ThemeAreaShape> = (shape, info) => {
+  override onResize(shape: ThemeAreaShape, info: TLResizeInfo<ThemeAreaShape>) {
     return resizeBox(shape, info)
   }
 
   // Allow shapes to be dropped into this theme area
-  override canDropShapes = (_shape: ThemeAreaShape, _shapes: TLShape[]) => {
+  canDropShapes = (_shape: ThemeAreaShape, _shapes: TLShape[]) => {
     return true
   }
 
   // When shapes are dragged into this theme, reparent them
-  override onDragShapesIn = (
+  override onDragShapesOver = (
     shape: ThemeAreaShape,
-    draggingShapes: TLShape[],
-    _info: TLDragShapesInInfo
+    shapes: TLShape[]
   ) => {
     // Skip if all shapes are already children of this theme
-    if (draggingShapes.every((s) => s.parentId === shape.id)) return
+    if (shapes.every((s) => s.parentId === shape.id)) return
 
     // Don't allow theme areas to be nested
-    if (draggingShapes.some((s) => this.editor.hasAncestor(shape, s.id))) return
+    if (shapes.some((s) => this.editor.hasAncestor(shape, s.id))) return
 
     // Filter out theme areas - they shouldn't be reparented
-    const shapesToReparent = draggingShapes.filter((s) => s.type !== 'theme-area')
+    const shapesToReparent = shapes.filter((s) => s.type !== 'theme-area')
 
     if (shapesToReparent.length > 0) {
       this.editor.reparentShapes(shapesToReparent, shape.id)
@@ -222,13 +213,9 @@ export class ThemeAreaShapeUtil extends ShapeUtil<ThemeAreaShape> {
   // When shapes are dragged out, reparent them back to the page
   override onDragShapesOut = (
     shape: ThemeAreaShape,
-    draggingShapes: TLShape[],
-    info: TLDragShapesOutInfo
+    shapes: TLShape[]
   ) => {
-    // Only reparent to page if not dragging into another container
-    if (info.nextDraggingOverShapeId) return
-
-    const shapesToReparent = draggingShapes.filter(
+    const shapesToReparent = shapes.filter(
       (s) => s.parentId === shape.id && s.type !== 'theme-area'
     )
 
@@ -238,5 +225,5 @@ export class ThemeAreaShapeUtil extends ShapeUtil<ThemeAreaShape> {
   }
 
   // Provide background for children so they render on top
-  override providesBackgroundForChildren = () => true
+  providesBackgroundForChildren = () => true
 }

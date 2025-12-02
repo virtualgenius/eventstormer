@@ -4,25 +4,19 @@ import {
   HTMLContainer,
   Rectangle2d,
   T,
-  RecordProps,
-  TLOnResizeHandler,
-  resizeBox,
+  RecordPropsType,
+  TLResizeInfo,
 } from 'tldraw'
 
 // Vertical line props
-type VerticalLineProps = {
-  w: number
-  h: number
-  label: string
-}
-
-type VerticalLineShape = TLBaseShape<'vertical-line', VerticalLineProps>
-
-const verticalLineProps: RecordProps<VerticalLineProps> = {
+const verticalLineProps = {
   w: T.number,
   h: T.number,
   label: T.string,
 }
+
+type VerticalLineProps = RecordPropsType<typeof verticalLineProps>
+type VerticalLineShape = TLBaseShape<'vertical-line', VerticalLineProps>
 
 // Vertical Line (Blue pivotal boundary)
 export class VerticalLineShapeUtil extends ShapeUtil<VerticalLineShape> {
@@ -79,7 +73,7 @@ export class VerticalLineShapeUtil extends ShapeUtil<VerticalLineShape> {
   }
 
   // Only allow vertical resizing (height), keep width fixed
-  override onResize: TLOnResizeHandler<VerticalLineShape> = (shape, info) => {
+  override onResize(shape: VerticalLineShape, info: TLResizeInfo<VerticalLineShape>) {
     const { scaleY } = info
     return {
       props: {

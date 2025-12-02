@@ -4,25 +4,19 @@ import {
   HTMLContainer,
   Rectangle2d,
   T,
-  RecordProps,
-  TLOnResizeHandler,
-  resizeBox,
+  RecordPropsType,
+  TLResizeInfo,
 } from 'tldraw'
 
 // Horizontal lane props
-type HorizontalLaneProps = {
-  w: number
-  h: number
-  label: string
-}
-
-type HorizontalLaneShape = TLBaseShape<'horizontal-lane', HorizontalLaneProps>
-
-const horizontalLaneProps: RecordProps<HorizontalLaneProps> = {
+const horizontalLaneProps = {
   w: T.number,
   h: T.number,
   label: T.string,
 }
+
+type HorizontalLaneProps = RecordPropsType<typeof horizontalLaneProps>
+type HorizontalLaneShape = TLBaseShape<'horizontal-lane', HorizontalLaneProps>
 
 // Horizontal Lane (Swimlane)
 export class HorizontalLaneShapeUtil extends ShapeUtil<HorizontalLaneShape> {
@@ -78,7 +72,7 @@ export class HorizontalLaneShapeUtil extends ShapeUtil<HorizontalLaneShape> {
   }
 
   // Only allow horizontal resizing (width), keep height fixed
-  override onResize: TLOnResizeHandler<HorizontalLaneShape> = (shape, info) => {
+  override onResize(shape: HorizontalLaneShape, info: TLResizeInfo<HorizontalLaneShape>) {
     const { scaleX } = info
     return {
       props: {
