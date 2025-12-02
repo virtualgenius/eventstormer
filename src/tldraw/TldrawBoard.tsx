@@ -102,9 +102,31 @@ export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
   // Set up presence sync
   useYjsPresence({ editor, room })
 
+  const BACKGROUND_SHAPE_TYPES = ['vertical-line', 'horizontal-lane', 'theme-area']
+
   const handleMount = useCallback((editor: Editor) => {
     setEditor(editor)
+
+    editor.sideEffects.registerAfterCreateHandler('shape', (shape) => {
+      if (BACKGROUND_SHAPE_TYPES.includes(shape.type)) {
+        setTimeout(() => editor.sendToBack([shape.id]), 0)
+      }
+    })
   }, [])
+
+  const hasMigratedRef = useRef(false)
+  useEffect(() => {
+    if (!editor) return
+    if (storeWithStatus.status !== 'synced-remote') return
+    if (hasMigratedRef.current) return
+    hasMigratedRef.current = true
+
+    const allShapes = editor.getCurrentPageShapes()
+    const backgroundShapes = allShapes.filter(s => BACKGROUND_SHAPE_TYPES.includes(s.type))
+    if (backgroundShapes.length > 0) {
+      editor.sendToBack(backgroundShapes.map(s => s.id))
+    }
+  }, [editor, storeWithStatus.status])
 
   // Shape types that support editing
   const EDITABLE_TYPES: ToolType[] = [
