@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { TldrawBoard } from "@/tldraw/TldrawBoard";
 import { NamePrompt } from "@/components/NamePrompt";
+import { addRecentBoard } from "@/components/BoardList";
 import { Home } from "lucide-react";
 
 const USER_NAME_KEY = "eventstormer-user-name";
@@ -22,6 +23,13 @@ export const BoardPage: React.FC = () => {
       setShowNamePrompt(true);
     }
   }, []);
+
+  // Track this board as recently visited
+  useEffect(() => {
+    if (boardId) {
+      addRecentBoard(boardId);
+    }
+  }, [boardId]);
 
   const handleNameSubmit = (name: string) => {
     localStorage.setItem(USER_NAME_KEY, name);

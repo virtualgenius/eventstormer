@@ -1,15 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, ExternalLink } from "lucide-react";
+import { Plus, ExternalLink, Trash2 } from "lucide-react";
 import { nanoid } from "@/lib/nanoid";
+
+interface RecentBoard {
+  id: string;
+  lastVisited: string;
+}
+
+function getRecentBoards(): RecentBoard[] {
+  try {
+    const stored = localStorage.getItem("eventstormer-recent-boards");
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+}
+
+function removeRecentBoard(boardId: string): RecentBoard[] {
+  const boards = getRecentBoards().filter((b) => b.id !== boardId);
+  localStorage.setItem("eventstormer-recent-boards", JSON.stringify(boards));
+  return boards;
+}
+
+export function addRecentBoard(boardId: string): void {
+  const boards = getRecentBoards().filter((b) => b.id !== boardId);
+  boards.unshift({ id: boardId, lastVisited: new Date().toISOString() });
+  // Keep only the 10 most recent
+  localStorage.setItem(
+    "eventstormer-recent-boards",
+    JSON.stringify(boards.slice(0, 10))
+  );
+}
 
 export const BoardList: React.FC = () => {
   const navigate = useNavigate();
   const [roomIdInput, setRoomIdInput] = useState("");
+  const [recentBoards, setRecentBoards] = useState<RecentBoard[]>([]);
+
+  useEffect(() => {
+    setRecentBoards(getRecentBoards());
+  }, []);
 
   const handleCreateBoard = () => {
     const newBoardId = nanoid();
     navigate(`/board/${newBoardId}`);
+  };
+
+  const handleRemoveBoard = (e: React.MouseEvent, boardId: string) => {
+    e.stopPropagation();
+    setRecentBoards(removeRecentBoard(boardId));
   };
 
   const handleJoinBoard = (e: React.FormEvent) => {
@@ -48,6 +88,40 @@ export const BoardList: React.FC = () => {
               New Board
             </button>
           </div>
+
+          {/* Recent boards */}
+          {recentBoards.length > 0 && (
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
+                Recent Boards
+              </h2>
+              <div className="space-y-2">
+                {recentBoards.map((board) => (
+                  <div
+                    key={board.id}
+                    onClick={() => navigate(`/board/${board.id}`)}
+                    className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition-colors group"
+                  >
+                    <div className="min-w-0">
+                      <div className="font-mono text-sm text-slate-700 dark:text-slate-300 truncate">
+                        {board.id}
+                      </div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400">
+                        Last visited: {new Date(board.lastVisited).toLocaleDateString()}
+                      </div>
+                    </div>
+                    <button
+                      onClick={(e) => handleRemoveBoard(e, board.id)}
+                      className="p-1.5 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                      title="Remove from list"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Join existing board */}
           <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
