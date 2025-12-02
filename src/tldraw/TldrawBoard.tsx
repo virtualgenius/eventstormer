@@ -408,17 +408,20 @@ export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
       {/* Header bar with phase selector */}
       <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-slate-200 z-10">
         {/* Phase Selector */}
-        <select
-          value={phase}
-          onChange={(e) => setPhase(e.target.value as FacilitationPhase)}
-          className="px-3 py-1.5 text-sm border border-slate-200 rounded-md bg-white"
-        >
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium text-slate-600">Big Picture:</span>
+          <select
+            value={phase}
+            onChange={(e) => setPhase(e.target.value as FacilitationPhase)}
+            className="px-3 py-1.5 text-sm border border-slate-200 rounded-md bg-white"
+          >
           <option value="chaotic-exploration">1. Chaotic Exploration</option>
           <option value="enforce-timeline">2. Enforce Timeline</option>
           <option value="people-and-systems">3. People & Systems</option>
           <option value="problems-and-opportunities">4. Problems & Opportunities</option>
           <option value="glossary">5. Glossary</option>
-        </select>
+          </select>
+        </div>
 
         {/* Render header right content if no external render prop */}
         {!renderHeaderRight && (

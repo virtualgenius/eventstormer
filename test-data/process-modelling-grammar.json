@@ -1,0 +1,122 @@
+{
+  "id": "process-modelling-grammar",
+  "name": "EventStorming - Process Modelling Grammar Example",
+  "stickies": [
+    {
+      "id": "h001",
+      "kind": "hotspot",
+      "text": "OUR MENU IS TOO LONG!",
+      "x": 50,
+      "y": 280
+    },
+    {
+      "id": "p001",
+      "kind": "person",
+      "text": "Customer",
+      "x": 200,
+      "y": 380
+    },
+    {
+      "id": "e001",
+      "kind": "event",
+      "text": "Place Order",
+      "x": 350,
+      "y": 300
+    },
+    {
+      "id": "s001",
+      "kind": "system",
+      "text": "EventPizza.com",
+      "x": 520,
+      "y": 300
+    },
+    {
+      "id": "e002",
+      "kind": "event",
+      "text": "Order placed",
+      "x": 700,
+      "y": 270
+    },
+    {
+      "id": "e003",
+      "kind": "event",
+      "text": "Today's Special Ordered",
+      "x": 700,
+      "y": 400
+    },
+    {
+      "id": "e004",
+      "kind": "event",
+      "text": "Send confirmation message",
+      "x": 1050,
+      "y": 220
+    },
+    {
+      "id": "s002",
+      "kind": "system",
+      "text": "SMS",
+      "x": 1220,
+      "y": 220
+    },
+    {
+      "id": "e005",
+      "kind": "event",
+      "text": "Confirmation message sent",
+      "x": 1380,
+      "y": 220
+    },
+    {
+      "id": "p002",
+      "kind": "person",
+      "text": "Chef",
+      "x": 870,
+      "y": 490
+    },
+    {
+      "id": "e006",
+      "kind": "event",
+      "text": "Prepare Pizza",
+      "x": 1050,
+      "y": 420
+    }
+  ],
+  "verticals": [],
+  "lanes": [],
+  "labels": [
+    {
+      "id": "l001",
+      "text": "PROCESS MODELLING GRAMMAR EXAMPLE",
+      "x": 50,
+      "y": 30
+    },
+    {
+      "id": "l002",
+      "text": "Online Menu: prices, pizzas, ingredients, allergens, recommendations",
+      "x": 50,
+      "y": 400
+    },
+    {
+      "id": "l003",
+      "text": "Confirmation policy: Whenever we receive an order we send a confirmation message",
+      "x": 870,
+      "y": 180
+    },
+    {
+      "id": "l004",
+      "text": "Cooking policy: Whenever a today's special is ordered, the cook checks the recipe and prepares it",
+      "x": 870,
+      "y": 380
+    },
+    {
+      "id": "l005",
+      "text": "Recipe: Ingredients, preparation, notes",
+      "x": 720,
+      "y": 550
+    }
+  ],
+  "themes": [],
+  "sessionMode": "big-picture",
+  "phase": "glossary",
+  "createdAt": "2025-12-02T00:00:00.000Z",
+  "updatedAt": "2025-12-02T00:00:00.000Z"
+}

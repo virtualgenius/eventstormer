@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, ExternalLink, Trash2, Calendar, Clock, Pencil } from "lucide-react";
+import { Plus, ExternalLink, Trash2, Calendar, Clock, Pencil, ChevronRight } from "lucide-react";
 import { nanoid } from "@/lib/nanoid";
 
 interface RecentBoard {
@@ -70,6 +70,7 @@ export const BoardList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [editingBoardId, setEditingBoardId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
+  const [showJoinInput, setShowJoinInput] = useState(false);
 
   useEffect(() => {
     setRecentBoards(getRecentBoards());
@@ -159,32 +160,14 @@ export const BoardList: React.FC = () => {
           </p>
         </header>
 
-        <div className="mb-6 flex flex-wrap gap-3">
+        <div className="mb-8">
           <button
             onClick={handleCreateBoard}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
+            className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
           >
             <Plus className="w-5 h-5" />
             New Board
           </button>
-
-          <form onSubmit={handleJoinBoard} className="flex gap-2">
-            <input
-              type="text"
-              value={roomIdInput}
-              onChange={(e) => setRoomIdInput(e.target.value)}
-              placeholder="Enter room ID..."
-              className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm w-40"
-            />
-            <button
-              type="submit"
-              disabled={!roomIdInput.trim()}
-              className="flex items-center gap-1.5 px-3 py-2 bg-slate-700 hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium text-sm"
-            >
-              <ExternalLink className="w-4 h-4" />
-              Join
-            </button>
-          </form>
         </div>
 
         {recentBoards.length === 0 ? (
@@ -272,6 +255,45 @@ export const BoardList: React.FC = () => {
             ))}
           </div>
         )}
+
+        {/* Collapsible join section */}
+        <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
+          {showJoinInput ? (
+            <form onSubmit={handleJoinBoard} className="flex items-center gap-2">
+              <span className="text-sm text-slate-500 dark:text-slate-400">Room ID:</span>
+              <input
+                type="text"
+                value={roomIdInput}
+                onChange={(e) => setRoomIdInput(e.target.value)}
+                placeholder="paste room ID here"
+                autoFocus
+                className="px-3 py-1.5 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm w-48"
+              />
+              <button
+                type="submit"
+                disabled={!roomIdInput.trim()}
+                className="px-3 py-1.5 bg-slate-600 hover:bg-slate-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded text-sm"
+              >
+                Join
+              </button>
+              <button
+                type="button"
+                onClick={() => { setShowJoinInput(false); setRoomIdInput(""); }}
+                className="text-sm text-slate-400 hover:text-slate-600"
+              >
+                Cancel
+              </button>
+            </form>
+          ) : (
+            <button
+              onClick={() => setShowJoinInput(true)}
+              className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 px-2 py-1 -ml-2 rounded transition-colors"
+            >
+              <ChevronRight className="w-4 h-4" />
+              Have a room ID? Join an existing board...
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

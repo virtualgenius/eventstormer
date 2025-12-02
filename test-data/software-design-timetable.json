@@ -1,0 +1,252 @@
+{
+  "id": "software-design-timetable",
+  "name": "EventStorming - Software Design (School Timetable)",
+  "stickies": [
+    {
+      "id": "e001",
+      "kind": "event",
+      "text": "Assign Cohort",
+      "x": 50,
+      "y": 80
+    },
+    {
+      "id": "e002",
+      "kind": "event",
+      "text": "Teacher assignments completed",
+      "x": 200,
+      "y": 80
+    },
+    {
+      "id": "e003",
+      "kind": "event",
+      "text": "Timetable design policy released",
+      "x": 400,
+      "y": 120
+    },
+    {
+      "id": "e004",
+      "kind": "event",
+      "text": "Cohort Timetable",
+      "x": 600,
+      "y": 80
+    },
+    {
+      "id": "e005",
+      "kind": "event",
+      "text": "Swap slots",
+      "x": 800,
+      "y": 150
+    },
+    {
+      "id": "e006",
+      "kind": "event",
+      "text": "Timetable rework policy",
+      "x": 950,
+      "y": 150
+    },
+    {
+      "id": "e007",
+      "kind": "event",
+      "text": "Share draft",
+      "x": 1100,
+      "y": 150
+    },
+    {
+      "id": "e008",
+      "kind": "event",
+      "text": "Email",
+      "x": 1250,
+      "y": 150
+    },
+    {
+      "id": "e009",
+      "kind": "event",
+      "text": "Shared",
+      "x": 1400,
+      "y": 150
+    },
+    {
+      "id": "e010",
+      "kind": "event",
+      "text": "Draft Timetable",
+      "x": 1550,
+      "y": 150
+    },
+    {
+      "id": "e011",
+      "kind": "event",
+      "text": "Timetable design policy",
+      "x": 1700,
+      "y": 150
+    },
+    {
+      "id": "e012",
+      "kind": "event",
+      "text": "Cohort timetable completed",
+      "x": 1850,
+      "y": 150
+    },
+    {
+      "id": "e013",
+      "kind": "event",
+      "text": "Official timetable",
+      "x": 2000,
+      "y": 150
+    },
+    {
+      "id": "e014",
+      "kind": "event",
+      "text": "Planned Publishing Date",
+      "x": 2200,
+      "y": 80
+    },
+    {
+      "id": "e015",
+      "kind": "event",
+      "text": "Approved Timetable",
+      "x": 2400,
+      "y": 150
+    },
+    {
+      "id": "e016",
+      "kind": "event",
+      "text": "Email",
+      "x": 2700,
+      "y": 50
+    },
+    {
+      "id": "e017",
+      "kind": "event",
+      "text": "Official timetable shared with teachers app",
+      "x": 2900,
+      "y": 50
+    },
+    {
+      "id": "s001",
+      "kind": "system",
+      "text": "Teachers' app",
+      "x": 2700,
+      "y": 120
+    },
+    {
+      "id": "e018",
+      "kind": "event",
+      "text": "Timetable published on website",
+      "x": 2700,
+      "y": 220
+    },
+    {
+      "id": "s002",
+      "kind": "system",
+      "text": "School Website",
+      "x": 2550,
+      "y": 220
+    },
+    {
+      "id": "e019",
+      "kind": "event",
+      "text": "Email",
+      "x": 2700,
+      "y": 320
+    },
+    {
+      "id": "e020",
+      "kind": "event",
+      "text": "Approved Timetable",
+      "x": 2550,
+      "y": 420
+    },
+    {
+      "id": "s003",
+      "kind": "system",
+      "text": "Students' app",
+      "x": 2700,
+      "y": 420
+    },
+    {
+      "id": "e021",
+      "kind": "event",
+      "text": "Schedule shared with students",
+      "x": 2900,
+      "y": 420
+    },
+    {
+      "id": "p001",
+      "kind": "person",
+      "text": "Teacher",
+      "x": 1400,
+      "y": 250
+    },
+    {
+      "id": "h001",
+      "kind": "hotspot",
+      "text": "I'm not sure!",
+      "x": 2400,
+      "y": 250
+    }
+  ],
+  "verticals": [
+    {
+      "id": "v001",
+      "x": 350,
+      "y1": 50,
+      "y2": 300
+    },
+    {
+      "id": "v002",
+      "x": 750,
+      "y1": 50,
+      "y2": 300
+    },
+    {
+      "id": "v003",
+      "x": 2150,
+      "y1": 50,
+      "y2": 300
+    },
+    {
+      "id": "v004",
+      "x": 2500,
+      "y1": 50,
+      "y2": 500
+    }
+  ],
+  "lanes": [],
+  "labels": [
+    {
+      "id": "l001",
+      "text": "EVENTSTORMING - SOFTWARE DESIGN (SCHOOL TIMETABLE)",
+      "x": 50,
+      "y": 20
+    },
+    {
+      "id": "l002",
+      "text": "Cohort Assignment Policy",
+      "x": 50,
+      "y": 50
+    },
+    {
+      "id": "l003",
+      "text": "Teacher Assignment Policy",
+      "x": 50,
+      "y": 150
+    },
+    {
+      "id": "l004",
+      "text": "Timetable Publishing Policy",
+      "x": 2200,
+      "y": 120
+    },
+    {
+      "id": "l005",
+      "text": "Student Notification Policy",
+      "x": 2550,
+      "y": 370
+    }
+  ],
+  "themes": [],
+  "sessionMode": "big-picture",
+  "phase": "glossary",
+  "createdAt": "2025-12-02T00:00:00.000Z",
+  "updatedAt": "2025-12-02T00:00:00.000Z"
+}
