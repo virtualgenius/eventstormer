@@ -71,9 +71,10 @@ const STICKY_TYPES: ToolType[] = [
   'glossary-sticky',
 ]
 
-// Custom UI: hide top panel but show share panel for presence avatars
+// Custom UI: hide tldraw chrome, keep share panel for presence avatars
 const components: TLComponents = {
   TopPanel: () => null,
+  MenuPanel: () => null,
   SharePanel: DefaultSharePanel,
 }
 

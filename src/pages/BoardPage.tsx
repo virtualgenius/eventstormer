@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { TldrawBoard } from "@/tldraw/TldrawBoard";
 import { NamePrompt } from "@/components/NamePrompt";
-import { addRecentBoard } from "@/components/BoardList";
+import { addRecentBoard, getBoardName } from "@/components/BoardList";
 import { Home } from "lucide-react";
 
 const USER_NAME_KEY = "eventstormer-user-name";
@@ -13,6 +13,7 @@ export const BoardPage: React.FC = () => {
 
   const [userName, setUserName] = useState<string | null>(null);
   const [showNamePrompt, setShowNamePrompt] = useState(false);
+  const [boardName, setBoardName] = useState<string | null>(null);
 
   // Check for stored user name on mount
   useEffect(() => {
@@ -24,10 +25,11 @@ export const BoardPage: React.FC = () => {
     }
   }, []);
 
-  // Track this board as recently visited
+  // Track this board as recently visited and get its name
   useEffect(() => {
     if (boardId) {
       addRecentBoard(boardId);
+      setBoardName(getBoardName(boardId));
     }
   }, [boardId]);
 
@@ -61,7 +63,7 @@ export const BoardPage: React.FC = () => {
             <Home className="w-4 h-4" />
           </button>
           <span className="text-sm md:text-base font-semibold tracking-tight">
-            EventStormer
+            {boardName || `Board ${boardId?.slice(0, 6)}`}
           </span>
         </div>
         <div className="flex items-center gap-2 text-xs text-slate-500">

@@ -57,6 +57,12 @@ export function updateBoardName(boardId: string, name: string): void {
   saveRecentBoards(boards);
 }
 
+export function getBoardName(boardId: string): string | null {
+  const boards = getRecentBoards();
+  const board = boards.find((b) => b.id === boardId);
+  return board?.name ?? null;
+}
+
 export const BoardList: React.FC = () => {
   const navigate = useNavigate();
   const [roomIdInput, setRoomIdInput] = useState("");
