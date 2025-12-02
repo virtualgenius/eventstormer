@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import {
   Tldraw,
   TLComponents,
@@ -22,6 +22,7 @@ import { ThemeAreaShapeUtil } from './shapes/ThemeAreaShape'
 import { LabelShapeUtil } from './shapes/LabelShape'
 import { useYjsStore } from './useYjsStore'
 import { useYjsPresence } from './useYjsPresence'
+import { Download, Upload } from 'lucide-react'
 
 // Register all custom shape utils
 const customShapeUtils = [
@@ -86,6 +87,7 @@ export function TldrawBoard({ roomId }: TldrawBoardProps) {
   const [editor, setEditor] = useState<Editor | null>(null)
   const [phase, setPhase] = useState<FacilitationPhase>('chaotic-exploration')
   const [activeTool, setActiveTool] = useState<ToolType | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const { storeWithStatus, room } = useYjsStore({ roomId })
 
@@ -272,6 +274,48 @@ export function TldrawBoard({ roomId }: TldrawBoardProps) {
     return () => window.removeEventListener('keydown', handleKeyDown, true)
   }, [editor, createNextSticky, duplicateSelected])
 
+  // Export board as JSON
+  const handleExportJSON = useCallback(() => {
+    if (!editor) return
+
+    const snapshot = editor.getSnapshot()
+    const json = JSON.stringify(snapshot, null, 2)
+    const blob = new Blob([json], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `board-${roomId}.json`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }, [editor, roomId])
+
+  // Import board from JSON
+  const handleImportJSON = useCallback(() => {
+    fileInputRef.current?.click()
+  }, [])
+
+  const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !editor) return
+
+    try {
+      const text = await file.text()
+      const snapshot = JSON.parse(text)
+      editor.loadSnapshot(snapshot)
+    } catch (error) {
+      console.error('Failed to import board:', error)
+      alert('Failed to import board JSON. Please check the file format.')
+    }
+
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }, [editor])
+
   // Get tools available for current phase
   const availableTools = Object.entries(TOOLS).filter(
     ([_, config]) => (config.phases as readonly string[]).includes(phase)
@@ -308,6 +352,34 @@ export function TldrawBoard({ roomId }: TldrawBoardProps) {
           <span className="text-xs text-slate-400">
             Room: {roomId}
           </span>
+
+          {/* Import/Export Buttons */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleExportJSON}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 rounded transition-colors"
+              title="Export board as JSON"
+            >
+              <Download className="w-3.5 h-3.5" />
+              Export
+            </button>
+            <button
+              onClick={handleImportJSON}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 rounded transition-colors"
+              title="Import board from JSON"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              Import
+            </button>
+          </div>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json"
+            onChange={handleFileChange}
+            className="hidden"
+          />
         </div>
 
         {/* Phase Selector */}
