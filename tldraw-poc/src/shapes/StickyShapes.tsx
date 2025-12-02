@@ -1,0 +1,244 @@
+import { useState, useCallback, useEffect, useRef } from 'react'
+import {
+  ShapeUtil,
+  TLBaseShape,
+  HTMLContainer,
+  Rectangle2d,
+  T,
+  RecordProps,
+  useEditor,
+  useValue,
+} from 'tldraw'
+
+// Base sticky shape props
+type StickyProps = {
+  text: string
+  w: number
+  h: number
+}
+
+// Type definitions for each sticky kind
+type EventStickyShape = TLBaseShape<'event-sticky', StickyProps>
+type HotspotStickyShape = TLBaseShape<'hotspot-sticky', StickyProps>
+type PersonStickyShape = TLBaseShape<'person-sticky', StickyProps>
+type SystemStickyShape = TLBaseShape<'system-sticky', StickyProps>
+type OpportunityStickyShape = TLBaseShape<'opportunity-sticky', StickyProps>
+type GlossaryStickyShape = TLBaseShape<'glossary-sticky', StickyProps>
+
+// Union type for any sticky shape
+type AnyStickyShape =
+  | EventStickyShape
+  | HotspotStickyShape
+  | PersonStickyShape
+  | SystemStickyShape
+  | OpportunityStickyShape
+  | GlossaryStickyShape
+
+// Shared props schema
+const stickyShapeProps: RecordProps<StickyProps> = {
+  text: T.string,
+  w: T.number,
+  h: T.number,
+}
+
+// Color configurations matching EventStormer
+const COLORS = {
+  event: { fill: '#fed7aa', border: '#fdba74' },
+  hotspot: { fill: '#fecaca', border: '#fca5a5' },
+  person: { fill: '#fef9c3', border: '#fef08a' },
+  system: { fill: '#e9d5ff', border: '#d8b4fe' },
+  opportunity: { fill: '#bbf7d0', border: '#86efac' },
+  glossary: { fill: '#f1f5f9', border: '#e2e8f0' },
+}
+
+// Editable sticky component using tldraw's editing state
+function EditableStickyComponent({
+  shape,
+  colors,
+}: {
+  shape: AnyStickyShape
+  colors: { fill: string; border: string }
+}) {
+  const editor = useEditor()
+
+  // Check if this shape is being edited using tldraw's editing state
+  const isEditing = useValue(
+    'isEditing',
+    () => editor.getEditingShapeId() === shape.id,
+    [editor, shape.id]
+  )
+
+  const [text, setText] = useState(shape.props.text)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // Sync text when shape prop changes externally
+  useEffect(() => {
+    if (!isEditing) {
+      setText(shape.props.text)
+    }
+  }, [shape.props.text, isEditing])
+
+  // Focus textarea when entering edit mode
+  useEffect(() => {
+    if (isEditing && textareaRef.current) {
+      textareaRef.current.focus()
+      textareaRef.current.select()
+    }
+  }, [isEditing])
+
+  const handleBlur = useCallback(() => {
+    if (text !== shape.props.text) {
+      editor.updateShape({
+        id: shape.id,
+        type: shape.type,
+        props: { text },
+      })
+    }
+    editor.setEditingShape(null)
+  }, [editor, shape.id, shape.type, shape.props.text, text])
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      setText(shape.props.text)
+      editor.setEditingShape(null)
+      e.stopPropagation()
+    } else if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleBlur()
+    }
+    e.stopPropagation()
+  }, [shape.props.text, handleBlur, editor])
+
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    if (isEditing) {
+      e.stopPropagation()
+    }
+  }, [isEditing])
+
+  return (
+    <HTMLContainer>
+      <div
+        onPointerDown={handlePointerDown}
+        style={{
+          width: shape.props.w,
+          height: shape.props.h,
+          backgroundColor: colors.fill,
+          border: `2px solid ${colors.border}`,
+          borderRadius: 4,
+          padding: 8,
+          fontSize: 14,
+          fontFamily: 'system-ui, -apple-system, sans-serif',
+          overflow: 'hidden',
+          boxSizing: 'border-box',
+          display: 'flex',
+          alignItems: 'flex-start',
+          color: '#1e293b',
+          lineHeight: 1.25,
+          wordWrap: 'break-word',
+          cursor: isEditing ? 'text' : 'default',
+        }}
+      >
+        {isEditing ? (
+          <textarea
+            ref={textareaRef}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            onPointerDown={(e) => e.stopPropagation()}
+            style={{
+              width: '100%',
+              height: '100%',
+              border: 'none',
+              background: 'transparent',
+              resize: 'none',
+              outline: 'none',
+              fontSize: 14,
+              fontFamily: 'system-ui, -apple-system, sans-serif',
+              color: '#1e293b',
+              lineHeight: 1.25,
+              padding: 0,
+              margin: 0,
+            }}
+          />
+        ) : (
+          <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+            {shape.props.text || <span style={{ color: '#94a3b8' }}>Double-click to edit</span>}
+          </span>
+        )}
+      </div>
+    </HTMLContainer>
+  )
+}
+
+// Base class for sticky shape utils
+function createStickyShapeUtil<T extends AnyStickyShape>(
+  type: T['type'],
+  colors: { fill: string; border: string },
+  defaultHeight: number = 100
+) {
+  return class extends ShapeUtil<T> {
+    static override type = type as T['type']
+    static override props = stickyShapeProps
+
+    // Enable editing mode for this shape type
+    override canEdit = () => true
+
+    getDefaultProps(): T['props'] {
+      return { text: '', w: 120, h: defaultHeight } as T['props']
+    }
+
+    getGeometry(shape: T) {
+      return new Rectangle2d({
+        width: shape.props.w,
+        height: shape.props.h,
+        isFilled: true,
+      })
+    }
+
+    component(shape: T) {
+      return <EditableStickyComponent shape={shape} colors={colors} />
+    }
+
+    indicator(shape: T) {
+      return <rect width={shape.props.w} height={shape.props.h} rx={4} />
+    }
+  }
+}
+
+// Create all sticky shape utils
+export const EventStickyShapeUtil = createStickyShapeUtil<EventStickyShape>(
+  'event-sticky',
+  COLORS.event,
+  100
+)
+
+export const HotspotStickyShapeUtil = createStickyShapeUtil<HotspotStickyShape>(
+  'hotspot-sticky',
+  COLORS.hotspot,
+  100
+)
+
+export const PersonStickyShapeUtil = createStickyShapeUtil<PersonStickyShape>(
+  'person-sticky',
+  COLORS.person,
+  50
+)
+
+export const SystemStickyShapeUtil = createStickyShapeUtil<SystemStickyShape>(
+  'system-sticky',
+  COLORS.system,
+  50
+)
+
+export const OpportunityStickyShapeUtil = createStickyShapeUtil<OpportunityStickyShape>(
+  'opportunity-sticky',
+  COLORS.opportunity,
+  100
+)
+
+export const GlossaryStickyShapeUtil = createStickyShapeUtil<GlossaryStickyShape>(
+  'glossary-sticky',
+  COLORS.glossary,
+  100
+)
