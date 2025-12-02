@@ -41,10 +41,16 @@ export interface YjsStoreOptions {
   hostUrl?: string
 }
 
-export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): TLStoreWithStatus {
+export interface YjsStoreResult {
+  storeWithStatus: TLStoreWithStatus
+  room: YProvider | null
+}
+
+export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): YjsStoreResult {
   const [storeWithStatus, setStoreWithStatus] = useState<TLStoreWithStatus>({
     status: 'loading',
   })
+  const [room, setRoom] = useState<YProvider | null>(null)
 
   const storeRef = useRef<TLStore | null>(null)
   const roomRef = useRef<YProvider | null>(null)
@@ -72,6 +78,7 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): TLStoreWithSt
       party: 'yjs-room',
     })
     roomRef.current = room
+    setRoom(room)
 
     const unsubs: (() => void)[] = []
     let didConnect = false
@@ -199,8 +206,9 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): TLStoreWithSt
       room.off('sync', handleSync)
       room.disconnect()
       yDoc.destroy()
+      setRoom(null)
     }
   }, [roomId, hostUrl])
 
-  return storeWithStatus
+  return { storeWithStatus, room }
 }

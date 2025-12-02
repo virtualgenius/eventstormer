@@ -5,6 +5,7 @@ import {
   Editor,
   createShapeId,
   TLShapeId,
+  DefaultSharePanel,
 } from 'tldraw'
 import 'tldraw/tldraw.css'
 import {
@@ -20,6 +21,7 @@ import { HorizontalLaneShapeUtil } from './shapes/HorizontalLaneShape'
 import { ThemeAreaShapeUtil } from './shapes/ThemeAreaShape'
 import { LabelShapeUtil } from './shapes/LabelShape'
 import { useYjsStore } from './useYjsStore'
+import { useYjsPresence } from './useYjsPresence'
 
 // Register all custom shape utils
 const customShapeUtils = [
@@ -85,9 +87,10 @@ function getRandomText(kind: string): string {
   return texts[Math.floor(Math.random() * texts.length)]
 }
 
-// Custom UI hiding tldraw's top panel
+// Custom UI: hide top panel but show share panel for presence avatars
 const components: TLComponents = {
   TopPanel: () => null,
+  SharePanel: DefaultSharePanel,
 }
 
 // Get room ID from URL or generate one
@@ -111,7 +114,10 @@ export default function App() {
   const [activeTool, setActiveTool] = useState<ToolType | null>(null)
 
   const roomId = useMemo(() => getRoomId(), [])
-  const storeWithStatus = useYjsStore({ roomId })
+  const { storeWithStatus, room } = useYjsStore({ roomId })
+
+  // Set up presence sync
+  const { userName, userColor } = useYjsPresence({ editor, room })
 
   const handleMount = useCallback((editor: Editor) => {
     setEditor(editor)
