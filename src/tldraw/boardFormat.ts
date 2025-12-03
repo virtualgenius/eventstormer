@@ -1,5 +1,5 @@
 // EventStormer Board Format - official import/export format
-export type StickyKind = 'event' | 'hotspot' | 'person' | 'system' | 'opportunity' | 'glossary' | 'command' | 'policy' | 'readmodel'
+export type StickyKind = 'event' | 'hotspot' | 'person' | 'system' | 'opportunity' | 'glossary' | 'command' | 'policy' | 'aggregate' | 'readmodel'
 
 export interface BoardSticky {
   id: string
@@ -70,11 +70,12 @@ const KIND_TO_TYPE: Record<string, string> = {
   glossary: 'glossary-sticky',
   command: 'command-sticky',
   policy: 'policy-sticky',
+  aggregate: 'aggregate-sticky',
   readmodel: 'readmodel-sticky',
 }
 
 const HALF_HEIGHT_KINDS = ['person']
-const WIDE_KINDS = ['system', 'policy']
+const WIDE_KINDS = ['system', 'policy', 'aggregate']
 const DEFAULT_WIDTH = 120
 const WIDE_WIDTH = 240
 const FULL_HEIGHT = 100

@@ -36,6 +36,9 @@ jobs:
           VITE_COLLAB_HOST: eventstormer-collab.paul-162.workers.dev
           VITE_TLDRAW_LICENSE_KEY: ${{ secrets.TLDRAW_LICENSE_KEY }}
 
+      - name: Copy index.html to 404.html for SPA routing
+        run: cp dist/index.html dist/404.html
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 

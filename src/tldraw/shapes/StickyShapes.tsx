@@ -28,6 +28,7 @@ type OpportunityStickyShape = TLBaseShape<'opportunity-sticky', StickyProps>
 type GlossaryStickyShape = TLBaseShape<'glossary-sticky', StickyProps>
 type CommandStickyShape = TLBaseShape<'command-sticky', StickyProps>
 type PolicyStickyShape = TLBaseShape<'policy-sticky', StickyProps>
+type AggregateStickyShape = TLBaseShape<'aggregate-sticky', StickyProps>
 type ReadModelStickyShape = TLBaseShape<'readmodel-sticky', StickyProps>
 
 // Union type for any sticky shape
@@ -40,6 +41,7 @@ type AnyStickyShape =
   | GlossaryStickyShape
   | CommandStickyShape
   | PolicyStickyShape
+  | AggregateStickyShape
   | ReadModelStickyShape
 
 // Color configurations matching EventStormer
@@ -52,6 +54,7 @@ const COLORS = {
   glossary: { fill: '#1e293b', border: '#334155', text: '#ffffff' },
   command: { fill: '#bfdbfe', border: '#93c5fd', text: '#1e293b' },
   policy: { fill: '#c4b5fd', border: '#a78bfa', text: '#1e293b' },
+  aggregate: { fill: '#fef9c3', border: '#fef08a', text: '#1e293b' },
   readmodel: { fill: '#bbf7d0', border: '#86efac', text: '#1e293b' },
 }
 
@@ -258,6 +261,13 @@ export const CommandStickyShapeUtil = createStickyShapeUtil<CommandStickyShape>(
 export const PolicyStickyShapeUtil = createStickyShapeUtil<PolicyStickyShape>(
   'policy-sticky',
   COLORS.policy,
+  100,
+  240
+)
+
+export const AggregateStickyShapeUtil = createStickyShapeUtil<AggregateStickyShape>(
+  'aggregate-sticky',
+  COLORS.aggregate,
   100,
   240
 )
