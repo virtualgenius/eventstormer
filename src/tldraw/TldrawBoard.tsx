@@ -628,7 +628,7 @@ export function TldrawBoard({ roomId, templateFile, renderHeaderRight }: TldrawB
                 <option value="chaotic-exploration">1. Chaotic Exploration</option>
                 <option value="enforce-timeline">2. Enforce Timeline</option>
                 <option value="people-and-systems">3. People & Systems</option>
-                <option value="problems-and-opportunities">4. Problems & Opportunities</option>
+                <option value="problems-and-opportunities">4. Value & Opportunities</option>
                 <option value="glossary">5. Glossary</option>
               </select>
             </div>
