@@ -19,6 +19,7 @@ import {
   GlossaryStickyShapeUtil,
   CommandStickyShapeUtil,
   PolicyStickyShapeUtil,
+  AggregateStickyShapeUtil,
   ReadModelStickyShapeUtil,
 } from './shapes/StickyShapes'
 import { VerticalLineShapeUtil } from './shapes/VerticalLineShape'
@@ -35,6 +36,7 @@ const customShapeUtils = [
   GlossaryStickyShapeUtil,
   CommandStickyShapeUtil,
   PolicyStickyShapeUtil,
+  AggregateStickyShapeUtil,
   ReadModelStickyShapeUtil,
   VerticalLineShapeUtil,
   HorizontalLaneShapeUtil,
