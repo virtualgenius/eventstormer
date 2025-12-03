@@ -192,7 +192,7 @@ const components: TLComponents = {
 
 interface TldrawBoardProps {
   roomId: string
-  sampleFile?: string
+  templateFile?: string
   renderHeaderRight?: (props: {
     connectionStatus: string
     roomId: string
@@ -201,7 +201,7 @@ interface TldrawBoardProps {
   }) => React.ReactNode
 }
 
-export function TldrawBoard({ roomId, sampleFile, renderHeaderRight }: TldrawBoardProps) {
+export function TldrawBoard({ roomId, templateFile, renderHeaderRight }: TldrawBoardProps) {
   const [editor, setEditor] = useState<Editor | null>(null)
   const [workshopMode, setWorkshopMode] = useState<WorkshopMode>('big-picture')
   const [phase, setPhase] = useState<FacilitationPhase>('chaotic-exploration')
@@ -239,19 +239,19 @@ export function TldrawBoard({ roomId, sampleFile, renderHeaderRight }: TldrawBoa
     }
   }, [editor, storeWithStatus.status])
 
-  const hasLoadedSampleRef = useRef(false)
-  useEffect(function loadSampleBoard() {
-    if (!editor || !sampleFile || hasLoadedSampleRef.current) return
+  const hasLoadedTemplateRef = useRef(false)
+  useEffect(function loadTemplateBoard() {
+    if (!editor || !templateFile || hasLoadedTemplateRef.current) return
     if (storeWithStatus.status !== 'synced-remote') return
 
     const existingShapes = editor.getCurrentPageShapes()
     if (existingShapes.length > 0) {
-      hasLoadedSampleRef.current = true
+      hasLoadedTemplateRef.current = true
       return
     }
 
-    hasLoadedSampleRef.current = true
-    fetch(`/samples/${sampleFile}`)
+    hasLoadedTemplateRef.current = true
+    fetch(`/samples/${templateFile}`)
       .then(res => res.json())
       .then(data => {
         if (isEventStormerBoardFormat(data)) {
@@ -268,8 +268,8 @@ export function TldrawBoard({ roomId, sampleFile, renderHeaderRight }: TldrawBoa
           }
         }
       })
-      .catch(err => console.error('Failed to load sample board:', err))
-  }, [editor, sampleFile, storeWithStatus.status])
+      .catch(err => console.error('Failed to load template board:', err))
+  }, [editor, templateFile, storeWithStatus.status])
 
   // Shape types that support editing
   const EDITABLE_TYPES: ToolType[] = [

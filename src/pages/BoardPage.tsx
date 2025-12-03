@@ -12,8 +12,8 @@ export const BoardPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const sampleFile = searchParams.get('sample');
-  const isSampleBoard = boardId?.startsWith('sample-');
+  const templateFile = searchParams.get('template');
+  const templateName = searchParams.get('name');
 
   const [userName, setUserName] = useState<string | null>(null);
   const [showNamePrompt, setShowNamePrompt] = useState(false);
@@ -34,11 +34,12 @@ export const BoardPage: React.FC = () => {
   }, []);
 
   useEffect(function trackRecentBoardVisit() {
-    if (boardId && !isSampleBoard) {
-      addRecentBoard(boardId);
-      setBoardName(getBoardName(boardId));
+    if (boardId) {
+      const name = templateName || getBoardName(boardId);
+      addRecentBoard(boardId, name || undefined);
+      setBoardName(name);
     }
-  }, [boardId, isSampleBoard]);
+  }, [boardId, templateName]);
 
   const handleNameSubmit = (name: string) => {
     localStorage.setItem(USER_NAME_KEY, name);
@@ -138,7 +139,7 @@ export const BoardPage: React.FC = () => {
       <main className="flex-1 overflow-hidden">
         <TldrawBoard
           roomId={boardId}
-          sampleFile={sampleFile || undefined}
+          templateFile={templateFile || undefined}
           renderHeaderRight={handleBoardReady}
         />
       </main>

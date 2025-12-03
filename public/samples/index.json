@@ -1,7 +1,6 @@
 [
   {
     "id": "repair-claims",
-    "version": 2,
     "name": "Repair Claims (Big Picture)",
     "description": "Extended warranty repair claims process - a real-world EventStorming example",
     "file": "repair-claims-board.json",
@@ -9,7 +8,6 @@
   },
   {
     "id": "process-modelling-grammar",
-    "version": 1,
     "name": "Process Modelling Grammar",
     "description": "Pizza ordering example showing commands, policies, and read models",
     "file": "process-modelling-grammar.json",
@@ -17,7 +15,6 @@
   },
   {
     "id": "eventstorming-facilitation",
-    "version": 1,
     "name": "EventStorming Facilitation Workshop",
     "description": "Conference planning process from an actual EventStorming facilitation workshop",
     "file": "eventstorming-facilitation-workshop.json",
