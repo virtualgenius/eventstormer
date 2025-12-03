@@ -7,574 +7,574 @@
       "kind": "event",
       "text": "Budget submitted",
       "x": 50,
-      "y": 80
+      "y": 100
     },
     {
       "id": "e002",
       "kind": "event",
       "text": "Budget approved",
       "x": 50,
-      "y": 200
+      "y": 220
     },
     {
       "id": "e003",
       "kind": "event",
       "text": "Conference date outlined",
       "x": 200,
-      "y": 80
+      "y": 100
     },
     {
       "id": "e004",
       "kind": "event",
       "text": "Venues shortlisted",
       "x": 350,
-      "y": 80
+      "y": 100
     },
     {
       "id": "e005",
       "kind": "event",
       "text": "Conference Dates Established",
       "x": 500,
-      "y": 80
+      "y": 100
     },
     {
       "id": "h001",
       "kind": "hotspot",
       "text": "How are the dates for the conference determined?",
       "x": 200,
-      "y": 250
+      "y": 340
     },
     {
       "id": "e006",
       "kind": "event",
       "text": "# of all types of instructors planned",
-      "x": 650,
-      "y": 80
+      "x": 700,
+      "y": 100
     },
     {
       "id": "e007",
       "kind": "event",
       "text": "Typeform",
-      "x": 800,
-      "y": 130
+      "x": 850,
+      "y": 220
     },
     {
       "id": "h002",
       "kind": "hotspot",
       "text": "Decline any instructor applications?",
-      "x": 650,
-      "y": 250
+      "x": 700,
+      "y": 340
     },
     {
       "id": "h003",
       "kind": "hotspot",
       "text": "How is list of potential instructors determined?",
-      "x": 800,
-      "y": 300
+      "x": 850,
+      "y": 460
     },
     {
       "id": "h004",
       "kind": "hotspot",
       "text": "What if we don't get enough instructors/participants?",
-      "x": 950,
-      "y": 350
+      "x": 1000,
+      "y": 580
     },
     {
       "id": "e008",
       "kind": "event",
       "text": "Invitation form sent to potential instructors",
-      "x": 950,
-      "y": 80
+      "x": 1000,
+      "y": 100
     },
     {
       "id": "e009",
       "kind": "event",
       "text": "Instructors reach out to us",
-      "x": 950,
-      "y": 180
+      "x": 1000,
+      "y": 220
     },
     {
       "id": "e010",
       "kind": "event",
       "text": "Information submitted with details",
-      "x": 1100,
-      "y": 80
+      "x": 1150,
+      "y": 100
     },
     {
       "id": "e011",
       "kind": "event",
       "text": "Automate sending out",
-      "x": 1100,
-      "y": 30
+      "x": 1150,
+      "y": 220
     },
     {
       "id": "e012",
       "kind": "event",
       "text": "Instructor submitted workshop/the brief",
-      "x": 1250,
-      "y": 130
+      "x": 1300,
+      "y": 100
     },
     {
       "id": "e013",
       "kind": "event",
       "text": "Reserve workshop running",
-      "x": 1250,
-      "y": 230
+      "x": 1300,
+      "y": 220
     },
     {
       "id": "e014",
       "kind": "event",
       "text": "Potential instructor contacted",
-      "x": 1400,
-      "y": 80
+      "x": 1450,
+      "y": 100
     },
     {
       "id": "e015",
       "kind": "event",
       "text": "Confirmed Instructor Logistics",
-      "x": 1550,
-      "y": 80
+      "x": 1600,
+      "y": 100
     },
     {
       "id": "e016",
       "kind": "event",
       "text": "Workshop planning starts",
-      "x": 1550,
-      "y": 180
+      "x": 1600,
+      "y": 220
     },
     {
       "id": "h005",
       "kind": "hotspot",
       "text": "What if an instructor who is asked is already going?",
-      "x": 1400,
-      "y": 300
+      "x": 1450,
+      "y": 340
     },
     {
       "id": "h006",
       "kind": "hotspot",
       "text": "Instructor Selection reviewed",
-      "x": 1550,
-      "y": 380
+      "x": 1600,
+      "y": 460
     },
     {
       "id": "e017",
       "kind": "event",
       "text": "Meeting with new instructor if not already added",
-      "x": 1700,
-      "y": 30
+      "x": 1750,
+      "y": 100
     },
     {
       "id": "e018",
       "kind": "event",
       "text": "Instructor added to Tito",
-      "x": 1850,
-      "y": 80
+      "x": 1900,
+      "y": 100
     },
     {
       "id": "s001",
       "kind": "system",
       "text": "Tito",
-      "x": 1850,
-      "y": 150
+      "x": 1900,
+      "y": 220
     },
     {
       "id": "e019",
       "kind": "event",
       "text": "Do we allow online streaming?",
-      "x": 1700,
-      "y": 280
+      "x": 1750,
+      "y": 340
     },
     {
       "id": "e020",
       "kind": "event",
       "text": "What are max/min workshop sizes?",
-      "x": 2000,
-      "y": 80
+      "x": 2100,
+      "y": 100
     },
     {
       "id": "e021",
       "kind": "event",
       "text": "Rooms Assigned",
-      "x": 2000,
-      "y": 180
+      "x": 2100,
+      "y": 220
     },
     {
       "id": "e022",
       "kind": "event",
       "text": "Workshop Ticket Schedule & Published",
-      "x": 2150,
-      "y": 80
+      "x": 2250,
+      "y": 100
     },
     {
       "id": "e023",
       "kind": "event",
       "text": "Workshop tickets content",
-      "x": 2150,
-      "y": 180
+      "x": 2250,
+      "y": 220
     },
     {
       "id": "e024",
       "kind": "event",
       "text": "Should the instructor write in the newsletter?",
-      "x": 2300,
-      "y": 130
+      "x": 2400,
+      "y": 100
     },
     {
       "id": "s002",
       "kind": "system",
       "text": "Tito",
-      "x": 2300,
-      "y": 230
+      "x": 2400,
+      "y": 220
     },
     {
       "id": "e025",
       "kind": "event",
       "text": "Early Bird Tickets created",
-      "x": 2450,
-      "y": 180
+      "x": 2550,
+      "y": 100
     },
     {
       "id": "e026",
       "kind": "event",
       "text": "GitHub pages updated",
-      "x": 2450,
-      "y": 280
+      "x": 2550,
+      "y": 220
     },
     {
       "id": "e027",
       "kind": "event",
       "text": "Social media updated",
-      "x": 2600,
-      "y": 130
+      "x": 2700,
+      "y": 220
     },
     {
       "id": "e028",
       "kind": "event",
       "text": "At what time?",
-      "x": 2600,
-      "y": 80
+      "x": 2700,
+      "y": 100
     },
     {
       "id": "e029",
       "kind": "event",
       "text": "Should we publish it in the newsletter?",
-      "x": 2750,
-      "y": 80
+      "x": 2850,
+      "y": 220
     },
     {
       "id": "h007",
       "kind": "hotspot",
       "text": "Is this workshop requiring special equipment / expenses?",
-      "x": 2750,
-      "y": 30
+      "x": 2850,
+      "y": 100
     },
     {
       "id": "e030",
       "kind": "event",
       "text": "Tito pricing page set up",
-      "x": 2900,
-      "y": 130
+      "x": 3000,
+      "y": 100
     },
     {
       "id": "s003",
       "kind": "system",
       "text": "Tito",
-      "x": 2900,
-      "y": 200
+      "x": 3000,
+      "y": 220
     },
     {
       "id": "h008",
       "kind": "hotspot",
       "text": "Build up marketing info with interest for future workshop/conferences",
-      "x": 2900,
-      "y": 330
+      "x": 3000,
+      "y": 340
     },
     {
       "id": "e031",
       "kind": "event",
       "text": "Early Bird Sale feature",
-      "x": 3050,
-      "y": 80
+      "x": 3200,
+      "y": 100
     },
     {
       "id": "e032",
       "kind": "event",
       "text": "Early Bird tickets sale page live",
-      "x": 3200,
-      "y": 80
+      "x": 3350,
+      "y": 100
     },
     {
       "id": "e033",
       "kind": "event",
       "text": "Early Bird tickets sold",
-      "x": 3350,
-      "y": 80
+      "x": 3500,
+      "y": 100
     },
     {
       "id": "s004",
       "kind": "system",
       "text": "Tito",
-      "x": 3200,
-      "y": 150
+      "x": 3350,
+      "y": 220
     },
     {
       "id": "s005",
       "kind": "system",
       "text": "Tito",
-      "x": 3350,
-      "y": 150
+      "x": 3500,
+      "y": 220
     },
     {
       "id": "s006",
       "kind": "system",
       "text": "Tito",
-      "x": 3500,
-      "y": 150
+      "x": 3650,
+      "y": 220
     },
     {
       "id": "e034",
       "kind": "event",
       "text": "Max # of Early Bird tickets sold",
-      "x": 3500,
-      "y": 80
+      "x": 3650,
+      "y": 100
     },
     {
       "id": "e035",
       "kind": "event",
       "text": "What happens if min. is not reached?",
-      "x": 3650,
-      "y": 30
+      "x": 3800,
+      "y": 100
     },
     {
       "id": "e036",
       "kind": "event",
       "text": "Max # of tickets sale",
-      "x": 3800,
-      "y": 80
+      "x": 3950,
+      "y": 100
     },
     {
       "id": "e037",
       "kind": "event",
       "text": "Early bird ticket sales registered",
-      "x": 3950,
-      "y": 80
+      "x": 4100,
+      "y": 100
     },
     {
       "id": "e038",
       "kind": "event",
       "text": "Early Bird tickets become available",
-      "x": 4100,
-      "y": 80
+      "x": 4250,
+      "y": 100
     },
     {
       "id": "e039",
       "kind": "event",
       "text": "Regular ticket sales registered",
-      "x": 4250,
-      "y": 80
+      "x": 4400,
+      "y": 100
     },
     {
       "id": "e040",
       "kind": "event",
       "text": "Regular tickets become available",
-      "x": 4400,
-      "y": 80
+      "x": 4550,
+      "y": 100
     },
     {
       "id": "s007",
       "kind": "system",
       "text": "Tito",
-      "x": 4250,
-      "y": 150
+      "x": 4400,
+      "y": 220
     },
     {
       "id": "o001",
       "kind": "opportunity",
       "text": "Automated ticket sales reminders",
-      "x": 4100,
-      "y": 280
+      "x": 4250,
+      "y": 340
     },
     {
       "id": "e041",
       "kind": "event",
       "text": "Attendee registered",
-      "x": 4550,
-      "y": 80
+      "x": 4700,
+      "y": 100
     },
     {
       "id": "e042",
       "kind": "event",
       "text": "Attendees registered opened",
-      "x": 4700,
-      "y": 80
+      "x": 4850,
+      "y": 100
     },
     {
       "id": "e043",
       "kind": "event",
       "text": "Waitlist opened",
-      "x": 4850,
-      "y": 80
+      "x": 5000,
+      "y": 100
     },
     {
       "id": "e044",
       "kind": "event",
       "text": "Workshop sold out",
-      "x": 5000,
-      "y": 80
+      "x": 5150,
+      "y": 100
     },
     {
       "id": "e045",
       "kind": "event",
       "text": "Payments received",
-      "x": 5000,
-      "y": 180
+      "x": 5150,
+      "y": 220
     },
     {
       "id": "e046",
       "kind": "event",
       "text": "Payments Taken",
-      "x": 5150,
-      "y": 180
+      "x": 5300,
+      "y": 220
     },
     {
       "id": "h009",
       "kind": "hotspot",
       "text": "Cancellation/refund received",
-      "x": 5150,
-      "y": 80
+      "x": 5300,
+      "y": 100
     },
     {
       "id": "h010",
       "kind": "hotspot",
       "text": "Workshop postponed or cancelled",
-      "x": 5300,
-      "y": 80
+      "x": 5450,
+      "y": 100
     },
     {
       "id": "h011",
       "kind": "hotspot",
       "text": "What are our refund policies for participants?",
-      "x": 5300,
-      "y": 180
+      "x": 5450,
+      "y": 220
     },
     {
       "id": "h012",
       "kind": "hotspot",
       "text": "How do we handle conflict with other conferences?",
-      "x": 5450,
-      "y": 130
+      "x": 5600,
+      "y": 100
     },
     {
       "id": "o002",
       "kind": "opportunity",
       "text": "Automate the waitlist notification process",
-      "x": 5450,
-      "y": 330
+      "x": 5600,
+      "y": 340
     },
     {
       "id": "h013",
       "kind": "hotspot",
       "text": "Tito functionality not being used",
-      "x": 5600,
-      "y": 280
+      "x": 5750,
+      "y": 340
     },
     {
       "id": "e047",
       "kind": "event",
       "text": "Workshop attendee check-in",
-      "x": 5600,
-      "y": 80
+      "x": 5750,
+      "y": 100
     },
     {
       "id": "e048",
       "kind": "event",
       "text": "Attendee created for workshops",
-      "x": 5750,
-      "y": 80
+      "x": 5900,
+      "y": 100
     },
     {
       "id": "e049",
       "kind": "event",
       "text": "Workshop starts",
-      "x": 5900,
-      "y": 80
+      "x": 6050,
+      "y": 100
     },
     {
       "id": "e050",
       "kind": "event",
       "text": "Workshop completed",
-      "x": 6050,
-      "y": 80
+      "x": 6200,
+      "y": 100
     },
     {
       "id": "e051",
       "kind": "event",
       "text": "Workshop Feedback Form available",
-      "x": 6200,
-      "y": 80
+      "x": 6350,
+      "y": 100
     },
     {
       "id": "e052",
       "kind": "event",
       "text": "Feedback provided",
-      "x": 6350,
-      "y": 80
+      "x": 6500,
+      "y": 100
     },
     {
       "id": "s008",
       "kind": "system",
       "text": "Excel",
-      "x": 6350,
-      "y": 150
+      "x": 6500,
+      "y": 220
     },
     {
       "id": "h014",
       "kind": "hotspot",
       "text": "Is there a way to automate financial calculation? Or have a better system?",
-      "x": 6500,
-      "y": 30
+      "x": 6650,
+      "y": 100
     },
     {
       "id": "o003",
       "kind": "opportunity",
       "text": "Choose system instead of manual calculation",
-      "x": 6500,
-      "y": 80
+      "x": 6650,
+      "y": 220
     },
     {
       "id": "e053",
       "kind": "event",
       "text": "Instructor payment calculated",
-      "x": 6650,
-      "y": 80
+      "x": 6800,
+      "y": 100
     },
     {
       "id": "e054",
       "kind": "event",
       "text": "Profit calculated",
-      "x": 6800,
-      "y": 80
+      "x": 6950,
+      "y": 100
     },
     {
       "id": "e055",
       "kind": "event",
       "text": "Payments processed",
-      "x": 6950,
-      "y": 80
+      "x": 7100,
+      "y": 100
     },
     {
       "id": "e056",
       "kind": "event",
       "text": "Opened champagne!",
-      "x": 7100,
-      "y": 180
+      "x": 7250,
+      "y": 220
     },
     {
       "id": "p001",
       "kind": "person",
       "text": "Make sure champagne is included in budget",
-      "x": 7100,
-      "y": 280
+      "x": 7250,
+      "y": 340
     }
   ],
   "verticals": [
@@ -582,55 +582,55 @@
       "id": "v001",
       "x": 150,
       "y1": 50,
-      "y2": 400
+      "y2": 500
     },
     {
       "id": "v002",
-      "x": 900,
+      "x": 950,
       "y1": 50,
-      "y2": 400
+      "y2": 650
     },
     {
       "id": "v003",
-      "x": 1950,
+      "x": 2050,
       "y1": 50,
-      "y2": 400
+      "y2": 500
     },
     {
       "id": "v004",
-      "x": 2550,
+      "x": 2650,
       "y1": 50,
-      "y2": 400
+      "y2": 500
     },
     {
       "id": "v005",
-      "x": 3000,
+      "x": 3150,
       "y1": 50,
-      "y2": 400
+      "y2": 500
     },
     {
       "id": "v006",
-      "x": 3750,
+      "x": 3900,
       "y1": 50,
-      "y2": 400
+      "y2": 500
     },
     {
       "id": "v007",
-      "x": 5100,
+      "x": 5250,
       "y1": 50,
-      "y2": 400
+      "y2": 500
     },
     {
       "id": "v008",
-      "x": 5550,
+      "x": 5700,
       "y1": 50,
-      "y2": 400
+      "y2": 500
     },
     {
       "id": "v009",
-      "x": 6300,
+      "x": 6450,
       "y1": 50,
-      "y2": 400
+      "y2": 500
     }
   ],
   "lanes": [],
@@ -644,55 +644,55 @@
     {
       "id": "l002",
       "text": "INSTRUCTOR REGISTRATION & SCHEDULING",
-      "x": 1200,
+      "x": 1250,
       "y": 50
     },
     {
       "id": "l003",
       "text": "WORKSHOP SCHEDULING",
-      "x": 2100,
+      "x": 2200,
       "y": 50
     },
     {
       "id": "l004",
       "text": "TICKET SETUP",
-      "x": 2650,
+      "x": 2750,
       "y": 50
     },
     {
       "id": "l005",
       "text": "MARKETING EVENT",
-      "x": 2850,
+      "x": 2950,
       "y": 50
     },
     {
       "id": "l006",
       "text": "EARLY BIRD SALE",
-      "x": 3200,
+      "x": 3400,
       "y": 50
     },
     {
       "id": "l007",
       "text": "REGISTRATION",
-      "x": 4400,
+      "x": 4550,
       "y": 50
     },
     {
       "id": "l008",
       "text": "REFUND / CANCELLATION",
-      "x": 5200,
+      "x": 5350,
       "y": 50
     },
     {
       "id": "l009",
       "text": "WORKSHOP EXECUTION",
-      "x": 5800,
+      "x": 5950,
       "y": 50
     },
     {
       "id": "l010",
       "text": "PAYMENT/PROFIT SHARING",
-      "x": 6600,
+      "x": 6750,
       "y": 50
     }
   ],

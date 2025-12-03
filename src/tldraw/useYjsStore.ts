@@ -77,9 +77,9 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): YjsStoreResul
 
     // Create YProvider
     const host = hostUrl || (import.meta as any).env?.VITE_COLLAB_HOST || 'localhost:8800'
-    console.log('[useYjsStore] Creating YProvider with host:', host, 'roomId:', `tldraw-${roomId}`)
+    console.log('[useYjsStore] Creating YProvider with host:', host, 'roomId:', roomId)
 
-    const room = new YProvider(host, `tldraw-${roomId}`, yDoc, {
+    const room = new YProvider(host, roomId, yDoc, {
       connect: true,
       party: 'yjs-room',
     })

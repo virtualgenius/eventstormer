@@ -49,7 +49,17 @@
       "Bash(npm run deploy:worker:*)",
       "Bash(git rm:*)",
       "Bash(open http://localhost:5181/)",
-      "Bash(open http://localhost:5180/)"
+      "Bash(open http://localhost:5180/)",
+      "Bash(mcp__playwright__browser_navigate:*)",
+      "Bash(xargs:*)",
+      "Bash(src/App.tsx )",
+      "Bash(src/components/KonvaCanvas.tsx )",
+      "Bash(src/components/KonvaSticky.tsx )",
+      "Bash(src/components/KonvaLabel.tsx )",
+      "Bash(src/components/KonvaTheme.tsx )",
+      "Bash(src/components/UserCursor.tsx )",
+      "Bash(src/store/useCollabStore.ts)",
+      "Bash(npx wrangler pages:*)"
     ],
     "deny": [],
     "ask": []
