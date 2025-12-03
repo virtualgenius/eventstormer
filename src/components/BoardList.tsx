@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, ExternalLink, Trash2, Calendar, Clock, Pencil, ChevronRight } from "lucide-react";
+import { Plus, Trash2, Calendar, Clock, Pencil, ChevronRight, BookOpen } from "lucide-react";
 import { nanoid } from "@/lib/nanoid";
+
+interface SampleBoard {
+  id: string;
+  name: string;
+  description: string;
+  file: string;
+  mode: string;
+}
 
 interface RecentBoard {
   id: string;
@@ -67,6 +75,7 @@ export const BoardList: React.FC = () => {
   const navigate = useNavigate();
   const [roomIdInput, setRoomIdInput] = useState("");
   const [recentBoards, setRecentBoards] = useState<RecentBoard[]>([]);
+  const [sampleBoards, setSampleBoards] = useState<SampleBoard[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingBoardId, setEditingBoardId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
@@ -74,12 +83,20 @@ export const BoardList: React.FC = () => {
 
   useEffect(() => {
     setRecentBoards(getRecentBoards());
-    setLoading(false);
+    fetch("/samples/index.json")
+      .then((res) => res.json())
+      .then((data) => setSampleBoards(data))
+      .catch(() => setSampleBoards([]))
+      .finally(() => setLoading(false));
   }, []);
 
   const handleCreateBoard = () => {
     const newBoardId = nanoid();
     navigate(`/board/${newBoardId}`);
+  };
+
+  const handleOpenSample = (sample: SampleBoard) => {
+    navigate(`/board/sample-${sample.id}?sample=${encodeURIComponent(sample.file)}`);
   };
 
   const handleDeleteBoard = (
@@ -253,6 +270,39 @@ export const BoardList: React.FC = () => {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Example boards section */}
+        {sampleBoards.length > 0 && (
+          <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2">
+              <BookOpen className="w-5 h-5" />
+              Examples
+            </h2>
+            <div className="grid gap-3">
+              {sampleBoards.map((sample) => (
+                <div
+                  key={sample.id}
+                  onClick={() => handleOpenSample(sample)}
+                  className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md transition-all"
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="font-medium text-slate-900 dark:text-slate-100">
+                        {sample.name}
+                      </h3>
+                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                        {sample.description}
+                      </p>
+                    </div>
+                    <span className="text-xs px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded">
+                      {sample.mode}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

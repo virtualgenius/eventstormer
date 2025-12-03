@@ -25,7 +25,7 @@ import { ThemeAreaShapeUtil } from './shapes/ThemeAreaShape'
 import { LabelShapeUtil } from './shapes/LabelShape'
 import { useYjsStore } from './useYjsStore'
 import { useYjsPresence } from './useYjsPresence'
-import { isLegacyBoardFormat, convertLegacyBoardToShapes } from './importLegacyBoard'
+import { isEventStormerBoardFormat, convertBoardToShapes } from './boardFormat'
 import { Download, Upload } from 'lucide-react'
 import * as Tooltip from '@radix-ui/react-tooltip'
 
@@ -192,6 +192,7 @@ const components: TLComponents = {
 
 interface TldrawBoardProps {
   roomId: string
+  sampleFile?: string
   renderHeaderRight?: (props: {
     connectionStatus: string
     roomId: string
@@ -200,7 +201,7 @@ interface TldrawBoardProps {
   }) => React.ReactNode
 }
 
-export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
+export function TldrawBoard({ roomId, sampleFile, renderHeaderRight }: TldrawBoardProps) {
   const [editor, setEditor] = useState<Editor | null>(null)
   const [workshopMode, setWorkshopMode] = useState<WorkshopMode>('big-picture')
   const [phase, setPhase] = useState<FacilitationPhase>('chaotic-exploration')
@@ -225,7 +226,7 @@ export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
   }, [])
 
   const hasMigratedRef = useRef(false)
-  useEffect(() => {
+  useEffect(function sendBackgroundShapesToBack() {
     if (!editor) return
     if (storeWithStatus.status !== 'synced-remote') return
     if (hasMigratedRef.current) return
@@ -237,6 +238,38 @@ export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
       editor.sendToBack(backgroundShapes.map(s => s.id))
     }
   }, [editor, storeWithStatus.status])
+
+  const hasLoadedSampleRef = useRef(false)
+  useEffect(function loadSampleBoard() {
+    if (!editor || !sampleFile || hasLoadedSampleRef.current) return
+    if (storeWithStatus.status !== 'synced-remote') return
+
+    const existingShapes = editor.getCurrentPageShapes()
+    if (existingShapes.length > 0) {
+      hasLoadedSampleRef.current = true
+      return
+    }
+
+    hasLoadedSampleRef.current = true
+    fetch(`/samples/${sampleFile}`)
+      .then(res => res.json())
+      .then(data => {
+        if (isEventStormerBoardFormat(data)) {
+          const shapes = convertBoardToShapes(data)
+          if (shapes.length > 0) {
+            editor.createShapes(shapes.map(shape => ({
+              id: createShapeId(),
+              type: shape.type,
+              x: shape.x,
+              y: shape.y,
+              props: shape.props,
+            })))
+            editor.zoomToFit({ animation: { duration: 200 } })
+          }
+        }
+      })
+      .catch(err => console.error('Failed to load sample board:', err))
+  }, [editor, sampleFile, storeWithStatus.status])
 
   // Shape types that support editing
   const EDITABLE_TYPES: ToolType[] = [
@@ -458,9 +491,9 @@ export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
         editor.deleteShapes([...currentIds])
       }
 
-      // Check if this is legacy format (pre-tldraw migration)
-      if (isLegacyBoardFormat(data)) {
-        const shapes = convertLegacyBoardToShapes(data)
+      // Check if this is EventStormer board format
+      if (isEventStormerBoardFormat(data)) {
+        const shapes = convertBoardToShapes(data)
         if (shapes.length > 0) {
           editor.createShapes(shapes.map((shape) => ({
             id: createShapeId(),
@@ -470,7 +503,7 @@ export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
             props: shape.props,
           })))
         }
-        console.log(`Imported ${shapes.length} shapes from legacy format`)
+        console.log(`Imported ${shapes.length} shapes from EventStormer format`)
         return
       }
 

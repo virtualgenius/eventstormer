@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest'
-import { convertLegacyBoardToShapes, isLegacyBoardFormat, LegacyBoard } from './importLegacyBoard'
+import { convertBoardToShapes, isEventStormerBoardFormat, EventStormerBoard } from './boardFormat'
 
-describe('isLegacyBoardFormat', () => {
-  it('returns true for legacy format with stickies array', () => {
-    const legacyData = {
+describe('isEventStormerBoardFormat', () => {
+  it('returns true for board format with stickies array', () => {
+    const boardData = {
       id: 'demo-board',
       name: 'Test Board',
       stickies: [],
     }
-    expect(isLegacyBoardFormat(legacyData)).toBe(true)
+    expect(isEventStormerBoardFormat(boardData)).toBe(true)
   })
 
   it('returns false for tldraw snapshot format with store', () => {
@@ -17,13 +17,13 @@ describe('isLegacyBoardFormat', () => {
         'shape:abc': { id: 'shape:abc', type: 'event-sticky' }
       }
     }
-    expect(isLegacyBoardFormat(tldrawData)).toBe(false)
+    expect(isEventStormerBoardFormat(tldrawData)).toBe(false)
   })
 })
 
-describe('convertLegacyBoardToShapes', () => {
+describe('convertBoardToShapes', () => {
   it('converts event sticky to event-sticky shape', () => {
-    const legacyData: LegacyBoard = {
+    const boardData: EventStormerBoard = {
       stickies: [
         {
           id: 'xdn9hvs0',
@@ -33,13 +33,9 @@ describe('convertLegacyBoardToShapes', () => {
           y: 200,
         }
       ],
-      verticals: [],
-      lanes: [],
-      labels: [],
-      themes: [],
     }
 
-    const shapes = convertLegacyBoardToShapes(legacyData)
+    const shapes = convertBoardToShapes(boardData)
 
     expect(shapes).toHaveLength(1)
     expect(shapes[0]).toMatchObject({
@@ -55,7 +51,7 @@ describe('convertLegacyBoardToShapes', () => {
   })
 
   it('converts hotspot sticky to hotspot-sticky shape', () => {
-    const legacyData: LegacyBoard = {
+    const boardData: EventStormerBoard = {
       stickies: [
         {
           id: 'abc123',
@@ -65,13 +61,9 @@ describe('convertLegacyBoardToShapes', () => {
           y: 75,
         }
       ],
-      verticals: [],
-      lanes: [],
-      labels: [],
-      themes: [],
     }
 
-    const shapes = convertLegacyBoardToShapes(legacyData)
+    const shapes = convertBoardToShapes(boardData)
 
     expect(shapes).toHaveLength(1)
     expect(shapes[0]).toMatchObject({
@@ -87,7 +79,7 @@ describe('convertLegacyBoardToShapes', () => {
   })
 
   it('converts person sticky with half height', () => {
-    const legacyData: LegacyBoard = {
+    const boardData: EventStormerBoard = {
       stickies: [
         {
           id: 'person1',
@@ -97,53 +89,120 @@ describe('convertLegacyBoardToShapes', () => {
           y: 100,
         }
       ],
-      verticals: [],
-      lanes: [],
-      labels: [],
-      themes: [],
     }
 
-    const shapes = convertLegacyBoardToShapes(legacyData)
+    const shapes = convertBoardToShapes(boardData)
 
     expect(shapes[0]).toMatchObject({
       type: 'person-sticky',
       props: {
         text: 'Alberto',
         w: 120,
-        h: 50, // Half height for person
+        h: 50,
       }
     })
   })
 
-  it('converts system sticky with half height', () => {
-    const legacyData: LegacyBoard = {
+  it('converts system sticky with wide width and full height', () => {
+    const boardData: EventStormerBoard = {
       stickies: [
         {
           id: 'sys1',
           kind: 'system',
-          text: 'EventStormer',
+          text: 'EventPizza.com',
           x: 300,
           y: 150,
         }
       ],
-      verticals: [],
-      lanes: [],
-      labels: [],
-      themes: [],
     }
 
-    const shapes = convertLegacyBoardToShapes(legacyData)
+    const shapes = convertBoardToShapes(boardData)
 
     expect(shapes[0]).toMatchObject({
       type: 'system-sticky',
       props: {
-        h: 50, // Half height for system
+        w: 240,
+        h: 100,
+      }
+    })
+  })
+
+  it('converts command sticky to command-sticky shape', () => {
+    const boardData: EventStormerBoard = {
+      stickies: [
+        {
+          id: 'cmd1',
+          kind: 'command',
+          text: 'Place Order',
+          x: 100,
+          y: 200,
+        }
+      ],
+    }
+
+    const shapes = convertBoardToShapes(boardData)
+
+    expect(shapes[0]).toMatchObject({
+      type: 'command-sticky',
+      props: {
+        text: 'Place Order',
+        w: 120,
+        h: 100,
+      }
+    })
+  })
+
+  it('converts policy sticky with wide width', () => {
+    const boardData: EventStormerBoard = {
+      stickies: [
+        {
+          id: 'pol1',
+          kind: 'policy',
+          text: 'Confirmation policy: Whenever we receive an order we send a confirmation message',
+          x: 400,
+          y: 200,
+        }
+      ],
+    }
+
+    const shapes = convertBoardToShapes(boardData)
+
+    expect(shapes[0]).toMatchObject({
+      type: 'policy-sticky',
+      props: {
+        w: 240,
+        h: 100,
+      }
+    })
+  })
+
+  it('converts readmodel sticky to readmodel-sticky shape', () => {
+    const boardData: EventStormerBoard = {
+      stickies: [
+        {
+          id: 'rm1',
+          kind: 'readmodel',
+          text: 'Online Menu: prices, pizzas, ingredients',
+          x: 50,
+          y: 400,
+        }
+      ],
+    }
+
+    const shapes = convertBoardToShapes(boardData)
+
+    expect(shapes[0]).toMatchObject({
+      type: 'readmodel-sticky',
+      props: {
+        text: 'Online Menu: prices, pizzas, ingredients',
+        w: 120,
+        h: 100,
       }
     })
   })
 
   it('converts opportunity sticky', () => {
-    const legacyData: LegacyBoard = {
+    const boardData: EventStormerBoard = {
       stickies: [
         {
           id: 'opp1',
@@ -153,19 +212,15 @@ describe('convertLegacyBoardToShapes', () => {
           y: 200,
         }
       ],
-      verticals: [],
-      lanes: [],
-      labels: [],
-      themes: [],
     }
 
-    const shapes = convertLegacyBoardToShapes(legacyData)
+    const shapes = convertBoardToShapes(boardData)
 
     expect(shapes[0].type).toBe('opportunity-sticky')
   })
 
   it('converts glossary sticky', () => {
-    const legacyData: LegacyBoard = {
+    const boardData: EventStormerBoard = {
       stickies: [
         {
           id: 'gloss1',
@@ -175,19 +230,15 @@ describe('convertLegacyBoardToShapes', () => {
           y: 250,
         }
       ],
-      verticals: [],
-      lanes: [],
-      labels: [],
-      themes: [],
     }
 
-    const shapes = convertLegacyBoardToShapes(legacyData)
+    const shapes = convertBoardToShapes(boardData)
 
     expect(shapes[0].type).toBe('glossary-sticky')
   })
 
   it('converts vertical lines', () => {
-    const legacyData: LegacyBoard = {
+    const boardData: EventStormerBoard = {
       stickies: [],
       verticals: [
         {
@@ -197,12 +248,9 @@ describe('convertLegacyBoardToShapes', () => {
           y2: 400,
         }
       ],
-      lanes: [],
-      labels: [],
-      themes: [],
     }
 
-    const shapes = convertLegacyBoardToShapes(legacyData)
+    const shapes = convertBoardToShapes(boardData)
 
     expect(shapes).toHaveLength(1)
     expect(shapes[0]).toMatchObject({
@@ -211,15 +259,14 @@ describe('convertLegacyBoardToShapes', () => {
       y: 100,
       props: {
         w: 8,
-        h: 300, // y2 - y1 = 400 - 100
+        h: 300,
       }
     })
   })
 
   it('converts horizontal lanes', () => {
-    const legacyData: LegacyBoard = {
+    const boardData: EventStormerBoard = {
       stickies: [],
-      verticals: [],
       lanes: [
         {
           id: 'lane1',
@@ -228,11 +275,9 @@ describe('convertLegacyBoardToShapes', () => {
           x2: 900,
         }
       ],
-      labels: [],
-      themes: [],
     }
 
-    const shapes = convertLegacyBoardToShapes(legacyData)
+    const shapes = convertBoardToShapes(boardData)
 
     expect(shapes).toHaveLength(1)
     expect(shapes[0]).toMatchObject({
@@ -240,17 +285,15 @@ describe('convertLegacyBoardToShapes', () => {
       x: 100,
       y: 300,
       props: {
-        w: 800, // x2 - x1 = 900 - 100
+        w: 800,
         h: 8,
       }
     })
   })
 
   it('converts labels', () => {
-    const legacyData: LegacyBoard = {
+    const boardData: EventStormerBoard = {
       stickies: [],
-      verticals: [],
-      lanes: [],
       labels: [
         {
           id: 'label1',
@@ -259,10 +302,9 @@ describe('convertLegacyBoardToShapes', () => {
           y: 50,
         }
       ],
-      themes: [],
     }
 
-    const shapes = convertLegacyBoardToShapes(legacyData)
+    const shapes = convertBoardToShapes(boardData)
 
     expect(shapes).toHaveLength(1)
     expect(shapes[0]).toMatchObject({
@@ -276,11 +318,8 @@ describe('convertLegacyBoardToShapes', () => {
   })
 
   it('converts theme areas', () => {
-    const legacyData: LegacyBoard = {
+    const boardData: EventStormerBoard = {
       stickies: [],
-      verticals: [],
-      lanes: [],
-      labels: [],
       themes: [
         {
           id: 'theme1',
@@ -293,7 +332,7 @@ describe('convertLegacyBoardToShapes', () => {
       ],
     }
 
-    const shapes = convertLegacyBoardToShapes(legacyData)
+    const shapes = convertBoardToShapes(boardData)
 
     expect(shapes).toHaveLength(1)
     expect(shapes[0]).toMatchObject({
@@ -309,10 +348,13 @@ describe('convertLegacyBoardToShapes', () => {
   })
 
   it('converts a full board with all element types', () => {
-    const legacyData: LegacyBoard = {
+    const boardData: EventStormerBoard = {
       stickies: [
         { id: 's1', kind: 'event', text: 'Event 1', x: 100, y: 100 },
         { id: 's2', kind: 'hotspot', text: 'Hotspot 1', x: 200, y: 100 },
+        { id: 's3', kind: 'command', text: 'Command 1', x: 300, y: 100 },
+        { id: 's4', kind: 'policy', text: 'Policy 1', x: 400, y: 100 },
+        { id: 's5', kind: 'readmodel', text: 'ReadModel 1', x: 500, y: 100 },
       ],
       verticals: [
         { id: 'v1', x: 300, y1: 50, y2: 350 }
@@ -328,13 +370,16 @@ describe('convertLegacyBoardToShapes', () => {
       ],
     }
 
-    const shapes = convertLegacyBoardToShapes(legacyData)
+    const shapes = convertBoardToShapes(boardData)
 
-    expect(shapes).toHaveLength(6)
+    expect(shapes).toHaveLength(9)
 
     const types = shapes.map(s => s.type)
     expect(types).toContain('event-sticky')
     expect(types).toContain('hotspot-sticky')
+    expect(types).toContain('command-sticky')
+    expect(types).toContain('policy-sticky')
+    expect(types).toContain('readmodel-sticky')
     expect(types).toContain('vertical-line')
     expect(types).toContain('horizontal-lane')
     expect(types).toContain('label')

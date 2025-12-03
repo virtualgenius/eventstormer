@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { TldrawBoard } from "@/tldraw/TldrawBoard";
 import { NamePrompt } from "@/components/NamePrompt";
 import { addRecentBoard, getBoardName } from "@/components/BoardList";
@@ -9,7 +9,11 @@ const USER_NAME_KEY = "eventstormer-user-name";
 
 export const BoardPage: React.FC = () => {
   const { boardId } = useParams<{ boardId: string }>();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+
+  const sampleFile = searchParams.get('sample');
+  const isSampleBoard = boardId?.startsWith('sample-');
 
   const [userName, setUserName] = useState<string | null>(null);
   const [showNamePrompt, setShowNamePrompt] = useState(false);
@@ -20,8 +24,7 @@ export const BoardPage: React.FC = () => {
     onImport: () => void;
   } | null>(null);
 
-  // Check for stored user name on mount
-  useEffect(() => {
+  useEffect(function loadStoredUserName() {
     const storedName = localStorage.getItem(USER_NAME_KEY);
     if (storedName) {
       setUserName(storedName);
@@ -30,13 +33,12 @@ export const BoardPage: React.FC = () => {
     }
   }, []);
 
-  // Track this board as recently visited and get its name
-  useEffect(() => {
-    if (boardId) {
+  useEffect(function trackRecentBoardVisit() {
+    if (boardId && !isSampleBoard) {
       addRecentBoard(boardId);
       setBoardName(getBoardName(boardId));
     }
-  }, [boardId]);
+  }, [boardId, isSampleBoard]);
 
   const handleNameSubmit = (name: string) => {
     localStorage.setItem(USER_NAME_KEY, name);
@@ -136,6 +138,7 @@ export const BoardPage: React.FC = () => {
       <main className="flex-1 overflow-hidden">
         <TldrawBoard
           roomId={boardId}
+          sampleFile={sampleFile || undefined}
           renderHeaderRight={handleBoardReady}
         />
       </main>
