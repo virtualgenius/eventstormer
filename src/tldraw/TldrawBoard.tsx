@@ -695,7 +695,7 @@ export function TldrawBoard({ roomId, templateFile, renderHeaderRight }: TldrawB
       {/* Main content area */}
       <div className="flex-1 relative">
         {/* Facilitation Palette */}
-        <div className="absolute top-3 left-3 z-10 bg-white p-2 rounded-lg shadow-md flex flex-col gap-1">
+        <div className="absolute top-3 left-3 z-10 bg-white p-1.5 rounded-lg shadow-md flex flex-col gap-1">
           {availableTools.map(([type, config]) => {
             const isHalfHeight = type === 'person-sticky'
             const isDoubleWide = type === 'system-sticky' || type === 'policy-sticky'
@@ -707,7 +707,7 @@ export function TldrawBoard({ roomId, templateFile, renderHeaderRight }: TldrawB
                       setActiveTool(type as ToolType)
                       createShape(type as ToolType)
                     }}
-                    className={`flex items-center gap-2 px-3 py-2 rounded text-sm min-w-[120px] transition-colors ${
+                    className={`flex items-center justify-center p-2 rounded transition-colors ${
                       activeTool === type
                         ? 'border-2 border-blue-500 bg-blue-50'
                         : 'border border-slate-200 hover:bg-slate-50'
@@ -716,13 +716,12 @@ export function TldrawBoard({ roomId, templateFile, renderHeaderRight }: TldrawB
                     <div
                       className="rounded"
                       style={{
-                        width: isDoubleWide ? 28 : 20,
-                        height: isHalfHeight ? 10 : 20,
+                        width: isDoubleWide ? 32 : 24,
+                        height: isHalfHeight ? 12 : 24,
                         backgroundColor: config.color,
                         border: '1px solid rgba(0,0,0,0.1)',
                       }}
                     />
-                    {config.label}
                   </button>
                 </Tooltip.Trigger>
                 <Tooltip.Portal>
@@ -731,7 +730,7 @@ export function TldrawBoard({ roomId, templateFile, renderHeaderRight }: TldrawB
                     side="right"
                     sideOffset={8}
                   >
-                    {config.description}
+                    <span className="font-semibold">{config.label}</span> - {config.description}
                     <Tooltip.Arrow className="fill-slate-800" />
                   </Tooltip.Content>
                 </Tooltip.Portal>
