@@ -262,39 +262,18 @@
       "y": 680
     },
     {
-      "id": "h008",
-      "kind": "hotspot",
-      "text": "Limit of liability total of all claims cannot exceed % of purchase price",
+      "id": "g001",
+      "kind": "glossary",
+      "text": "Limit of liability: total of all claims cannot exceed % of purchase price",
       "x": 2300,
       "y": 1000
     },
     {
-      "id": "p001",
-      "kind": "person",
+      "id": "g002",
+      "kind": "glossary",
       "text": "CSR - Customer Service Representative",
       "x": 2450,
       "y": 680
-    },
-    {
-      "id": "g001",
-      "kind": "glossary",
-      "text": "Event",
-      "x": 1600,
-      "y": 40
-    },
-    {
-      "id": "g002",
-      "kind": "glossary",
-      "text": "?",
-      "x": 1750,
-      "y": 40
-    },
-    {
-      "id": "g003",
-      "kind": "glossary",
-      "text": "Definition",
-      "x": 1900,
-      "y": 40
     }
   ],
   "verticals": [
@@ -396,12 +375,6 @@
       "text": "EVENTSTORMING - REPAIR CLAIMS",
       "x": 50,
       "y": 30
-    },
-    {
-      "id": "l009",
-      "text": "HTTPS://LEANPUB.COM/EVENTSTORMING_HANDBOOK",
-      "x": 2600,
-      "y": 50
     }
   ],
   "themes": [],
