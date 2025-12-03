@@ -17,6 +17,7 @@ import {
   GlossaryStickyShapeUtil,
   CommandStickyShapeUtil,
   PolicyStickyShapeUtil,
+  AggregateStickyShapeUtil,
   ReadModelStickyShapeUtil,
 } from './shapes/StickyShapes'
 import { VerticalLineShapeUtil } from './shapes/VerticalLineShape'
@@ -39,6 +40,7 @@ const customShapeUtils = [
   GlossaryStickyShapeUtil,
   CommandStickyShapeUtil,
   PolicyStickyShapeUtil,
+  AggregateStickyShapeUtil,
   ReadModelStickyShapeUtil,
   VerticalLineShapeUtil,
   HorizontalLaneShapeUtil,
@@ -151,6 +153,13 @@ const TOOLS = {
     modes: ['process', 'design'] as WorkshopMode[],
     phases: ALL_PHASES,
   },
+  'aggregate-sticky': {
+    label: 'Aggregate',
+    color: '#fef9c3',
+    description: 'A component or aggregate with coherent behavior, like a state machine (pale yellow)',
+    modes: ['design'] as WorkshopMode[],
+    phases: ALL_PHASES,
+  },
   'readmodel-sticky': {
     label: 'Read Model',
     color: '#bbf7d0',
@@ -179,6 +188,7 @@ const STICKY_TYPES: ToolType[] = [
   'glossary-sticky',
   'command-sticky',
   'policy-sticky',
+  'aggregate-sticky',
   'readmodel-sticky',
 ]
 
@@ -281,6 +291,7 @@ export function TldrawBoard({ roomId, templateFile, renderHeaderRight }: TldrawB
     'glossary-sticky',
     'command-sticky',
     'policy-sticky',
+    'aggregate-sticky',
     'readmodel-sticky',
     'theme-area',
     'label',
@@ -304,6 +315,7 @@ export function TldrawBoard({ roomId, templateFile, renderHeaderRight }: TldrawB
       'glossary-sticky': { text: '', w: 120, h: 100 },
       'command-sticky': { text: '', w: 120, h: 100 },
       'policy-sticky': { text: '', w: 240, h: 100 },
+      'aggregate-sticky': { text: '', w: 240, h: 100 },
       'readmodel-sticky': { text: '', w: 120, h: 100 },
       'vertical-line': { w: 8, h: 400, label: '' },
       'horizontal-lane': { w: 800, h: 8, label: '' },
@@ -698,7 +710,7 @@ export function TldrawBoard({ roomId, templateFile, renderHeaderRight }: TldrawB
         <div className="absolute top-3 left-3 z-10 bg-white p-1.5 rounded-lg shadow-md flex flex-col gap-1">
           {availableTools.map(([type, config]) => {
             const isHalfHeight = type === 'person-sticky'
-            const isDoubleWide = type === 'system-sticky' || type === 'policy-sticky'
+            const isDoubleWide = type === 'system-sticky' || type === 'policy-sticky' || type === 'aggregate-sticky'
             return (
               <Tooltip.Root key={type}>
                 <Tooltip.Trigger asChild>
