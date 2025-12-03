@@ -2,6 +2,32 @@
   "id": "software-design-example",
   "name": "Software Design Example",
   "sessionMode": "design",
+  "verticals": [
+    {
+      "id": "v001",
+      "x": 1160,
+      "y1": -100,
+      "y2": 700
+    },
+    {
+      "id": "v002",
+      "x": 3720,
+      "y1": -100,
+      "y2": 700
+    },
+    {
+      "id": "v003",
+      "x": 4680,
+      "y1": -100,
+      "y2": 700
+    },
+    {
+      "id": "v004",
+      "x": 5880,
+      "y1": -100,
+      "y2": 700
+    }
+  ],
   "stickies": [
     {
       "id": "e001",
@@ -100,6 +126,356 @@
       "text": "Last year's assignments",
       "x": 260,
       "y": 520
+    },
+    {
+      "id": "e004",
+      "kind": "event",
+      "text": "Teacher Assignments completed",
+      "x": 1100,
+      "y": 110
+    },
+    {
+      "id": "pol002",
+      "kind": "policy",
+      "text": "Timetable design policy",
+      "x": 1280,
+      "y": 80
+    },
+    {
+      "id": "p002",
+      "kind": "person",
+      "text": "School Manager",
+      "x": 1340,
+      "y": 200
+    },
+    {
+      "id": "rm005",
+      "kind": "readmodel",
+      "text": "Teachers' availability: hours and subjects",
+      "x": 1280,
+      "y": 300
+    },
+    {
+      "id": "rm006",
+      "kind": "readmodel",
+      "text": "Cohort Timetable: hours and subjects",
+      "x": 1280,
+      "y": 420
+    },
+    {
+      "id": "cmd004",
+      "kind": "command",
+      "text": "Assign slot to subject [9:00 - 10:00 -> Math]",
+      "x": 1540,
+      "y": 50
+    },
+    {
+      "id": "cmd005",
+      "kind": "command",
+      "text": "Release slot",
+      "x": 1540,
+      "y": 170
+    },
+    {
+      "id": "cmd006",
+      "kind": "command",
+      "text": "Swap slots",
+      "x": 1540,
+      "y": 290
+    },
+    {
+      "id": "agg002",
+      "kind": "aggregate",
+      "text": "Cohort Timetable",
+      "x": 1700,
+      "y": 130
+    },
+    {
+      "id": "e005",
+      "kind": "event",
+      "text": "Slot assigned to subject",
+      "x": 1960,
+      "y": 50
+    },
+    {
+      "id": "e006",
+      "kind": "event",
+      "text": "Slot Released",
+      "x": 1960,
+      "y": 170
+    },
+    {
+      "id": "e007",
+      "kind": "event",
+      "text": "Draft timetable completed",
+      "x": 2120,
+      "y": 110
+    },
+    {
+      "id": "pol003",
+      "kind": "policy",
+      "text": "Timetable review policy",
+      "x": 2280,
+      "y": 80
+    },
+    {
+      "id": "p003",
+      "kind": "person",
+      "text": "School Manager",
+      "x": 2340,
+      "y": 200
+    },
+    {
+      "id": "cmd007",
+      "kind": "command",
+      "text": "Share draft",
+      "x": 2480,
+      "y": 110
+    },
+    {
+      "id": "s001",
+      "kind": "system",
+      "text": "EMail",
+      "x": 2620,
+      "y": 110
+    },
+    {
+      "id": "e008",
+      "kind": "event",
+      "text": "Draft Shared",
+      "x": 2880,
+      "y": 110
+    },
+    {
+      "id": "p004",
+      "kind": "person",
+      "text": "Staff",
+      "x": 2700,
+      "y": 280
+    },
+    {
+      "id": "p005",
+      "kind": "person",
+      "text": "Teacher",
+      "x": 2700,
+      "y": 340
+    },
+    {
+      "id": "cmd008",
+      "kind": "command",
+      "text": "comment",
+      "x": 2700,
+      "y": 230
+    },
+    {
+      "id": "e009",
+      "kind": "event",
+      "text": "Feedback received",
+      "x": 2880,
+      "y": 230
+    },
+    {
+      "id": "rm007",
+      "kind": "readmodel",
+      "text": "Teachers' feedback: collected after sharing",
+      "x": 100,
+      "y": 640
+    },
+    {
+      "id": "pol004",
+      "kind": "policy",
+      "text": "Timetable design policy",
+      "x": 3040,
+      "y": 80
+    },
+    {
+      "id": "p006",
+      "kind": "person",
+      "text": "School Manager",
+      "x": 3100,
+      "y": 200
+    },
+    {
+      "id": "cmd009",
+      "kind": "command",
+      "text": "Mark complete",
+      "x": 3260,
+      "y": 110
+    },
+    {
+      "id": "agg003",
+      "kind": "aggregate",
+      "text": "Cohort Timetable",
+      "x": 3400,
+      "y": 110
+    },
+    {
+      "id": "e010",
+      "kind": "event",
+      "text": "Official timetable completed",
+      "x": 3660,
+      "y": 110
+    },
+    {
+      "id": "rm008",
+      "kind": "readmodel",
+      "text": "Planned Publishing Date",
+      "x": 3800,
+      "y": 280
+    },
+    {
+      "id": "rm009",
+      "kind": "readmodel",
+      "text": "Approved Timetable",
+      "x": 3800,
+      "y": 400
+    },
+    {
+      "id": "pol005",
+      "kind": "policy",
+      "text": "Timetable Publishing Policy",
+      "x": 3960,
+      "y": 80
+    },
+    {
+      "id": "cmd010",
+      "kind": "command",
+      "text": "Publish on website",
+      "x": 4120,
+      "y": 110
+    },
+    {
+      "id": "s002",
+      "kind": "system",
+      "text": "School Website",
+      "x": 4280,
+      "y": 110
+    },
+    {
+      "id": "e011",
+      "kind": "event",
+      "text": "Timetable published on website",
+      "x": 4620,
+      "y": 110
+    },
+    {
+      "id": "rm010",
+      "kind": "readmodel",
+      "text": "Approved Timetable",
+      "x": 4760,
+      "y": 400
+    },
+    {
+      "id": "pol006",
+      "kind": "policy",
+      "text": "Teacher Notification Policy",
+      "x": 4920,
+      "y": 50
+    },
+    {
+      "id": "cmd011",
+      "kind": "command",
+      "text": "Send personalized schedule to teachers",
+      "x": 5120,
+      "y": 50
+    },
+    {
+      "id": "s003",
+      "kind": "system",
+      "text": "Email",
+      "x": 5320,
+      "y": 50
+    },
+    {
+      "id": "e012",
+      "kind": "event",
+      "text": "Schedule received in e-mail",
+      "x": 5520,
+      "y": 50
+    },
+    {
+      "id": "cmd012",
+      "kind": "command",
+      "text": "Push info in Teachers' app",
+      "x": 5120,
+      "y": 170
+    },
+    {
+      "id": "s004",
+      "kind": "system",
+      "text": "Teachers' app",
+      "x": 5320,
+      "y": 170
+    },
+    {
+      "id": "e013",
+      "kind": "event",
+      "text": "Schedule received in app",
+      "x": 5520,
+      "y": 170
+    },
+    {
+      "id": "e014",
+      "kind": "event",
+      "text": "Official timetable shared with teachers",
+      "x": 5820,
+      "y": 110
+    },
+    {
+      "id": "pol007",
+      "kind": "policy",
+      "text": "Student Notification Policy",
+      "x": 4920,
+      "y": 350
+    },
+    {
+      "id": "cmd013",
+      "kind": "command",
+      "text": "Send personalized schedule to students",
+      "x": 5120,
+      "y": 350
+    },
+    {
+      "id": "s005",
+      "kind": "system",
+      "text": "Email",
+      "x": 5320,
+      "y": 350
+    },
+    {
+      "id": "e015",
+      "kind": "event",
+      "text": "Schedule received in e-mail",
+      "x": 5520,
+      "y": 350
+    },
+    {
+      "id": "cmd014",
+      "kind": "command",
+      "text": "Push info in students' app",
+      "x": 5120,
+      "y": 470
+    },
+    {
+      "id": "s006",
+      "kind": "system",
+      "text": "Students' app",
+      "x": 5320,
+      "y": 470
+    },
+    {
+      "id": "e016",
+      "kind": "event",
+      "text": "Schedule received in app",
+      "x": 5520,
+      "y": 470
+    },
+    {
+      "id": "e017",
+      "kind": "event",
+      "text": "Schedule shared with students",
+      "x": 5820,
+      "y": 410
     }
   ]
 }
