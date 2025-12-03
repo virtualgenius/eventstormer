@@ -19,5 +19,12 @@
     "description": "Conference planning process from an actual EventStorming facilitation workshop",
     "file": "eventstorming-facilitation-workshop.json",
     "mode": "big-picture"
+  },
+  {
+    "id": "software-design-example",
+    "name": "Software Design Example",
+    "description": "School timetable design - teacher assignments, scheduling, and notifications",
+    "file": "software-design-example.json",
+    "mode": "design"
   }
 ]

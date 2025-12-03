@@ -48,7 +48,7 @@ type AnyStickyShape =
 const COLORS = {
   event: { fill: '#fed7aa', border: '#fdba74', text: '#1e293b' },
   hotspot: { fill: '#fecaca', border: '#fca5a5', text: '#1e293b' },
-  person: { fill: '#fef9c3', border: '#fef08a', text: '#1e293b' },
+  person: { fill: '#ffef00', border: '#fde047', text: '#1e293b' },
   system: { fill: '#fce7f3', border: '#fbcfe8', text: '#1e293b' },
   opportunity: { fill: '#bbf7d0', border: '#86efac', text: '#1e293b' },
   glossary: { fill: '#1e293b', border: '#334155', text: '#ffffff' },

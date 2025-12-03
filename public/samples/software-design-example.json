@@ -1,0 +1,105 @@
+{
+  "id": "software-design-example",
+  "name": "Software Design Example",
+  "sessionMode": "design",
+  "stickies": [
+    {
+      "id": "e001",
+      "kind": "event",
+      "text": "Every September",
+      "x": 100,
+      "y": 100
+    },
+    {
+      "id": "pol001",
+      "kind": "policy",
+      "text": "Cohort Assignment Policy",
+      "x": 260,
+      "y": 80
+    },
+    {
+      "id": "p001",
+      "kind": "person",
+      "text": "School Manager",
+      "x": 320,
+      "y": 200
+    },
+    {
+      "id": "cmd001",
+      "kind": "command",
+      "text": "Assign Cohort",
+      "x": 520,
+      "y": 50
+    },
+    {
+      "id": "cmd002",
+      "kind": "command",
+      "text": "Remove cohort",
+      "x": 520,
+      "y": 170
+    },
+    {
+      "id": "cmd003",
+      "kind": "command",
+      "text": "Mark complete",
+      "x": 520,
+      "y": 290
+    },
+    {
+      "id": "agg001",
+      "kind": "aggregate",
+      "text": "Teacher assignments",
+      "x": 680,
+      "y": 130
+    },
+    {
+      "id": "e002",
+      "kind": "event",
+      "text": "Cohort assigned to teacher",
+      "x": 940,
+      "y": 50
+    },
+    {
+      "id": "e003",
+      "kind": "event",
+      "text": "Cohort removed from teacher's duty",
+      "x": 940,
+      "y": 170
+    },
+    {
+      "id": "h001",
+      "kind": "hotspot",
+      "text": "Or should it be Cohort Assignment? Or both?",
+      "x": 800,
+      "y": 280
+    },
+    {
+      "id": "rm001",
+      "kind": "readmodel",
+      "text": "Students Cohorts: unassigned subjects",
+      "x": 100,
+      "y": 280
+    },
+    {
+      "id": "rm002",
+      "kind": "readmodel",
+      "text": "Teachers' availability: hours and skills",
+      "x": 100,
+      "y": 400
+    },
+    {
+      "id": "rm003",
+      "kind": "readmodel",
+      "text": "Standard Curriculums: Hours per subject",
+      "x": 100,
+      "y": 520
+    },
+    {
+      "id": "rm004",
+      "kind": "readmodel",
+      "text": "Last year's assignments",
+      "x": 260,
+      "y": 520
+    }
+  ]
+}
