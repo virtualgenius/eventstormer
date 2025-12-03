@@ -5,6 +5,7 @@ import { nanoid } from "@/lib/nanoid";
 
 interface SampleBoard {
   id: string;
+  version: number;
   name: string;
   description: string;
   file: string;
@@ -96,7 +97,7 @@ export const BoardList: React.FC = () => {
   };
 
   const handleOpenSample = (sample: SampleBoard) => {
-    navigate(`/board/sample-${sample.id}?sample=${encodeURIComponent(sample.file)}`);
+    navigate(`/board/sample-${sample.id}-v${sample.version}?sample=${encodeURIComponent(sample.file)}`);
   };
 
   const handleDeleteBoard = (
