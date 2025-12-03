@@ -709,6 +709,7 @@ export function TldrawBoard({ roomId, renderHeaderRight }: TldrawBoardProps) {
 
         {/* tldraw Canvas */}
         <Tldraw
+          licenseKey={import.meta.env.VITE_TLDRAW_LICENSE_KEY}
           store={storeWithStatus}
           shapeUtils={customShapeUtils}
           components={components}
