@@ -26,7 +26,7 @@ import { LabelShapeUtil } from './shapes/LabelShape'
 import { useYjsStore } from './useYjsStore'
 import { useYjsPresence } from './useYjsPresence'
 import { isEventStormerBoardFormat, convertBoardToShapes } from './boardFormat'
-import { Download, Upload, SeparatorVertical, SeparatorHorizontal, RectangleHorizontal } from 'lucide-react'
+import { Download, Upload, SeparatorVertical, SeparatorHorizontal, RectangleHorizontal, Type } from 'lucide-react'
 import * as Tooltip from '@radix-ui/react-tooltip'
 
 // Register all custom shape utils
@@ -719,6 +719,8 @@ export function TldrawBoard({ roomId, templateFile, renderHeaderRight }: TldrawB
                       <SeparatorHorizontal className="w-6 h-6 text-slate-500" />
                     ) : type === 'theme-area' ? (
                       <RectangleHorizontal className="w-6 h-6 text-slate-400" />
+                    ) : type === 'label' ? (
+                      <Type className="w-6 h-6 text-slate-500" />
                     ) : (
                       <div
                         className="rounded"
