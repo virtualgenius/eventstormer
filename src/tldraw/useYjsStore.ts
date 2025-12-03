@@ -101,11 +101,34 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): YjsStoreResul
       didConnect = true
 
       // Initialize store from Yjs if there are existing records
+      const existingRecords = Array.from(yRecords.values()) as TLRecord[]
+      console.log('[useYjsStore] Loading', existingRecords.length, 'existing records from Yjs')
+
+      // Check if Yjs has essential records (page, document)
+      const hasPage = yRecords.has('page:page')
+      const hasDocument = yRecords.has('document:document')
+
+      // If Yjs has shapes but missing essential records, add defaults from store
+      if (existingRecords.length > 0 && (!hasPage || !hasDocument)) {
+        console.log('[useYjsStore] Missing essential records in Yjs, adding defaults')
+        const defaultPage = store.get('page:page' as TLRecord['id'])
+        const defaultDocument = store.get('document:document' as TLRecord['id'])
+
+        yDoc.transact(() => {
+          if (!hasPage && defaultPage) {
+            yRecords.set('page:page', defaultPage)
+          }
+          if (!hasDocument && defaultDocument) {
+            yRecords.set('document:document', defaultDocument)
+          }
+        })
+      }
+
+      // Now load all Yjs records into the store
       store.mergeRemoteChanges(() => {
-        const existingRecords = Array.from(yRecords.values())
-        console.log('[useYjsStore] Loading', existingRecords.length, 'existing records from Yjs')
-        if (existingRecords.length > 0) {
-          store.put(existingRecords as TLRecord[])
+        const allRecords = Array.from(yRecords.values()) as TLRecord[]
+        if (allRecords.length > 0) {
+          store.put(allRecords)
         }
       })
 
