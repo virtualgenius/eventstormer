@@ -26,7 +26,7 @@ import { LabelShapeUtil } from './shapes/LabelShape'
 import { useYjsStore } from './useYjsStore'
 import { useYjsPresence } from './useYjsPresence'
 import { isEventStormerBoardFormat, convertBoardToShapes } from './boardFormat'
-import { Download, Upload } from 'lucide-react'
+import { Download, Upload, GripVertical, GripHorizontal, Square } from 'lucide-react'
 import * as Tooltip from '@radix-ui/react-tooltip'
 
 // Register all custom shape utils
@@ -128,7 +128,7 @@ const TOOLS = {
     color: '#f1f5f9',
     description: 'A term definition for the ubiquitous language (gray)',
     modes: ['big-picture', 'team-flow'] as WorkshopMode[],
-    phases: ['glossary'] as FacilitationPhase[],
+    phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
   },
   'command-sticky': {
     label: 'Command',
@@ -713,15 +713,23 @@ export function TldrawBoard({ roomId, templateFile, renderHeaderRight }: TldrawB
                         : 'border border-slate-200 hover:bg-slate-50'
                     }`}
                   >
-                    <div
-                      className="rounded"
-                      style={{
-                        width: isDoubleWide ? 32 : 24,
-                        height: isHalfHeight ? 12 : 24,
-                        backgroundColor: config.color,
-                        border: '1px solid rgba(0,0,0,0.1)',
-                      }}
-                    />
+                    {type === 'vertical-line' ? (
+                      <GripVertical className="w-6 h-6 text-slate-500" />
+                    ) : type === 'horizontal-lane' ? (
+                      <GripHorizontal className="w-6 h-6 text-slate-500" />
+                    ) : type === 'theme-area' ? (
+                      <Square className="w-6 h-6 text-slate-400" />
+                    ) : (
+                      <div
+                        className="rounded"
+                        style={{
+                          width: isDoubleWide ? 32 : 24,
+                          height: isHalfHeight ? 12 : 24,
+                          backgroundColor: config.color,
+                          border: '1px solid rgba(0,0,0,0.1)',
+                        }}
+                      />
+                    )}
                   </button>
                 </Tooltip.Trigger>
                 <Tooltip.Portal>
