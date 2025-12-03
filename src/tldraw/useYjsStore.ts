@@ -42,6 +42,97 @@ const customShapeUtils = [
   LabelShapeUtil,
 ]
 
+export function ensureEssentialRecordsExistInYjs(
+  yDoc: Y.Doc,
+  yRecords: Y.Map<TLRecord>,
+  store: TLStore
+): void {
+  const hasPage = yRecords.has('page:page')
+  const hasDocument = yRecords.has('document:document')
+
+  if (hasPage && hasDocument) return
+
+  const defaultPage = store.get('page:page' as TLRecord['id'])
+  const defaultDocument = store.get('document:document' as TLRecord['id'])
+
+  yDoc.transact(() => {
+    if (!hasPage && defaultPage) {
+      yRecords.set('page:page', defaultPage)
+    }
+    if (!hasDocument && defaultDocument) {
+      yRecords.set('document:document', defaultDocument)
+    }
+  })
+}
+
+export function loadYjsRecordsIntoStore(
+  yRecords: Y.Map<TLRecord>,
+  store: TLStore
+): void {
+  store.mergeRemoteChanges(() => {
+    const allRecords = Array.from(yRecords.values()) as TLRecord[]
+    if (allRecords.length > 0) {
+      store.put(allRecords)
+    }
+  })
+}
+
+export function syncYjsChangesToStore(
+  yRecords: Y.Map<TLRecord>,
+  store: TLStore,
+  transaction: Y.Transaction,
+  events: Y.YEvent<any>[]
+): void {
+  if (transaction.local) return
+
+  const toRemove: TLRecord['id'][] = []
+  const toPut: TLRecord[] = []
+
+  for (const event of events) {
+    if (event instanceof Y.YMapEvent) {
+      event.changes.keys.forEach((change, id) => {
+        switch (change.action) {
+          case 'add':
+          case 'update': {
+            const record = yRecords.get(id)
+            if (record) toPut.push(record)
+            break
+          }
+          case 'delete': {
+            toRemove.push(id as TLRecord['id'])
+            break
+          }
+        }
+      })
+    }
+  }
+
+  store.mergeRemoteChanges(() => {
+    if (toRemove.length > 0) store.remove(toRemove)
+    if (toPut.length > 0) store.put(toPut)
+  })
+}
+
+export function syncStoreChangesToYjs(
+  yDoc: Y.Doc,
+  yRecords: Y.Map<TLRecord>,
+  event: TLStoreEventInfo
+): void {
+  if (event.source === 'remote') return
+
+  yDoc.transact(() => {
+    Object.entries(event.changes.added).forEach(([id, record]) => {
+      yRecords.set(id, record)
+    })
+    Object.entries(event.changes.updated).forEach(([id, [_prev, next]]) => {
+      yRecords.set(id, next)
+    })
+    Object.entries(event.changes.removed).forEach(([id]) => {
+      yRecords.delete(id)
+    })
+  })
+}
+
 export interface YjsStoreOptions {
   roomId: string
   hostUrl?: string
@@ -63,19 +154,16 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): YjsStoreResul
   const yDocRef = useRef<Y.Doc | null>(null)
 
   useEffect(() => {
-    // Create the store
     const store = createTLStore({
       shapeUtils: [...defaultShapeUtils, ...customShapeUtils],
       bindingUtils: defaultBindingUtils,
     })
     storeRef.current = store
 
-    // Create Yjs doc
     const yDoc = new Y.Doc()
     yDocRef.current = yDoc
     const yRecords = yDoc.getMap<TLRecord>('tldraw-records')
 
-    // Create YProvider
     const host = hostUrl || (import.meta as any).env?.VITE_COLLAB_HOST || 'localhost:8800'
     console.log('[useYjsStore] Creating YProvider with host:', host, 'roomId:', roomId)
 
@@ -100,109 +188,20 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): YjsStoreResul
       if (didConnect) return
       didConnect = true
 
-      // Initialize store from Yjs if there are existing records
-      const existingRecords = Array.from(yRecords.values()) as TLRecord[]
-      console.log('[useYjsStore] Loading', existingRecords.length, 'existing records from Yjs')
-
-      // Check if Yjs has essential records (page, document)
-      const hasPage = yRecords.has('page:page')
-      const hasDocument = yRecords.has('document:document')
-
-      // If Yjs has shapes but missing essential records, add defaults from store
-      if (existingRecords.length > 0 && (!hasPage || !hasDocument)) {
-        console.log('[useYjsStore] Missing essential records in Yjs, adding defaults')
-        const defaultPage = store.get('page:page' as TLRecord['id'])
-        const defaultDocument = store.get('document:document' as TLRecord['id'])
-
-        yDoc.transact(() => {
-          if (!hasPage && defaultPage) {
-            yRecords.set('page:page', defaultPage)
-          }
-          if (!hasDocument && defaultDocument) {
-            yRecords.set('document:document', defaultDocument)
-          }
-        })
+      if (yRecords.size > 0) {
+        ensureEssentialRecordsExistInYjs(yDoc, yRecords, store)
       }
+      loadYjsRecordsIntoStore(yRecords, store)
 
-      // Now load all Yjs records into the store
-      store.mergeRemoteChanges(() => {
-        const allRecords = Array.from(yRecords.values()) as TLRecord[]
-        if (allRecords.length > 0) {
-          store.put(allRecords)
-        }
-      })
-
-      // Sync Yjs changes to tldraw store
-      const handleYjsChange = (
-        events: Y.YEvent<any>[],
-        transaction: Y.Transaction
-      ) => {
-        if (transaction.local) return
-
-        const toRemove: TLRecord['id'][] = []
-        const toPut: TLRecord[] = []
-
-        for (const event of events) {
-          if (event instanceof Y.YMapEvent) {
-            event.changes.keys.forEach((change, id) => {
-              switch (change.action) {
-                case 'add':
-                case 'update': {
-                  const record = yRecords.get(id)
-                  if (record) toPut.push(record)
-                  break
-                }
-                case 'delete': {
-                  toRemove.push(id as TLRecord['id'])
-                  break
-                }
-              }
-            })
-          }
-        }
-
-        console.log('[useYjsStore] handleYjsChange - toRemove:', toRemove.length, 'toPut:', toPut.length, 'origin:', transaction.origin)
-        if (toRemove.length > 0) {
-          console.log('[useYjsStore] REMOVING records:', toRemove.slice(0, 5))
-        }
-
-        store.mergeRemoteChanges(() => {
-          if (toRemove.length > 0) store.remove(toRemove)
-          if (toPut.length > 0) store.put(toPut)
-        })
+      const handleYjsChange = (events: Y.YEvent<any>[], transaction: Y.Transaction) => {
+        syncYjsChangesToStore(yRecords, store, transaction, events)
       }
-
       yRecords.observeDeep(handleYjsChange)
       unsubs.push(() => yRecords.unobserveDeep(handleYjsChange))
 
-      // Sync tldraw store changes to Yjs
       const handleStoreChange = (event: TLStoreEventInfo) => {
-        if (event.source === 'remote') return
-
-        const addedCount = Object.keys(event.changes.added).length
-        const updatedCount = Object.keys(event.changes.updated).length
-        const removedCount = Object.keys(event.changes.removed).length
-
-        console.log('[useYjsStore] handleStoreChange - added:', addedCount, 'updated:', updatedCount, 'removed:', removedCount, 'source:', event.source)
-        if (removedCount > 0) {
-          console.log('[useYjsStore] Store REMOVING:', Object.keys(event.changes.removed).slice(0, 5))
-        }
-
-        yDoc.transact(() => {
-          Object.entries(event.changes.added).forEach(([id, record]) => {
-            yRecords.set(id, record)
-          })
-          Object.entries(event.changes.updated).forEach(([id, [_prev, next]]) => {
-            yRecords.set(id, next)
-          })
-          Object.entries(event.changes.removed).forEach(([id]) => {
-            yRecords.delete(id)
-          })
-        })
+        syncStoreChangesToYjs(yDoc, yRecords, event)
       }
-
-      // Listen to all non-remote document changes (user actions + tldraw internal initialization)
-      // The handleStoreChange function already filters out remote changes
       unsubs.push(
         store.listen(handleStoreChange, { scope: 'document' })
       )
@@ -216,13 +215,9 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): YjsStoreResul
     }
 
     const handleStatus = ({ status }: { status: string }) => {
-      console.log('[useYjsStore] status event:', status, 'room.synced:', room.synced)
-      if (status === 'connected') {
-        // When connected, if already synced, handle it immediately
-        if (room.synced) {
-          handleSync(true)
-        }
-      } else {
+      if (status === 'connected' && room.synced) {
+        handleSync(true)
+      } else if (status !== 'connected') {
         setStoreWithStatus(prev => {
           if (prev.status === 'synced-remote') {
             return { ...prev, connectionStatus: 'offline' as const }
@@ -232,15 +227,10 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): YjsStoreResul
       }
     }
 
-    // Set up event listeners BEFORE checking initial state
     room.on('status', handleStatus)
     room.on('sync', handleSync)
 
-    console.log('[useYjsStore] Listeners attached, checking initial state - synced:', room.synced)
-
-    // Check if already synced (connection established before listeners)
     if (room.synced) {
-      console.log('[useYjsStore] Already synced!')
       handleSync(true)
     }
 
