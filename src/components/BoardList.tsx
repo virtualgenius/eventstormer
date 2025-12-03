@@ -71,6 +71,21 @@ export function getBoardName(boardId: string): string | null {
   return board?.name ?? null;
 }
 
+function getNextBoardName(baseName: string): string {
+  const boards = getRecentBoards();
+  const existingNames = new Set(boards.map((b) => b.name));
+
+  if (!existingNames.has(baseName)) {
+    return baseName;
+  }
+
+  let counter = 2;
+  while (existingNames.has(`${baseName} ${counter}`)) {
+    counter++;
+  }
+  return `${baseName} ${counter}`;
+}
+
 export const BoardList: React.FC = () => {
   const navigate = useNavigate();
   const [roomIdInput, setRoomIdInput] = useState("");
@@ -97,7 +112,8 @@ export const BoardList: React.FC = () => {
 
   const handleOpenSample = (sample: SampleBoard) => {
     const newBoardId = nanoid();
-    navigate(`/board/${newBoardId}?template=${encodeURIComponent(sample.file)}&name=${encodeURIComponent(sample.name)}`);
+    const boardName = getNextBoardName(sample.name);
+    navigate(`/board/${newBoardId}?template=${encodeURIComponent(sample.file)}&name=${encodeURIComponent(boardName)}`);
   };
 
   const handleDeleteBoard = (
