@@ -42,25 +42,39 @@ const customShapeUtils = [
   LabelShapeUtil,
 ]
 
+const DEFAULT_PAGE_RECORD: TLRecord = {
+  id: 'page:page' as TLRecord['id'],
+  typeName: 'page',
+  name: 'Page 1',
+  index: 'a1',
+  meta: {},
+} as unknown as TLRecord
+
+const DEFAULT_DOCUMENT_RECORD: TLRecord = {
+  id: 'document:document' as TLRecord['id'],
+  typeName: 'document',
+  gridSize: 10,
+  name: '',
+  meta: {},
+} as unknown as TLRecord
+
 export function ensureEssentialRecordsExistInYjs(
   yDoc: Y.Doc,
-  yRecords: Y.Map<TLRecord>,
-  store: TLStore
+  yRecords: Y.Map<TLRecord>
 ): void {
   const hasPage = yRecords.has('page:page')
   const hasDocument = yRecords.has('document:document')
 
   if (hasPage && hasDocument) return
 
-  const defaultPage = store.get('page:page' as TLRecord['id'])
-  const defaultDocument = store.get('document:document' as TLRecord['id'])
+  console.log('[ensureEssentialRecords] Adding missing records - hasPage:', hasPage, 'hasDocument:', hasDocument)
 
   yDoc.transact(() => {
-    if (!hasPage && defaultPage) {
-      yRecords.set('page:page', defaultPage)
+    if (!hasPage) {
+      yRecords.set('page:page', DEFAULT_PAGE_RECORD)
     }
-    if (!hasDocument && defaultDocument) {
-      yRecords.set('document:document', defaultDocument)
+    if (!hasDocument) {
+      yRecords.set('document:document', DEFAULT_DOCUMENT_RECORD)
     }
   })
 }
@@ -209,7 +223,7 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): YjsStoreResul
       console.log('[useYjsStore] yRecords.size:', yRecords.size, 'hasPage:', yRecords.has('page:page'), 'hasDocument:', yRecords.has('document:document'))
 
       if (yRecords.size > 0) {
-        ensureEssentialRecordsExistInYjs(yDoc, yRecords, store)
+        ensureEssentialRecordsExistInYjs(yDoc, yRecords)
         console.log('[useYjsStore] After ensureEssential - hasPage:', yRecords.has('page:page'), 'hasDocument:', yRecords.has('document:document'))
       }
       loadYjsRecordsIntoStore(yRecords, store)

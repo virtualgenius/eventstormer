@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import * as Y from 'yjs'
 import { TLRecord, TLStoreEventInfo } from 'tldraw'
 import {
@@ -9,84 +9,78 @@ import {
 describe('ensureEssentialRecordsExistInYjs', () => {
   let yDoc: Y.Doc
   let yRecords: Y.Map<TLRecord>
-  let mockStore: { get: ReturnType<typeof vi.fn> }
 
-  const mockPageRecord = {
+  const expectedPageRecord = {
     id: 'page:page',
     typeName: 'page',
     name: 'Page 1',
-    index: 'a0',
+    index: 'a1',
     meta: {},
-  } as unknown as TLRecord
+  }
 
-  const mockDocumentRecord = {
+  const expectedDocumentRecord = {
     id: 'document:document',
     typeName: 'document',
     gridSize: 10,
     name: '',
     meta: {},
-  } as unknown as TLRecord
+  }
 
   beforeEach(() => {
     yDoc = new Y.Doc()
     yRecords = yDoc.getMap<TLRecord>('tldraw-records')
-    mockStore = {
-      get: vi.fn((id: string) => {
-        if (id === 'page:page') return mockPageRecord
-        if (id === 'document:document') return mockDocumentRecord
-        return undefined
-      }),
-    }
   })
 
   it('adds page record when missing', () => {
-    ensureEssentialRecordsExistInYjs(yDoc, yRecords, mockStore as any)
+    ensureEssentialRecordsExistInYjs(yDoc, yRecords)
 
     expect(yRecords.has('page:page')).toBe(true)
-    expect(yRecords.get('page:page')).toEqual(mockPageRecord)
+    expect(yRecords.get('page:page')).toEqual(expectedPageRecord)
   })
 
   it('adds document record when missing', () => {
-    ensureEssentialRecordsExistInYjs(yDoc, yRecords, mockStore as any)
+    ensureEssentialRecordsExistInYjs(yDoc, yRecords)
 
     expect(yRecords.has('document:document')).toBe(true)
-    expect(yRecords.get('document:document')).toEqual(mockDocumentRecord)
+    expect(yRecords.get('document:document')).toEqual(expectedDocumentRecord)
   })
 
   it('does not overwrite existing page record', () => {
-    const existingPage = { ...mockPageRecord, name: 'Existing Page' } as TLRecord
+    const existingPage = { ...expectedPageRecord, name: 'Existing Page' } as TLRecord
     yRecords.set('page:page', existingPage)
 
-    ensureEssentialRecordsExistInYjs(yDoc, yRecords, mockStore as any)
+    ensureEssentialRecordsExistInYjs(yDoc, yRecords)
 
     expect(yRecords.get('page:page')).toEqual(existingPage)
   })
 
   it('does not overwrite existing document record', () => {
-    const existingDoc = { ...mockDocumentRecord, gridSize: 20 } as TLRecord
+    const existingDoc = { ...expectedDocumentRecord, gridSize: 20 } as TLRecord
     yRecords.set('document:document', existingDoc)
 
-    ensureEssentialRecordsExistInYjs(yDoc, yRecords, mockStore as any)
+    ensureEssentialRecordsExistInYjs(yDoc, yRecords)
 
     expect(yRecords.get('document:document')).toEqual(existingDoc)
   })
 
   it('does nothing when both records already exist', () => {
-    yRecords.set('page:page', mockPageRecord)
-    yRecords.set('document:document', mockDocumentRecord)
+    yRecords.set('page:page', expectedPageRecord as TLRecord)
+    yRecords.set('document:document', expectedDocumentRecord as TLRecord)
 
-    ensureEssentialRecordsExistInYjs(yDoc, yRecords, mockStore as any)
+    ensureEssentialRecordsExistInYjs(yDoc, yRecords)
 
-    expect(mockStore.get).not.toHaveBeenCalled()
+    // Records remain unchanged
+    expect(yRecords.get('page:page')).toEqual(expectedPageRecord)
+    expect(yRecords.get('document:document')).toEqual(expectedDocumentRecord)
   })
 
   it('adds only missing record when one exists', () => {
-    yRecords.set('page:page', mockPageRecord)
+    yRecords.set('page:page', expectedPageRecord as TLRecord)
 
-    ensureEssentialRecordsExistInYjs(yDoc, yRecords, mockStore as any)
+    ensureEssentialRecordsExistInYjs(yDoc, yRecords)
 
-    expect(mockStore.get).toHaveBeenCalledWith('document:document')
     expect(yRecords.has('document:document')).toBe(true)
+    expect(yRecords.get('document:document')).toEqual(expectedDocumentRecord)
   })
 })
 
@@ -175,7 +169,6 @@ describe('syncStoreChangesToYjs', () => {
 
   it('handles multiple changes in single event', () => {
     const shape1 = { ...mockShape, id: 'shape:1' } as TLRecord
-    const shape2 = { ...mockShape, id: 'shape:2' } as TLRecord
     const shape3 = { ...mockShape, id: 'shape:3' } as TLRecord
     yRecords.set('shape:3', shape3)
 
