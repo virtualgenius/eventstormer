@@ -26,7 +26,7 @@ import { LabelShapeUtil } from './shapes/LabelShape'
 import { useYjsStore } from './useYjsStore'
 import { useYjsPresence } from './useYjsPresence'
 import { isEventStormerBoardFormat, convertBoardToShapes } from './boardFormat'
-import { Download, Upload, GripVertical, GripHorizontal, Square } from 'lucide-react'
+import { Download, Upload, SeparatorVertical, SeparatorHorizontal, RectangleHorizontal } from 'lucide-react'
 import * as Tooltip from '@radix-ui/react-tooltip'
 
 // Register all custom shape utils
@@ -125,8 +125,8 @@ const TOOLS = {
   },
   'glossary-sticky': {
     label: 'Glossary',
-    color: '#f1f5f9',
-    description: 'A term definition for the ubiquitous language (gray)',
+    color: '#1e293b',
+    description: 'A term definition for the ubiquitous language',
     modes: ['big-picture', 'team-flow'] as WorkshopMode[],
     phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
   },
@@ -714,11 +714,11 @@ export function TldrawBoard({ roomId, templateFile, renderHeaderRight }: TldrawB
                     }`}
                   >
                     {type === 'vertical-line' ? (
-                      <GripVertical className="w-6 h-6 text-slate-500" />
+                      <SeparatorVertical className="w-6 h-6 text-slate-500" />
                     ) : type === 'horizontal-lane' ? (
-                      <GripHorizontal className="w-6 h-6 text-slate-500" />
+                      <SeparatorHorizontal className="w-6 h-6 text-slate-500" />
                     ) : type === 'theme-area' ? (
-                      <Square className="w-6 h-6 text-slate-400" />
+                      <RectangleHorizontal className="w-6 h-6 text-slate-400" />
                     ) : (
                       <div
                         className="rounded"

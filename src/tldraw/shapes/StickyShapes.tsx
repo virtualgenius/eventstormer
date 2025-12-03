@@ -44,15 +44,15 @@ type AnyStickyShape =
 
 // Color configurations matching EventStormer
 const COLORS = {
-  event: { fill: '#fed7aa', border: '#fdba74' },
-  hotspot: { fill: '#fecaca', border: '#fca5a5' },
-  person: { fill: '#fef9c3', border: '#fef08a' },
-  system: { fill: '#fce7f3', border: '#fbcfe8' },
-  opportunity: { fill: '#bbf7d0', border: '#86efac' },
-  glossary: { fill: '#f1f5f9', border: '#e2e8f0' },
-  command: { fill: '#bfdbfe', border: '#93c5fd' },
-  policy: { fill: '#c4b5fd', border: '#a78bfa' },
-  readmodel: { fill: '#bbf7d0', border: '#86efac' },
+  event: { fill: '#fed7aa', border: '#fdba74', text: '#1e293b' },
+  hotspot: { fill: '#fecaca', border: '#fca5a5', text: '#1e293b' },
+  person: { fill: '#fef9c3', border: '#fef08a', text: '#1e293b' },
+  system: { fill: '#fce7f3', border: '#fbcfe8', text: '#1e293b' },
+  opportunity: { fill: '#bbf7d0', border: '#86efac', text: '#1e293b' },
+  glossary: { fill: '#1e293b', border: '#334155', text: '#ffffff' },
+  command: { fill: '#bfdbfe', border: '#93c5fd', text: '#1e293b' },
+  policy: { fill: '#c4b5fd', border: '#a78bfa', text: '#1e293b' },
+  readmodel: { fill: '#bbf7d0', border: '#86efac', text: '#1e293b' },
 }
 
 // Editable sticky component using tldraw's editing state
@@ -61,7 +61,7 @@ function EditableStickyComponent({
   colors,
 }: {
   shape: AnyStickyShape
-  colors: { fill: string; border: string }
+  colors: { fill: string; border: string; text: string }
 }) {
   const editor = useEditor()
 
@@ -136,7 +136,7 @@ function EditableStickyComponent({
           boxSizing: 'border-box',
           display: 'flex',
           alignItems: 'flex-start',
-          color: '#1e293b',
+          color: colors.text,
           lineHeight: 1.25,
           wordWrap: 'break-word',
           cursor: isEditing ? 'text' : 'default',
@@ -159,7 +159,7 @@ function EditableStickyComponent({
               outline: 'none',
               fontSize: 14,
               fontFamily: 'system-ui, -apple-system, sans-serif',
-              color: '#1e293b',
+              color: colors.text,
               lineHeight: 1.25,
               padding: 0,
               margin: 0,
@@ -167,7 +167,7 @@ function EditableStickyComponent({
           />
         ) : (
           <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-            {shape.props.text || <span style={{ color: '#94a3b8' }}>Double-click to edit</span>}
+            {shape.props.text || <span style={{ opacity: 0.5 }}>Double-click to edit</span>}
           </span>
         )}
       </div>
@@ -178,7 +178,7 @@ function EditableStickyComponent({
 // Base class for sticky shape utils
 function createStickyShapeUtil<T extends AnyStickyShape>(
   type: T['type'],
-  colors: { fill: string; border: string },
+  colors: { fill: string; border: string; text: string },
   defaultHeight: number = 100,
   defaultWidth: number = 120
 ) {
