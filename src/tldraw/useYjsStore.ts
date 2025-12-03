@@ -227,7 +227,9 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): YjsStoreResul
         console.log('[useYjsStore] After ensureEssential - hasPage:', yRecords.has('page:page'), 'hasDocument:', yRecords.has('document:document'))
       }
       loadYjsRecordsIntoStore(yRecords, store)
-      console.log('[useYjsStore] After loadYjsRecords - store has page:', !!store.get('page:page' as any))
+      const allRecords = store.allRecords()
+      const shapeCount = allRecords.filter(r => r.typeName === 'shape').length
+      console.log('[useYjsStore] After loadYjsRecords - store has page:', !!store.get('page:page' as any), 'total records:', allRecords.length, 'shapes:', shapeCount)
 
       const handleYjsChange = (events: Y.YEvent<any>[], transaction: Y.Transaction) => {
         syncYjsChangesToStore(yRecords, store, transaction, events)
