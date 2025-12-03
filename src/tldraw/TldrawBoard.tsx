@@ -62,14 +62,14 @@ type FacilitationPhase =
   | 'enforce-timeline'
   | 'people-and-systems'
   | 'problems-and-opportunities'
-  | 'glossary'
+  | 'next-steps'
 
 const ALL_PHASES: FacilitationPhase[] = [
   'chaotic-exploration',
   'enforce-timeline',
   'people-and-systems',
   'problems-and-opportunities',
-  'glossary',
+  'next-steps',
 ]
 
 // Tool definitions for the palette
@@ -79,28 +79,28 @@ const TOOLS = {
     color: '#fed7aa',
     description: 'A domain event that happened in the past (orange)',
     modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
-    phases: ['chaotic-exploration', 'enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
+    phases: ['chaotic-exploration', 'enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
   },
   'hotspot-sticky': {
     label: 'Hotspot',
     color: '#fecaca',
     description: 'A problem, risk, question, or area of uncertainty (red)',
     modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
-    phases: ['chaotic-exploration', 'enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
+    phases: ['chaotic-exploration', 'enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
   },
   'vertical-line': {
     label: 'Pivotal',
     color: '#cbd5e1',
     description: 'A pivotal event boundary separating process phases',
     modes: ['big-picture', 'team-flow'] as WorkshopMode[],
-    phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
+    phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
   },
   'horizontal-lane': {
     label: 'Swimlane',
     color: '#e2e8f0',
     description: 'A horizontal lane to separate parallel processes',
     modes: ['big-picture', 'team-flow'] as WorkshopMode[],
-    phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
+    phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
   },
   'theme-area': {
     label: 'Theme',
@@ -109,13 +109,6 @@ const TOOLS = {
     modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
     phases: ALL_PHASES,
   },
-  'glossary-sticky': {
-    label: 'Glossary',
-    color: '#1e293b',
-    description: 'A term definition for the ubiquitous language',
-    modes: ['big-picture', 'team-flow'] as WorkshopMode[],
-    phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
-  },
   'label': {
     label: 'Label',
     color: 'transparent',
@@ -123,19 +116,26 @@ const TOOLS = {
     modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
     phases: ALL_PHASES,
   },
+  'glossary-sticky': {
+    label: 'Glossary',
+    color: '#1e293b',
+    description: 'A term definition for the ubiquitous language',
+    modes: ['big-picture', 'team-flow'] as WorkshopMode[],
+    phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
+  },
   'person-sticky': {
     label: 'Person',
     color: '#fef9c3',
     description: 'An actor or persona who triggers or participates in events (yellow)',
     modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
-    phases: ['people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
+    phases: ['people-and-systems', 'problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
   },
   'system-sticky': {
     label: 'System',
     color: '#fce7f3',
     description: 'An external system that triggers or receives events (pink)',
     modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
-    phases: ['people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
+    phases: ['people-and-systems', 'problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
   },
   'command-sticky': {
     label: 'Command',
@@ -163,7 +163,7 @@ const TOOLS = {
     color: '#bbf7d0',
     description: 'An improvement idea or business opportunity (green)',
     modes: ['big-picture', 'team-flow'] as WorkshopMode[],
-    phases: ['problems-and-opportunities', 'glossary'] as FacilitationPhase[],
+    phases: ['problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
   },
 } as const
 
@@ -629,7 +629,7 @@ export function TldrawBoard({ roomId, templateFile, renderHeaderRight }: TldrawB
                 <option value="enforce-timeline">2. Enforce Timeline</option>
                 <option value="people-and-systems">3. People & Systems</option>
                 <option value="problems-and-opportunities">4. Value & Opportunities</option>
-                <option value="glossary">5. Glossary</option>
+                <option value="next-steps">5. Next Steps</option>
               </select>
             </div>
           )}
