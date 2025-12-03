@@ -107,6 +107,13 @@ export function syncYjsChangesToStore(
     }
   }
 
+  if (toRemove.length > 0 || toPut.length > 0) {
+    console.log('[syncYjsChangesToStore] toRemove:', toRemove.length, 'toPut:', toPut.length, 'origin:', transaction.origin)
+    if (toRemove.length > 0) {
+      console.log('[syncYjsChangesToStore] REMOVING:', toRemove.slice(0, 5))
+    }
+  }
+
   store.mergeRemoteChanges(() => {
     if (toRemove.length > 0) store.remove(toRemove)
     if (toPut.length > 0) store.put(toPut)
@@ -119,6 +126,17 @@ export function syncStoreChangesToYjs(
   event: TLStoreEventInfo
 ): void {
   if (event.source === 'remote') return
+
+  const addedCount = Object.keys(event.changes.added).length
+  const updatedCount = Object.keys(event.changes.updated).length
+  const removedCount = Object.keys(event.changes.removed).length
+
+  if (addedCount > 0 || updatedCount > 0 || removedCount > 0) {
+    console.log('[syncStoreChangesToYjs] added:', addedCount, 'updated:', updatedCount, 'removed:', removedCount, 'source:', event.source)
+    if (removedCount > 0) {
+      console.log('[syncStoreChangesToYjs] REMOVING:', Object.keys(event.changes.removed).slice(0, 5))
+    }
+  }
 
   yDoc.transact(() => {
     Object.entries(event.changes.added).forEach(([id, record]) => {
@@ -188,10 +206,14 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): YjsStoreResul
       if (didConnect) return
       didConnect = true
 
+      console.log('[useYjsStore] yRecords.size:', yRecords.size, 'hasPage:', yRecords.has('page:page'), 'hasDocument:', yRecords.has('document:document'))
+
       if (yRecords.size > 0) {
         ensureEssentialRecordsExistInYjs(yDoc, yRecords, store)
+        console.log('[useYjsStore] After ensureEssential - hasPage:', yRecords.has('page:page'), 'hasDocument:', yRecords.has('document:document'))
       }
       loadYjsRecordsIntoStore(yRecords, store)
+      console.log('[useYjsStore] After loadYjsRecords - store has page:', !!store.get('page:page' as any))
 
       const handleYjsChange = (events: Y.YEvent<any>[], transaction: Y.Transaction) => {
         syncYjsChangesToStore(yRecords, store, transaction, events)
