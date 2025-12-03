@@ -138,6 +138,11 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): YjsStoreResul
           }
         }
 
+        console.log('[useYjsStore] handleYjsChange - toRemove:', toRemove.length, 'toPut:', toPut.length, 'origin:', transaction.origin)
+        if (toRemove.length > 0) {
+          console.log('[useYjsStore] REMOVING records:', toRemove.slice(0, 5))
+        }
+
         store.mergeRemoteChanges(() => {
           if (toRemove.length > 0) store.remove(toRemove)
           if (toPut.length > 0) store.put(toPut)
@@ -150,6 +155,15 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): YjsStoreResul
       // Sync tldraw store changes to Yjs
       const handleStoreChange = (event: TLStoreEventInfo) => {
         if (event.source === 'remote') return
+
+        const addedCount = Object.keys(event.changes.added).length
+        const updatedCount = Object.keys(event.changes.updated).length
+        const removedCount = Object.keys(event.changes.removed).length
+
+        console.log('[useYjsStore] handleStoreChange - added:', addedCount, 'updated:', updatedCount, 'removed:', removedCount, 'source:', event.source)
+        if (removedCount > 0) {
+          console.log('[useYjsStore] Store REMOVING:', Object.keys(event.changes.removed).slice(0, 5))
+        }
 
         yDoc.transact(() => {
           Object.entries(event.changes.added).forEach(([id, record]) => {
