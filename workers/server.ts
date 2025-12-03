@@ -14,17 +14,22 @@ export class YjsRoom extends YServer {
   };
 
   // Load document state from Durable Object storage on first connection
-  async onLoad(): Promise<void> {
+  // Returns a Y.Doc to be merged into this.document, or undefined if no stored state
+  async onLoad(): Promise<Y.Doc | undefined> {
     try {
       const stored = await this.ctx.storage.get<Uint8Array>(STORAGE_KEY);
-      if (stored) {
+      if (stored && stored.byteLength > 0) {
         console.log(`[YjsRoom] Loading document for room: ${this.name}, size: ${stored.byteLength} bytes`);
-        Y.applyUpdate(this.document, new Uint8Array(stored));
+        const doc = new Y.Doc();
+        Y.applyUpdate(doc, new Uint8Array(stored));
+        return doc;
       } else {
         console.log(`[YjsRoom] No stored document for room: ${this.name}, starting fresh`);
+        return undefined;
       }
     } catch (error) {
       console.error(`[YjsRoom] Error loading document for room ${this.name}:`, error);
+      return undefined;
     }
   }
 
