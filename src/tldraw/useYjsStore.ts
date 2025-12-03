@@ -178,8 +178,10 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): YjsStoreResul
         })
       }
 
+      // Listen to all non-remote document changes (user actions + tldraw internal initialization)
+      // The handleStoreChange function already filters out remote changes
       unsubs.push(
-        store.listen(handleStoreChange, { source: 'user', scope: 'document' })
+        store.listen(handleStoreChange, { scope: 'document' })
       )
 
       console.log('[useYjsStore] Setting status to synced-remote')
