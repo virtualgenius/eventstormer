@@ -102,6 +102,27 @@ const TOOLS = {
     modes: ['big-picture', 'team-flow'] as WorkshopMode[],
     phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
   },
+  'theme-area': {
+    label: 'Theme',
+    color: 'rgba(226,232,240,0.5)',
+    description: 'A rectangular area to group related elements by theme',
+    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
+    phases: ALL_PHASES,
+  },
+  'glossary-sticky': {
+    label: 'Glossary',
+    color: '#1e293b',
+    description: 'A term definition for the ubiquitous language',
+    modes: ['big-picture', 'team-flow'] as WorkshopMode[],
+    phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
+  },
+  'label': {
+    label: 'Label',
+    color: 'transparent',
+    description: 'A free-form text annotation',
+    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
+    phases: ALL_PHASES,
+  },
   'person-sticky': {
     label: 'Person',
     color: '#fef9c3',
@@ -115,20 +136,6 @@ const TOOLS = {
     description: 'An external system that triggers or receives events (pink)',
     modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
     phases: ['people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
-  },
-  'opportunity-sticky': {
-    label: 'Opportunity',
-    color: '#bbf7d0',
-    description: 'An improvement idea or business opportunity (green)',
-    modes: ['big-picture', 'team-flow'] as WorkshopMode[],
-    phases: ['problems-and-opportunities', 'glossary'] as FacilitationPhase[],
-  },
-  'glossary-sticky': {
-    label: 'Glossary',
-    color: '#1e293b',
-    description: 'A term definition for the ubiquitous language',
-    modes: ['big-picture', 'team-flow'] as WorkshopMode[],
-    phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'glossary'] as FacilitationPhase[],
   },
   'command-sticky': {
     label: 'Command',
@@ -151,19 +158,12 @@ const TOOLS = {
     modes: ['process', 'design'] as WorkshopMode[],
     phases: ALL_PHASES,
   },
-  'theme-area': {
-    label: 'Theme',
-    color: 'rgba(226,232,240,0.5)',
-    description: 'A rectangular area to group related elements by theme',
-    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
-    phases: ALL_PHASES,
-  },
-  'label': {
-    label: 'Label',
-    color: 'transparent',
-    description: 'A free-form text annotation',
-    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
-    phases: ALL_PHASES,
+  'opportunity-sticky': {
+    label: 'Opportunity',
+    color: '#bbf7d0',
+    description: 'An improvement idea or business opportunity (green)',
+    modes: ['big-picture', 'team-flow'] as WorkshopMode[],
+    phases: ['problems-and-opportunities', 'glossary'] as FacilitationPhase[],
   },
 } as const
 
