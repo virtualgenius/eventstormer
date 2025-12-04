@@ -769,6 +769,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
           shapeUtils={customShapeUtils}
           components={components}
           onMount={handleMount}
+          inferDarkMode={false}
           options={{
             maxShapesPerPage: 10000,
           }}
