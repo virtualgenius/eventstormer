@@ -29,6 +29,16 @@ import { useYjsPresence } from './useYjsPresence'
 import { isEventStormerBoardFormat, convertBoardToShapes } from './boardFormat'
 import { Download, Upload, SeparatorVertical, SeparatorHorizontal, RectangleHorizontal, Type } from 'lucide-react'
 import * as Tooltip from '@radix-ui/react-tooltip'
+import {
+  getDefaultNext,
+  cycleAlternative,
+  canCreateBranch,
+  getBranchType,
+  fromStickyType,
+  toStickyType,
+  FlowDirection,
+  FlowElementType,
+} from '@/lib/flowSequence'
 
 // Register all custom shape utils
 const customShapeUtils = [
@@ -218,6 +228,13 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
   const [phase, setPhase] = useState<FacilitationPhase>('chaotic-exploration')
   const [activeTool, setActiveTool] = useState<ToolType | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const [flowState, setFlowState] = useState<{
+    lastCreatedId: TLShapeId
+    direction: FlowDirection
+    sourceType: FlowElementType
+    alternativeIndex: number
+  } | null>(null)
 
   const { storeWithStatus, room } = useYjsStore({ roomId })
 
@@ -456,11 +473,84 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
     'x': 'eraser',
   }
 
+  const SHAPE_DIMENSIONS: Record<string, { w: number; h: number }> = {
+    'event-sticky': { w: 120, h: 100 },
+    'hotspot-sticky': { w: 120, h: 100 },
+    'person-sticky': { w: 120, h: 50 },
+    'system-sticky': { w: 240, h: 100 },
+    'opportunity-sticky': { w: 120, h: 100 },
+    'glossary-sticky': { w: 120, h: 100 },
+    'command-sticky': { w: 120, h: 100 },
+    'policy-sticky': { w: 240, h: 100 },
+    'aggregate-sticky': { w: 240, h: 100 },
+    'readmodel-sticky': { w: 120, h: 100 },
+  }
+
+  const createFlowShape = useCallback((
+    sourceShape: { x: number; y: number; props: { w: number; h: number } },
+    targetStickyType: string,
+    direction: 'right' | 'left' | 'down'
+  ): TLShapeId | null => {
+    if (!editor) return null
+
+    const GAP = 20
+    const VERTICAL_GAP = 15
+    const targetDims = SHAPE_DIMENSIONS[targetStickyType] || { w: 120, h: 100 }
+
+    let newX = sourceShape.x
+    let newY = sourceShape.y
+
+    if (direction === 'right') {
+      newX = sourceShape.x + sourceShape.props.w + GAP
+    } else if (direction === 'left') {
+      newX = sourceShape.x - targetDims.w - GAP
+    } else if (direction === 'down') {
+      newY = sourceShape.y + sourceShape.props.h + VERTICAL_GAP
+    }
+
+    const newId = createShapeId()
+    editor.createShape({
+      id: newId,
+      type: targetStickyType,
+      x: newX,
+      y: newY,
+      props: { text: '', w: targetDims.w, h: targetDims.h },
+    })
+
+    editor.select(newId)
+    requestAnimationFrame(() => editor.setEditingShape(newId))
+
+    return newId
+  }, [editor])
+
+  const swapShapeType = useCallback((shapeId: TLShapeId, newStickyType: string) => {
+    if (!editor) return
+
+    const shape = editor.getShape(shapeId)
+    if (!shape) return
+
+    const newDims = SHAPE_DIMENSIONS[newStickyType] || { w: 120, h: 100 }
+    const props = shape.props as { text?: string }
+
+    editor.deleteShapes([shapeId])
+    editor.createShape({
+      id: shapeId,
+      type: newStickyType,
+      x: shape.x,
+      y: shape.y,
+      props: { text: props.text || '', w: newDims.w, h: newDims.h },
+    })
+
+    editor.select(shapeId)
+    requestAnimationFrame(() => editor.setEditingShape(shapeId))
+  }, [editor])
+
   useEffect(() => {
     if (!editor) return
 
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement
+      const isInTextInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA'
 
       if (e.key === 'Tab' && !e.shiftKey) {
         e.preventDefault()
@@ -468,7 +558,135 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
         return
       }
 
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+      // Arrow key flow navigation (works from edit mode too, like Tab)
+      if ((workshopMode === 'process' || workshopMode === 'design') &&
+          (e.key === 'ArrowRight' || e.key === 'ArrowLeft') &&
+          !e.metaKey && !e.ctrlKey && !e.altKey) {
+
+        const editingId = editor.getEditingShapeId()
+        let sourceShape = editingId ? editor.getShape(editingId) : null
+
+        if (!sourceShape) {
+          const selectedShapes = editor.getSelectedShapes()
+          if (selectedShapes.length === 1) {
+            sourceShape = selectedShapes[0]
+          }
+        }
+
+        if (!sourceShape) return
+
+        const flowType = fromStickyType(sourceShape.type)
+        if (!flowType) return
+
+        const direction = e.key === 'ArrowRight' ? 'forward' : 'backward'
+        const nextType = getDefaultNext(flowType, direction)
+        if (!nextType) return
+
+        e.preventDefault()
+        e.stopPropagation()
+
+        // Save text and exit edit mode if editing
+        if (editingId && isInTextInput) {
+          const textarea = target as HTMLTextAreaElement | HTMLInputElement
+          const currentText = textarea.value
+          const currentProps = sourceShape.props as { text?: string }
+          if (currentText !== currentProps.text) {
+            editor.updateShape({
+              id: editingId,
+              type: sourceShape.type,
+              props: { text: currentText },
+            })
+          }
+          editor.setEditingShape(null)
+        }
+
+        const newId = createFlowShape(
+          { x: sourceShape.x, y: sourceShape.y, props: sourceShape.props as { w: number; h: number } },
+          toStickyType(nextType),
+          e.key === 'ArrowRight' ? 'right' : 'left'
+        )
+        if (newId) {
+          setFlowState({ lastCreatedId: newId, direction, sourceType: flowType, alternativeIndex: 0 })
+        }
+        return
+      }
+
+      // Up/Down arrow - cycle alternatives or create branch (works from edit mode too)
+      if ((workshopMode === 'process' || workshopMode === 'design') &&
+          (e.key === 'ArrowDown' || e.key === 'ArrowUp') &&
+          !e.metaKey && !e.ctrlKey && !e.altKey) {
+
+        // Helper to save text and exit edit mode
+        const saveAndExitEditMode = () => {
+          if (isInTextInput) {
+            const editingId = editor.getEditingShapeId()
+            if (editingId) {
+              const editingShape = editor.getShape(editingId)
+              if (editingShape) {
+                const textarea = target as HTMLTextAreaElement | HTMLInputElement
+                const currentText = textarea.value
+                const currentProps = editingShape.props as { text?: string }
+                if (currentText !== currentProps.text) {
+                  editor.updateShape({
+                    id: editingId,
+                    type: editingShape.type,
+                    props: { text: currentText },
+                  })
+                }
+                editor.setEditingShape(null)
+              }
+            }
+          }
+        }
+
+        // If we have flowState, try cycling alternatives first
+        if (flowState) {
+          const cycleDir = e.key === 'ArrowDown' ? 'down' : 'up'
+          const result = cycleAlternative(flowState.sourceType, flowState.direction, flowState.alternativeIndex, cycleDir)
+          if (result) {
+            e.preventDefault()
+            e.stopPropagation()
+            saveAndExitEditMode()
+            swapShapeType(flowState.lastCreatedId, toStickyType(result.newType))
+            setFlowState({ ...flowState, alternativeIndex: result.newIndex })
+            return
+          }
+        }
+
+        // Down arrow on policy (no flowState or no alternatives) = create branch below
+        if (e.key === 'ArrowDown') {
+          const editingId = editor.getEditingShapeId()
+          let sourceShape = editingId ? editor.getShape(editingId) : null
+
+          if (!sourceShape) {
+            const selectedShapes = editor.getSelectedShapes()
+            if (selectedShapes.length === 1) {
+              sourceShape = selectedShapes[0]
+            }
+          }
+
+          if (sourceShape) {
+            const flowType = fromStickyType(sourceShape.type)
+            if (flowType && canCreateBranch(flowType)) {
+              e.preventDefault()
+              e.stopPropagation()
+              saveAndExitEditMode()
+              const branchType = getBranchType(flowType)
+              if (branchType) {
+                createFlowShape(
+                  { x: sourceShape.x, y: sourceShape.y, props: sourceShape.props as { w: number; h: number } },
+                  toStickyType(branchType),
+                  'down'
+                )
+                setFlowState(null)
+              }
+              return
+            }
+          }
+        }
+      }
+
+      if (isInTextInput) {
         return
       }
 
@@ -505,7 +723,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
 
     window.addEventListener('keydown', handleKeyDown, true)
     return () => window.removeEventListener('keydown', handleKeyDown, true)
-  }, [editor, createNextSticky, duplicateSelected, workshopMode, phase, createShape])
+  }, [editor, createNextSticky, duplicateSelected, workshopMode, phase, createShape, flowState, createFlowShape, swapShapeType])
 
   // Export board as JSON
   const handleExportJSON = useCallback(() => {
