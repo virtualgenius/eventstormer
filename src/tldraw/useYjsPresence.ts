@@ -27,26 +27,15 @@ function getUserId(): string {
   return id
 }
 
-// Generate a random user name (unique per tab for testing)
-function getUserName(): string {
-  let name = sessionStorage.getItem('tldraw-user-name')
-  if (!name) {
-    const adjectives = ['Happy', 'Clever', 'Swift', 'Bright', 'Calm']
-    const animals = ['Panda', 'Tiger', 'Eagle', 'Dolphin', 'Fox']
-    name = `${adjectives[Math.floor(Math.random() * adjectives.length)]} ${animals[Math.floor(Math.random() * animals.length)]}`
-    sessionStorage.setItem('tldraw-user-name', name)
-  }
-  return name
-}
-
 export interface UseYjsPresenceOptions {
   editor: Editor | null
   room: YProvider | null
+  userName: string
 }
 
-export function useYjsPresence({ editor, room }: UseYjsPresenceOptions) {
+export function useYjsPresence({ editor, room, userName }: UseYjsPresenceOptions) {
   const userIdRef = useRef(getUserId())
-  const userNameRef = useRef(getUserName())
+  const userNameRef = useRef(userName)
   const userColorRef = useRef(getRandomColor())
 
   // Sync local presence to Yjs awareness

@@ -139,6 +139,7 @@ export const BoardPage: React.FC = () => {
       <main className="flex-1 overflow-hidden">
         <TldrawBoard
           roomId={boardId}
+          userName={userName!}
           templateFile={templateFile || undefined}
           renderHeaderRight={handleBoardReady}
         />

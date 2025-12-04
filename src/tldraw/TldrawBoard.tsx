@@ -202,6 +202,7 @@ const components: TLComponents = {
 
 interface TldrawBoardProps {
   roomId: string
+  userName: string
   templateFile?: string
   renderHeaderRight?: (props: {
     connectionStatus: string
@@ -211,7 +212,7 @@ interface TldrawBoardProps {
   }) => React.ReactNode
 }
 
-export function TldrawBoard({ roomId, templateFile, renderHeaderRight }: TldrawBoardProps) {
+export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight }: TldrawBoardProps) {
   const [editor, setEditor] = useState<Editor | null>(null)
   const [workshopMode, setWorkshopMode] = useState<WorkshopMode>('big-picture')
   const [phase, setPhase] = useState<FacilitationPhase>('chaotic-exploration')
@@ -221,7 +222,7 @@ export function TldrawBoard({ roomId, templateFile, renderHeaderRight }: TldrawB
   const { storeWithStatus, room } = useYjsStore({ roomId })
 
   // Set up presence sync
-  useYjsPresence({ editor, room })
+  useYjsPresence({ editor, room, userName })
 
   const BACKGROUND_SHAPE_TYPES = ['vertical-line', 'horizontal-lane', 'theme-area']
 
