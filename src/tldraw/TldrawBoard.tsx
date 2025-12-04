@@ -122,7 +122,7 @@ const TOOLS = {
     label: 'Glossary',
     color: '#1e293b',
     description: 'A term definition for the ubiquitous language',
-    modes: ['big-picture', 'team-flow'] as WorkshopMode[],
+    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
     phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
   },
   'person-sticky': {

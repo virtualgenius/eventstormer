@@ -43,7 +43,6 @@ export function useYjsPresence({ editor, room, userName }: UseYjsPresenceOptions
     if (!editor || !room) return
 
     const userId = userIdRef.current
-    const userName = userNameRef.current
     const userColor = userColorRef.current
 
     console.log('[useYjsPresence] Setting up presence for user:', userId, userName)
@@ -79,7 +78,7 @@ export function useYjsPresence({ editor, room, userName }: UseYjsPresenceOptions
     return () => {
       stopReacting()
     }
-  }, [editor, room])
+  }, [editor, room, userName])
 
   // Sync remote presence from Yjs awareness to tldraw store
   useEffect(() => {
