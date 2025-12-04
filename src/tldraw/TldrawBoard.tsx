@@ -94,14 +94,14 @@ const TOOLS = {
     label: 'Pivotal',
     color: '#cbd5e1',
     description: 'A pivotal event boundary separating process phases',
-    modes: ['big-picture', 'team-flow'] as WorkshopMode[],
+    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
     phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
   },
   'horizontal-lane': {
     label: 'Swimlane',
     color: '#e2e8f0',
     description: 'A horizontal lane to separate parallel processes',
-    modes: ['big-picture', 'team-flow'] as WorkshopMode[],
+    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
     phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
   },
   'theme-area': {
@@ -435,37 +435,77 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
     editor.select(...newIds)
   }, [editor])
 
-  // Keyboard shortcuts
+  const SHAPE_SHORTCUTS: Record<string, ToolType> = {
+    'e': 'event-sticky',
+    'h': 'hotspot-sticky',
+    'p': 'person-sticky',
+    's': 'system-sticky',
+    'o': 'opportunity-sticky',
+    'g': 'glossary-sticky',
+    'c': 'command-sticky',
+    'y': 'policy-sticky',
+    'a': 'aggregate-sticky',
+    'r': 'readmodel-sticky',
+    '|': 'vertical-line',
+    '-': 'horizontal-lane',
+    't': 'theme-area',
+    'l': 'label',
+  }
+
+  const TLDRAW_TOOL_SHORTCUTS: Record<string, string> = {
+    'x': 'eraser',
+  }
+
   useEffect(() => {
     if (!editor) return
 
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement
 
-      // Tab: Create next sticky (works from edit mode or selection)
       if (e.key === 'Tab' && !e.shiftKey) {
         e.preventDefault()
         createNextSticky()
         return
       }
 
-      // Don't intercept other keys if we're in an input/textarea
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
         return
       }
 
-      // Cmd+D / Ctrl+D: Duplicate
       if (e.key === 'd' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
         duplicateSelected()
         return
       }
+
+      if (!e.metaKey && !e.ctrlKey && !e.altKey) {
+        const shapeType = SHAPE_SHORTCUTS[e.key]
+        if (shapeType) {
+          const toolConfig = TOOLS[shapeType]
+          const usesPhases = workshopMode === 'big-picture' || workshopMode === 'team-flow'
+          const isAvailable = toolConfig.modes.includes(workshopMode) &&
+            (!usesPhases || toolConfig.phases.includes(phase))
+          if (isAvailable) {
+            e.preventDefault()
+            e.stopPropagation()
+            createShape(shapeType)
+            return
+          }
+        }
+
+        const tldrawTool = TLDRAW_TOOL_SHORTCUTS[e.key]
+        if (tldrawTool) {
+          e.preventDefault()
+          e.stopPropagation()
+          editor.setCurrentTool(tldrawTool)
+          return
+        }
+      }
     }
 
-    // Use capture phase to catch events before they're stopped by stopPropagation
     window.addEventListener('keydown', handleKeyDown, true)
     return () => window.removeEventListener('keydown', handleKeyDown, true)
-  }, [editor, createNextSticky, duplicateSelected])
+  }, [editor, createNextSticky, duplicateSelected, workshopMode, phase, createShape])
 
   // Export board as JSON
   const handleExportJSON = useCallback(() => {
