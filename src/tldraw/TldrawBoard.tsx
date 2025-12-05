@@ -30,28 +30,15 @@ import { isEventStormerBoardFormat, convertBoardToShapes, parseTldrawSnapshot } 
 import { Download, Upload, SeparatorVertical, SeparatorHorizontal, RectangleHorizontal, Type } from 'lucide-react'
 import * as Tooltip from '@radix-ui/react-tooltip'
 import {
-  getDefaultNext,
-  cycleAlternative,
-  canCreateBranch,
-  getBranchType,
-  fromStickyType,
-  toStickyType,
-  FlowDirection,
-  FlowElementType,
-} from '@/lib/flowSequence'
-import {
   WorkshopMode,
   FacilitationPhase,
   ToolType,
   WORKSHOP_MODES,
-  TOOLS,
   STICKY_TYPES,
   EDITABLE_TYPES,
   BACKGROUND_SHAPE_TYPES,
   usesPhases,
   getAvailableTools,
-  getShapeTypeForKey,
-  getTldrawToolForKey,
   getShapeDimensions,
   getDefaultProps,
   isHalfHeight,
@@ -64,9 +51,7 @@ import {
   calculateNextStickyPosition,
 } from '@/lib/shapeLayout'
 import {
-  isFlowModeActive,
   isTextInputElement,
-  isUnmodifiedArrowKey,
   getConnectionStatusText,
   getConnectionStatusColor,
   getEditingOrSelectedShape,
@@ -77,6 +62,16 @@ import {
   importTldrawShapes,
   MAX_SHAPES_PER_PAGE,
 } from './editorHelpers'
+import {
+  FlowState,
+  KeyboardContext,
+  handleTabToNextSticky,
+  handleFlowNavigation,
+  handleAlternativeCycle,
+  handleBranchCreation,
+  handleDuplicateShortcut,
+  handleShapeCreationShortcut,
+} from './keyboardHandlers'
 
 // Register all custom shape utils
 const customShapeUtils = [
@@ -123,12 +118,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
   const [activeTool, setActiveTool] = useState<ToolType | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const [flowState, setFlowState] = useState<{
-    lastCreatedId: TLShapeId
-    direction: FlowDirection
-    sourceType: FlowElementType
-    alternativeIndex: number
-  } | null>(null)
+  const [flowState, setFlowState] = useState<FlowState | null>(null)
 
   const { storeWithStatus, room } = useYjsStore({ roomId })
 
@@ -320,113 +310,56 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
 
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement
-      const isInTextInput = isTextInputElement(target)
-
-      if (e.key === 'Tab' && !e.shiftKey) {
-        e.preventDefault()
-        createNextSticky()
-        return
+      const ctx: KeyboardContext = {
+        editor,
+        event: e,
+        target,
+        isInTextInput: isTextInputElement(target),
+        workshopMode,
+        phase,
+        flowState,
       }
 
-      if (isFlowModeActive(workshopMode) &&
-          isUnmodifiedArrowKey(e, ['ArrowRight', 'ArrowLeft'])) {
+      // Tab: create next sticky in sequence
+      const tabResult = handleTabToNextSticky(ctx, createNextSticky)
+      if (tabResult.handled) return
 
-        const sourceShape = getEditingOrSelectedShape(editor)
-        if (!sourceShape) return
-
-        const editingId = editor.getEditingShapeId()
-
-        const flowType = fromStickyType(sourceShape.type)
-        if (!flowType) return
-
-        const direction = e.key === 'ArrowRight' ? 'forward' : 'backward'
-        const nextType = getDefaultNext(flowType, direction)
-        if (!nextType) return
-
-        e.preventDefault()
-        e.stopPropagation()
-
-        if (editingId && isInTextInput) {
-          saveEditingShapeText(editor, target)
-        }
-
-        const newId = createFlowShape(
-          { x: sourceShape.x, y: sourceShape.y, props: sourceShape.props as { w: number; h: number } },
-          toStickyType(nextType),
-          e.key === 'ArrowRight' ? 'right' : 'left'
-        )
-        if (newId) {
-          setFlowState({ lastCreatedId: newId, direction, sourceType: flowType, alternativeIndex: 0 })
+      // Arrow Left/Right: flow navigation (create next element in flow)
+      const flowResult = handleFlowNavigation(ctx, createFlowShape)
+      if (flowResult.handled) {
+        if (flowResult.newFlowState !== undefined) {
+          setFlowState(flowResult.newFlowState)
         }
         return
       }
 
-      if (isFlowModeActive(workshopMode) &&
-          isUnmodifiedArrowKey(e, ['ArrowDown', 'ArrowUp'])) {
-
-        if (flowState) {
-          const cycleDir = e.key === 'ArrowDown' ? 'down' : 'up'
-          const result = cycleAlternative(flowState.sourceType, flowState.direction, flowState.alternativeIndex, cycleDir)
-          if (result) {
-            e.preventDefault()
-            e.stopPropagation()
-            saveEditingShapeText(editor, target)
-            swapShapeType(flowState.lastCreatedId, toStickyType(result.newType))
-            setFlowState({ ...flowState, alternativeIndex: result.newIndex })
-            return
-          }
+      // Arrow Up/Down: cycle through alternative types
+      const cycleResult = handleAlternativeCycle(ctx, swapShapeType)
+      if (cycleResult.handled) {
+        if (cycleResult.newFlowState !== undefined) {
+          setFlowState(cycleResult.newFlowState)
         }
-
-        if (e.key === 'ArrowDown') {
-          const sourceShape = getEditingOrSelectedShape(editor)
-          if (sourceShape) {
-            const flowType = fromStickyType(sourceShape.type)
-            if (flowType && canCreateBranch(flowType)) {
-              e.preventDefault()
-              e.stopPropagation()
-              saveEditingShapeText(editor, target)
-              const branchType = getBranchType(flowType)
-              if (branchType) {
-                createFlowShape(
-                  { x: sourceShape.x, y: sourceShape.y, props: sourceShape.props as { w: number; h: number } },
-                  toStickyType(branchType),
-                  'down'
-                )
-                setFlowState(null)
-              }
-              return
-            }
-          }
-        }
-      }
-
-      if (isInTextInput) {
         return
       }
 
-      if (e.key === 'd' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault()
-        duplicateSelected()
+      // Arrow Down: create branch (e.g., policy from command)
+      const branchResult = handleBranchCreation(ctx, createFlowShape)
+      if (branchResult.handled) {
+        if (branchResult.newFlowState !== undefined) {
+          setFlowState(branchResult.newFlowState)
+        }
         return
       }
 
-      if (!e.metaKey && !e.ctrlKey && !e.altKey) {
-        const shapeType = getShapeTypeForKey(e.key, workshopMode, phase)
-        if (shapeType) {
-          e.preventDefault()
-          e.stopPropagation()
-          createShape(shapeType)
-          return
-        }
+      // Skip remaining shortcuts when in text input
+      if (ctx.isInTextInput) return
 
-        const tldrawTool = getTldrawToolForKey(e.key)
-        if (tldrawTool) {
-          e.preventDefault()
-          e.stopPropagation()
-          editor.setCurrentTool(tldrawTool)
-          return
-        }
-      }
+      // Cmd/Ctrl+D: duplicate selected shapes
+      const dupResult = handleDuplicateShortcut(ctx, duplicateSelected)
+      if (dupResult.handled) return
+
+      // Single-key shortcuts: create shapes or switch tldraw tools
+      handleShapeCreationShortcut(ctx, createShape)
     }
 
     window.addEventListener('keydown', handleKeyDown, true)
