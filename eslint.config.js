@@ -32,6 +32,15 @@ export default tseslint.config(
       'max-nested-callbacks': ['warn', { max: 2 }],
       'complexity': ['warn', { max: 5 }],
       'sonarjs/cognitive-complexity': ['warn', 10],
+
+      // Magic numbers
+      'no-magic-numbers': ['warn', {
+        ignore: [0, 1, -1, 2],
+        ignoreArrayIndexes: true,
+        ignoreDefaultValues: true,
+        enforceConst: true,
+        detectObjects: false,
+      }],
     },
   },
   {
@@ -40,6 +49,7 @@ export default tseslint.config(
     rules: {
       'max-lines-per-function': 'off',
       'max-nested-callbacks': 'off',
+      'no-magic-numbers': 'off',
     },
   },
   {
