@@ -87,91 +87,85 @@ export function isEventStormerBoardFormat(data: unknown): data is EventStormerBo
   return Array.isArray(obj.stickies)
 }
 
+const LINE_THICKNESS = 8
+
+function convertStickyToShape(sticky: BoardSticky): ShapeToCreate | null {
+  const type = KIND_TO_TYPE[sticky.kind]
+  if (!type) return null
+
+  const isHalf = HALF_HEIGHT_KINDS.includes(sticky.kind)
+  const isWide = WIDE_KINDS.includes(sticky.kind)
+  return {
+    type,
+    x: sticky.x,
+    y: sticky.y,
+    props: {
+      text: sticky.text,
+      w: isWide ? WIDE_WIDTH : DEFAULT_WIDTH,
+      h: isHalf ? HALF_HEIGHT : FULL_HEIGHT,
+    },
+  }
+}
+
+function convertVerticalToShape(vertical: BoardVertical): ShapeToCreate {
+  return {
+    type: 'vertical-line',
+    x: vertical.x,
+    y: vertical.y1,
+    props: { w: LINE_THICKNESS, h: vertical.y2 - vertical.y1 },
+  }
+}
+
+function convertLaneToShape(lane: BoardLane): ShapeToCreate {
+  return {
+    type: 'horizontal-lane',
+    x: lane.x1,
+    y: lane.y,
+    props: { w: lane.x2 - lane.x1, h: LINE_THICKNESS },
+  }
+}
+
+function convertLabelToShape(label: BoardLabel): ShapeToCreate {
+  return { type: 'label', x: label.x, y: label.y, props: { text: label.text } }
+}
+
+function convertThemeToShape(theme: BoardTheme): ShapeToCreate {
+  return {
+    type: 'theme-area',
+    x: theme.x,
+    y: theme.y,
+    props: { name: theme.name, w: theme.width, h: theme.height },
+  }
+}
+
+function convertStickies(stickies: BoardSticky[] | undefined): ShapeToCreate[] {
+  return (stickies ?? []).map(convertStickyToShape).filter((s): s is ShapeToCreate => s !== null)
+}
+
+function convertVerticals(verticals: BoardVertical[] | undefined): ShapeToCreate[] {
+  return (verticals ?? []).map(convertVerticalToShape)
+}
+
+function convertLanes(lanes: BoardLane[] | undefined): ShapeToCreate[] {
+  return (lanes ?? []).map(convertLaneToShape)
+}
+
+function convertLabels(labels: BoardLabel[] | undefined): ShapeToCreate[] {
+  return (labels ?? []).map(convertLabelToShape)
+}
+
+function convertThemes(themes: BoardTheme[] | undefined): ShapeToCreate[] {
+  return (themes ?? []).map(convertThemeToShape)
+}
+
 export function convertBoardToShapes(data: EventStormerBoard): ShapeToCreate[] {
-  const shapes: ShapeToCreate[] = []
-
-  // Convert stickies
-  if (data.stickies) {
-    for (const sticky of data.stickies) {
-      const type = KIND_TO_TYPE[sticky.kind]
-      if (!type) continue
-
-      const isHalfHeight = HALF_HEIGHT_KINDS.includes(sticky.kind)
-      const isWide = WIDE_KINDS.includes(sticky.kind)
-      shapes.push({
-        type,
-        x: sticky.x,
-        y: sticky.y,
-        props: {
-          text: sticky.text,
-          w: isWide ? WIDE_WIDTH : DEFAULT_WIDTH,
-          h: isHalfHeight ? HALF_HEIGHT : FULL_HEIGHT,
-        },
-      })
-    }
-  }
-
-  // Convert vertical lines
-  if (data.verticals) {
-    for (const vertical of data.verticals) {
-      shapes.push({
-        type: 'vertical-line',
-        x: vertical.x,
-        y: vertical.y1,
-        props: {
-          w: 8,
-          h: vertical.y2 - vertical.y1,
-        },
-      })
-    }
-  }
-
-  // Convert horizontal lanes
-  if (data.lanes) {
-    for (const lane of data.lanes) {
-      shapes.push({
-        type: 'horizontal-lane',
-        x: lane.x1,
-        y: lane.y,
-        props: {
-          w: lane.x2 - lane.x1,
-          h: 8,
-        },
-      })
-    }
-  }
-
-  // Convert labels
-  if (data.labels) {
-    for (const label of data.labels) {
-      shapes.push({
-        type: 'label',
-        x: label.x,
-        y: label.y,
-        props: {
-          text: label.text,
-        },
-      })
-    }
-  }
-
-  // Convert themes
-  if (data.themes) {
-    for (const theme of data.themes) {
-      shapes.push({
-        type: 'theme-area',
-        x: theme.x,
-        y: theme.y,
-        props: {
-          name: theme.name,
-          w: theme.width,
-          h: theme.height,
-        },
-      })
-    }
-  }
-
-  return shapes
+  return [
+    ...convertStickies(data.stickies),
+    ...convertVerticals(data.verticals),
+    ...convertLanes(data.lanes),
+    ...convertLabels(data.labels),
+    ...convertThemes(data.themes),
+  ]
 }
 
 export interface TldrawShapeRecord {
@@ -193,32 +187,31 @@ export interface TldrawSnapshotResult {
 
 const EXCLUDED_RECORD_TYPES = ['document', 'page', 'camera', 'instance', 'instance_page_state', 'pointer']
 
-export function extractStoreFromSnapshot(data: unknown): Record<string, unknown> | null {
-  if (!data || typeof data !== 'object') return null
-  const obj = data as Record<string, unknown>
+function isValidObject(data: unknown): data is Record<string, unknown> {
+  return data !== null && typeof data === 'object'
+}
 
-  if (obj.store && typeof obj.store === 'object') {
-    return obj.store as Record<string, unknown>
-  }
-
-  if (obj.document && typeof obj.document === 'object') {
-    const doc = obj.document as Record<string, unknown>
-    if (doc.store && typeof doc.store === 'object') {
-      return doc.store as Record<string, unknown>
-    }
-  }
-
-  const firstKey = Object.keys(obj)[0]
-  const isDirectStore = firstKey && (
-    firstKey.startsWith('shape:') ||
-    firstKey.startsWith('page:') ||
-    firstKey.startsWith('document:')
-  )
-  if (isDirectStore) {
-    return obj
-  }
-
+function getStoreFromObj(obj: Record<string, unknown>): Record<string, unknown> | null {
+  if (isValidObject(obj.store)) return obj.store
   return null
+}
+
+function getStoreFromDocument(obj: Record<string, unknown>): Record<string, unknown> | null {
+  if (!isValidObject(obj.document)) return null
+  const doc = obj.document
+  if (isValidObject(doc.store)) return doc.store
+  return null
+}
+
+function isDirectStoreFormat(obj: Record<string, unknown>): boolean {
+  const firstKey = Object.keys(obj)[0]
+  if (!firstKey) return false
+  return firstKey.startsWith('shape:') || firstKey.startsWith('page:') || firstKey.startsWith('document:')
+}
+
+export function extractStoreFromSnapshot(data: unknown): Record<string, unknown> | null {
+  if (!isValidObject(data)) return null
+  return getStoreFromObj(data) ?? getStoreFromDocument(data) ?? (isDirectStoreFormat(data) ? data : null)
 }
 
 export function filterShapeRecords(store: Record<string, unknown>): TldrawShapeRecord[] {
