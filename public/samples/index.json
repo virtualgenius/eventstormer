@@ -1,10 +1,10 @@
 [
   {
     "id": "repair-claims",
-    "name": "Repair Claims (Big Picture)",
+    "name": "Repair Claims (Process)",
     "description": "Extended warranty repair claims process - a real-world EventStorming example",
     "file": "repair-claims-board.json",
-    "mode": "big-picture"
+    "mode": "process"
   },
   {
     "id": "process-modelling-grammar",
