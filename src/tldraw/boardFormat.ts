@@ -174,6 +174,72 @@ export function convertBoardToShapes(data: EventStormerBoard): ShapeToCreate[] {
   return shapes
 }
 
+export interface TldrawShapeRecord {
+  id: string
+  type: string
+  typeName: string
+  x: number
+  y: number
+  rotation?: number
+  props: Record<string, unknown>
+  parentId?: string
+  index?: string
+}
+
+export interface TldrawSnapshotResult {
+  shapes: TldrawShapeRecord[]
+  error?: string
+}
+
+const EXCLUDED_RECORD_TYPES = ['document', 'page', 'camera', 'instance', 'instance_page_state', 'pointer']
+
+export function extractStoreFromSnapshot(data: unknown): Record<string, unknown> | null {
+  if (!data || typeof data !== 'object') return null
+  const obj = data as Record<string, unknown>
+
+  if (obj.store && typeof obj.store === 'object') {
+    return obj.store as Record<string, unknown>
+  }
+
+  if (obj.document && typeof obj.document === 'object') {
+    const doc = obj.document as Record<string, unknown>
+    if (doc.store && typeof doc.store === 'object') {
+      return doc.store as Record<string, unknown>
+    }
+  }
+
+  const firstKey = Object.keys(obj)[0]
+  const isDirectStore = firstKey && (
+    firstKey.startsWith('shape:') ||
+    firstKey.startsWith('page:') ||
+    firstKey.startsWith('document:')
+  )
+  if (isDirectStore) {
+    return obj
+  }
+
+  return null
+}
+
+export function filterShapeRecords(store: Record<string, unknown>): TldrawShapeRecord[] {
+  return Object.values(store).filter((record): record is TldrawShapeRecord => {
+    if (!record || typeof record !== 'object') return false
+    const rec = record as Record<string, unknown>
+    if (EXCLUDED_RECORD_TYPES.includes(rec.typeName as string)) return false
+    return rec.typeName === 'shape'
+  })
+}
+
+export function parseTldrawSnapshot(data: unknown): TldrawSnapshotResult {
+  const store = extractStoreFromSnapshot(data)
+  if (!store) {
+    return { shapes: [], error: 'Invalid snapshot format: missing store data' }
+  }
+
+  const shapes = filterShapeRecords(store)
+  return { shapes }
+}
+
 // Backwards compatibility aliases
 export type LegacySticky = BoardSticky
 export type LegacyVertical = BoardVertical

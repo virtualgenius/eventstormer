@@ -26,7 +26,7 @@ import { ThemeAreaShapeUtil } from './shapes/ThemeAreaShape'
 import { LabelShapeUtil } from './shapes/LabelShape'
 import { useYjsStore } from './useYjsStore'
 import { useYjsPresence } from './useYjsPresence'
-import { isEventStormerBoardFormat, convertBoardToShapes } from './boardFormat'
+import { isEventStormerBoardFormat, convertBoardToShapes, parseTldrawSnapshot } from './boardFormat'
 import { Download, Upload, SeparatorVertical, SeparatorHorizontal, RectangleHorizontal, Type } from 'lucide-react'
 import * as Tooltip from '@radix-ui/react-tooltip'
 import {
@@ -39,6 +39,36 @@ import {
   FlowDirection,
   FlowElementType,
 } from '@/lib/flowSequence'
+import {
+  WorkshopMode,
+  FacilitationPhase,
+  ToolType,
+  WORKSHOP_MODES,
+  TOOLS,
+  STICKY_TYPES,
+  EDITABLE_TYPES,
+  BACKGROUND_SHAPE_TYPES,
+  usesPhases,
+  getAvailableTools,
+  getShapeTypeForKey,
+  getTldrawToolForKey,
+  getShapeDimensions,
+  getDefaultProps,
+  isHalfHeight,
+  isDoubleWide,
+} from '@/lib/workshopConfig'
+import {
+  calculateFlowShapePosition,
+  calculateCenterPosition,
+  calculateDuplicatePosition,
+  calculateNextStickyPosition,
+} from '@/lib/shapeLayout'
+import {
+  isFlowModeActive,
+  isTextInputElement,
+  getTextFromTextInput,
+  hasTextChanged,
+} from './editorHelpers'
 
 // Register all custom shape utils
 const customShapeUtils = [
@@ -56,150 +86,6 @@ const customShapeUtils = [
   HorizontalLaneShapeUtil,
   ThemeAreaShapeUtil,
   LabelShapeUtil,
-]
-
-// Workshop modes
-type WorkshopMode = 'big-picture' | 'process' | 'design' | 'team-flow'
-
-const WORKSHOP_MODES: { value: WorkshopMode; label: string; description: string }[] = [
-  { value: 'big-picture', label: 'Big Picture', description: 'Explore the entire business domain timeline with events, actors, and systems' },
-  { value: 'process', label: 'Process', description: 'Model a specific process with commands, policies, and read models' },
-  { value: 'design', label: 'Design', description: 'Design software components with commands, policies, and read models' },
-  { value: 'team-flow', label: 'Team Flow', description: 'Map team interactions and workflows across the organization' },
-]
-
-// Facilitation phases (only used for Big Picture and Team Flow)
-type FacilitationPhase =
-  | 'chaotic-exploration'
-  | 'enforce-timeline'
-  | 'people-and-systems'
-  | 'problems-and-opportunities'
-  | 'next-steps'
-
-const ALL_PHASES: FacilitationPhase[] = [
-  'chaotic-exploration',
-  'enforce-timeline',
-  'people-and-systems',
-  'problems-and-opportunities',
-  'next-steps',
-]
-
-// Tool definitions for the palette
-const TOOLS = {
-  'event-sticky': {
-    label: 'Event',
-    color: '#fed7aa',
-    description: 'A domain event that happened in the past (orange)',
-    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
-    phases: ['chaotic-exploration', 'enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
-  },
-  'hotspot-sticky': {
-    label: 'Hotspot',
-    color: '#fecaca',
-    description: 'A problem, risk, question, or area of uncertainty (red)',
-    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
-    phases: ['chaotic-exploration', 'enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
-  },
-  'vertical-line': {
-    label: 'Pivotal',
-    color: '#cbd5e1',
-    description: 'A pivotal event boundary separating process phases',
-    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
-    phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
-  },
-  'horizontal-lane': {
-    label: 'Swimlane',
-    color: '#e2e8f0',
-    description: 'A horizontal lane to separate parallel processes',
-    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
-    phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
-  },
-  'theme-area': {
-    label: 'Theme',
-    color: 'rgba(226,232,240,0.5)',
-    description: 'A rectangular area to group related elements by theme',
-    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
-    phases: ALL_PHASES,
-  },
-  'label': {
-    label: 'Label',
-    color: 'transparent',
-    description: 'A free-form text annotation',
-    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
-    phases: ALL_PHASES,
-  },
-  'glossary-sticky': {
-    label: 'Glossary',
-    color: '#1e293b',
-    description: 'A term definition for the ubiquitous language',
-    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
-    phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
-  },
-  'person-sticky': {
-    label: 'Person',
-    color: '#fef9c3',
-    description: 'An actor or persona who triggers or participates in events (yellow)',
-    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
-    phases: ['people-and-systems', 'problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
-  },
-  'system-sticky': {
-    label: 'System',
-    color: '#fce7f3',
-    description: 'An external system that triggers or receives events (pink)',
-    modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
-    phases: ['people-and-systems', 'problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
-  },
-  'command-sticky': {
-    label: 'Command',
-    color: '#bfdbfe',
-    description: 'An action or intent that triggers an event (blue)',
-    modes: ['process', 'design'] as WorkshopMode[],
-    phases: ALL_PHASES,
-  },
-  'policy-sticky': {
-    label: 'Policy',
-    color: '#c4b5fd',
-    description: 'A business rule that reacts to events and triggers commands (purple)',
-    modes: ['process', 'design'] as WorkshopMode[],
-    phases: ALL_PHASES,
-  },
-  'aggregate-sticky': {
-    label: 'Aggregate',
-    color: '#fef9c3',
-    description: 'A component or aggregate with coherent behavior, like a state machine (pale yellow)',
-    modes: ['design'] as WorkshopMode[],
-    phases: ALL_PHASES,
-  },
-  'readmodel-sticky': {
-    label: 'Read Model',
-    color: '#bbf7d0',
-    description: 'Data that an actor needs to make a decision (green)',
-    modes: ['process', 'design'] as WorkshopMode[],
-    phases: ALL_PHASES,
-  },
-  'opportunity-sticky': {
-    label: 'Opportunity',
-    color: '#bbf7d0',
-    description: 'An improvement idea or business opportunity (green)',
-    modes: ['big-picture', 'team-flow'] as WorkshopMode[],
-    phases: ['problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
-  },
-} as const
-
-type ToolType = keyof typeof TOOLS
-
-// Sticky types for Tab-to-create workflow
-const STICKY_TYPES: ToolType[] = [
-  'event-sticky',
-  'hotspot-sticky',
-  'person-sticky',
-  'system-sticky',
-  'opportunity-sticky',
-  'glossary-sticky',
-  'command-sticky',
-  'policy-sticky',
-  'aggregate-sticky',
-  'readmodel-sticky',
 ]
 
 // Custom UI: hide tldraw chrome, keep share panel for presence avatars
@@ -240,8 +126,6 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
 
   // Set up presence sync
   useYjsPresence({ editor, room, userName })
-
-  const BACKGROUND_SHAPE_TYPES = ['vertical-line', 'horizontal-lane', 'theme-area']
 
   const handleMount = useCallback((editor: Editor) => {
     setEditor(editor)
@@ -299,55 +183,20 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
       .catch(err => console.error('Failed to load template board:', err))
   }, [editor, templateFile, storeWithStatus.status])
 
-  // Shape types that support editing
-  const EDITABLE_TYPES: ToolType[] = [
-    'event-sticky',
-    'hotspot-sticky',
-    'person-sticky',
-    'system-sticky',
-    'opportunity-sticky',
-    'glossary-sticky',
-    'command-sticky',
-    'policy-sticky',
-    'aggregate-sticky',
-    'readmodel-sticky',
-    'theme-area',
-    'label',
-  ]
-
-  // Create shape at center of viewport
   const createShape = useCallback((type: ToolType) => {
     if (!editor) return
 
     const viewportCenter = editor.getViewportScreenCenter()
     const pagePoint = editor.screenToPage(viewportCenter)
 
-    const isHalfHeight = type === 'person-sticky'
-
-    const shapeConfig: Record<string, { w: number; h: number; text?: string; label?: string; name?: string }> = {
-      'event-sticky': { text: '', w: 120, h: 100 },
-      'hotspot-sticky': { text: '', w: 120, h: 100 },
-      'person-sticky': { text: '', w: 120, h: 50 },
-      'system-sticky': { text: '', w: 240, h: 100 },
-      'opportunity-sticky': { text: '', w: 120, h: 100 },
-      'glossary-sticky': { text: '', w: 120, h: 100 },
-      'command-sticky': { text: '', w: 120, h: 100 },
-      'policy-sticky': { text: '', w: 240, h: 100 },
-      'aggregate-sticky': { text: '', w: 240, h: 100 },
-      'readmodel-sticky': { text: '', w: 120, h: 100 },
-      'vertical-line': { w: 8, h: 400, label: '' },
-      'horizontal-lane': { w: 800, h: 8, label: '' },
-      'theme-area': { w: 400, h: 300, name: '' },
-      'label': { text: '', w: 100, h: 24 },
-    }
-
-    const config = shapeConfig[type]
+    const config = getDefaultProps(type)
+    const position = calculateCenterPosition(pagePoint, config, isHalfHeight(type))
     const newId = createShapeId()
     editor.createShape({
       id: newId,
       type,
-      x: pagePoint.x - (config.w / 2),
-      y: pagePoint.y - (isHalfHeight ? 25 : 50),
+      x: position.x,
+      y: position.y,
       props: config,
     })
 
@@ -382,14 +231,12 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
     // Only works for sticky types
     if (!STICKY_TYPES.includes(shapeType)) return
 
-    // If editing, save the current text directly from the DOM before exiting
     if (editingId) {
-      const activeEl = document.activeElement
-      const textarea = activeEl as HTMLTextAreaElement | HTMLInputElement
-      if (textarea && (textarea.tagName === 'TEXTAREA' || textarea.tagName === 'INPUT')) {
-        const currentText = textarea.value
+      const activeEl = document.activeElement as HTMLElement
+      if (activeEl && isTextInputElement(activeEl)) {
+        const currentText = getTextFromTextInput(activeEl)
         const currentProps = sourceShape.props as { text?: string }
-        if (currentText !== currentProps.text) {
+        if (currentText !== null && hasTextChanged(currentText, currentProps)) {
           editor.updateShape({
             id: editingId,
             type: sourceShape.type,
@@ -400,17 +247,15 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
       editor.setEditingShape(null)
     }
 
-    const GAP = 20
     const props = sourceShape.props as { w: number; h: number; text?: string }
-    const newX = sourceShape.x + props.w + GAP
-    const newY = sourceShape.y
+    const position = calculateNextStickyPosition({ x: sourceShape.x, y: sourceShape.y, props })
 
     const newId = createShapeId()
     editor.createShape({
       id: newId,
       type: shapeType,
-      x: newX,
-      y: newY,
+      x: position.x,
+      y: position.y,
       props: {
         text: '',
         w: props.w,
@@ -425,66 +270,30 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
     })
   }, [editor])
 
-  // Duplicate selected shapes (Cmd+D)
   const duplicateSelected = useCallback(() => {
     if (!editor) return
 
     const selectedShapes = editor.getSelectedShapes()
     if (selectedShapes.length === 0) return
 
-    const OFFSET = 20
     const newIds: TLShapeId[] = []
 
     for (const shape of selectedShapes) {
       const newId = createShapeId()
       newIds.push(newId)
 
+      const position = calculateDuplicatePosition({ x: shape.x, y: shape.y })
       editor.createShape({
         id: newId,
         type: shape.type,
-        x: shape.x + OFFSET,
-        y: shape.y + OFFSET,
+        x: position.x,
+        y: position.y,
         props: { ...shape.props },
       })
     }
 
-    // Select the duplicated shapes
     editor.select(...newIds)
   }, [editor])
-
-  const SHAPE_SHORTCUTS: Record<string, ToolType> = {
-    'e': 'event-sticky',
-    'h': 'hotspot-sticky',
-    'p': 'person-sticky',
-    's': 'system-sticky',
-    'o': 'opportunity-sticky',
-    'g': 'glossary-sticky',
-    'c': 'command-sticky',
-    'y': 'policy-sticky',
-    'a': 'aggregate-sticky',
-    'r': 'readmodel-sticky',
-    '|': 'vertical-line',
-    '-': 'horizontal-lane',
-    't': 'theme-area',
-    'l': 'label',
-  }
-
-  const TLDRAW_TOOL_SHORTCUTS: Record<string, string> = {
-    'x': 'eraser',
-  }
-
-  const SHAPE_DIMENSIONS: Record<string, { w: number; h: number }> = {
-    'event-sticky': { w: 120, h: 100 },
-    'hotspot-sticky': { w: 120, h: 100 },
-    'person-sticky': { w: 120, h: 50 },
-    'system-sticky': { w: 240, h: 100 },
-    'opportunity-sticky': { w: 120, h: 100 },
-    'glossary-sticky': { w: 120, h: 100 },
-    'command-sticky': { w: 120, h: 100 },
-    'policy-sticky': { w: 240, h: 100 },
-    'aggregate-sticky': { w: 240, h: 100 },
-    'readmodel-sticky': { w: 120, h: 100 },
-  }
 
   const createFlowShape = useCallback((
     sourceShape: { x: number; y: number; props: { w: number; h: number } },
@@ -493,27 +302,15 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
   ): TLShapeId | null => {
     if (!editor) return null
 
-    const GAP = 20
-    const VERTICAL_GAP = 15
-    const targetDims = SHAPE_DIMENSIONS[targetStickyType] || { w: 120, h: 100 }
-
-    let newX = sourceShape.x
-    let newY = sourceShape.y
-
-    if (direction === 'right') {
-      newX = sourceShape.x + sourceShape.props.w + GAP
-    } else if (direction === 'left') {
-      newX = sourceShape.x - targetDims.w - GAP
-    } else if (direction === 'down') {
-      newY = sourceShape.y + sourceShape.props.h + VERTICAL_GAP
-    }
+    const targetDims = getShapeDimensions(targetStickyType)
+    const position = calculateFlowShapePosition(sourceShape, targetStickyType, direction)
 
     const newId = createShapeId()
     editor.createShape({
       id: newId,
       type: targetStickyType,
-      x: newX,
-      y: newY,
+      x: position.x,
+      y: position.y,
       props: { text: '', w: targetDims.w, h: targetDims.h },
     })
 
@@ -529,7 +326,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
     const shape = editor.getShape(shapeId)
     if (!shape) return
 
-    const newDims = SHAPE_DIMENSIONS[newStickyType] || { w: 120, h: 100 }
+    const newDims = getShapeDimensions(newStickyType)
     const props = shape.props as { text?: string }
 
     editor.deleteShapes([shapeId])
@@ -550,7 +347,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
 
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement
-      const isInTextInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA'
+      const isInTextInput = isTextInputElement(target)
 
       if (e.key === 'Tab' && !e.shiftKey) {
         e.preventDefault()
@@ -558,8 +355,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
         return
       }
 
-      // Arrow key flow navigation (works from edit mode too, like Tab)
-      if ((workshopMode === 'process' || workshopMode === 'design') &&
+      if (isFlowModeActive(workshopMode) &&
           (e.key === 'ArrowRight' || e.key === 'ArrowLeft') &&
           !e.metaKey && !e.ctrlKey && !e.altKey) {
 
@@ -585,12 +381,10 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
         e.preventDefault()
         e.stopPropagation()
 
-        // Save text and exit edit mode if editing
         if (editingId && isInTextInput) {
-          const textarea = target as HTMLTextAreaElement | HTMLInputElement
-          const currentText = textarea.value
+          const currentText = getTextFromTextInput(target)
           const currentProps = sourceShape.props as { text?: string }
-          if (currentText !== currentProps.text) {
+          if (currentText !== null && hasTextChanged(currentText, currentProps)) {
             editor.updateShape({
               id: editingId,
               type: sourceShape.type,
@@ -611,22 +405,19 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
         return
       }
 
-      // Up/Down arrow - cycle alternatives or create branch (works from edit mode too)
-      if ((workshopMode === 'process' || workshopMode === 'design') &&
+      if (isFlowModeActive(workshopMode) &&
           (e.key === 'ArrowDown' || e.key === 'ArrowUp') &&
           !e.metaKey && !e.ctrlKey && !e.altKey) {
 
-        // Helper to save text and exit edit mode
         const saveAndExitEditMode = () => {
           if (isInTextInput) {
             const editingId = editor.getEditingShapeId()
             if (editingId) {
               const editingShape = editor.getShape(editingId)
               if (editingShape) {
-                const textarea = target as HTMLTextAreaElement | HTMLInputElement
-                const currentText = textarea.value
+                const currentText = getTextFromTextInput(target)
                 const currentProps = editingShape.props as { text?: string }
-                if (currentText !== currentProps.text) {
+                if (currentText !== null && hasTextChanged(currentText, currentProps)) {
                   editor.updateShape({
                     id: editingId,
                     type: editingShape.type,
@@ -697,21 +488,15 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
       }
 
       if (!e.metaKey && !e.ctrlKey && !e.altKey) {
-        const shapeType = SHAPE_SHORTCUTS[e.key]
+        const shapeType = getShapeTypeForKey(e.key, workshopMode, phase)
         if (shapeType) {
-          const toolConfig = TOOLS[shapeType]
-          const usesPhases = workshopMode === 'big-picture' || workshopMode === 'team-flow'
-          const isAvailable = toolConfig.modes.includes(workshopMode) &&
-            (!usesPhases || toolConfig.phases.includes(phase))
-          if (isAvailable) {
-            e.preventDefault()
-            e.stopPropagation()
-            createShape(shapeType)
-            return
-          }
+          e.preventDefault()
+          e.stopPropagation()
+          createShape(shapeType)
+          return
         }
 
-        const tldrawTool = TLDRAW_TOOL_SHORTCUTS[e.key]
+        const tldrawTool = getTldrawToolForKey(e.key)
         if (tldrawTool) {
           e.preventDefault()
           e.stopPropagation()
@@ -778,30 +563,13 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
         return
       }
 
-      // Handle tldraw snapshot format
-      const store = data.store || data.document?.store || data
-
-      // Check if this is a direct store format (keys are record IDs)
-      const firstKey = Object.keys(store)[0]
-      const isDirectStore = firstKey && (firstKey.startsWith('shape:') || firstKey.startsWith('page:') || firstKey.startsWith('document:'))
-
-      if (!isDirectStore && !data.store && !data.document?.store) {
-        throw new Error('Invalid snapshot format: missing store data')
+      const result = parseTldrawSnapshot(data)
+      if (result.error) {
+        throw new Error(result.error)
       }
 
-      // Filter and add new records from snapshot
-      const recordsToAdd = Object.values(store).filter((record: any) => {
-        if (record.typeName === 'document') return false
-        if (record.typeName === 'page') return false
-        if (record.typeName === 'camera') return false
-        if (record.typeName === 'instance') return false
-        if (record.typeName === 'instance_page_state') return false
-        if (record.typeName === 'pointer') return false
-        return record.typeName === 'shape'
-      })
-
-      if (recordsToAdd.length > 0) {
-        editor.createShapes(recordsToAdd.map((record: any) => ({
+      if (result.shapes.length > 0) {
+        editor.createShapes(result.shapes.map((record) => ({
           id: record.id,
           type: record.type,
           x: record.x,
@@ -813,7 +581,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
         })))
       }
 
-      console.log(`Imported ${recordsToAdd.length} shapes from tldraw format`)
+      console.log(`Imported ${result.shapes.length} shapes from tldraw format`)
     } catch (error) {
       console.error('Failed to import board:', error)
       alert('Failed to import board JSON. Please check the file format.')
@@ -825,14 +593,10 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
   }, [editor])
 
   // Check if phase selector should be shown (only for Big Picture and Team Flow)
-  const showPhaseSelector = workshopMode === 'big-picture' || workshopMode === 'team-flow'
+  const showPhaseSelector = usesPhases(workshopMode)
 
   // Get tools available for current mode and phase
-  const availableTools = Object.entries(TOOLS).filter(([_, config]) => {
-    if (!config.modes.includes(workshopMode)) return false
-    if (showPhaseSelector && !config.phases.includes(phase)) return false
-    return true
-  })
+  const availableTools = getAvailableTools(workshopMode, phase)
 
   // Connection status indicator
   const connectionStatus = storeWithStatus.status === 'synced-remote'
@@ -967,16 +731,13 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
       <div className="flex-1 relative">
         {/* Facilitation Palette */}
         <div className="absolute top-3 left-3 z-10 bg-white p-1.5 rounded-lg shadow-md flex flex-col gap-1">
-          {availableTools.map(([type, config]) => {
-            const isHalfHeight = type === 'person-sticky'
-            const isDoubleWide = type === 'system-sticky' || type === 'policy-sticky' || type === 'aggregate-sticky'
-            return (
+          {availableTools.map(([type, config]) => (
               <Tooltip.Root key={type}>
                 <Tooltip.Trigger asChild>
                   <button
                     onClick={() => {
-                      setActiveTool(type as ToolType)
-                      createShape(type as ToolType)
+                      setActiveTool(type)
+                      createShape(type)
                     }}
                     className={`flex items-center justify-center p-2 rounded transition-colors ${
                       activeTool === type
@@ -996,8 +757,8 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
                       <div
                         className="rounded"
                         style={{
-                          width: isDoubleWide ? 32 : 24,
-                          height: isHalfHeight ? 12 : 24,
+                          width: isDoubleWide(type) ? 32 : 24,
+                          height: isHalfHeight(type) ? 12 : 24,
                           backgroundColor: config.color,
                           border: '1px solid rgba(0,0,0,0.1)',
                         }}
@@ -1016,8 +777,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
                   </Tooltip.Content>
                 </Tooltip.Portal>
               </Tooltip.Root>
-            )
-          })}
+          ))}
         </div>
 
         {/* tldraw Canvas */}
