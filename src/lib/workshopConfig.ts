@@ -2,10 +2,10 @@
 export type WorkshopMode = 'big-picture' | 'process' | 'design' | 'team-flow'
 
 export const WORKSHOP_MODES: { value: WorkshopMode; label: string; description: string }[] = [
-  { value: 'process', label: 'Process', description: 'Model a specific process with commands, policies, and read models' },
-  { value: 'design', label: 'Design', description: 'Design software components with commands, policies, and read models' },
-  { value: 'big-picture', label: 'Big Picture', description: 'Explore the entire business domain timeline with events, actors, and systems' },
-  { value: 'team-flow', label: 'Team Flow', description: 'Map team interactions and workflows across the organization' },
+  { value: 'process', label: 'Process', description: 'Model a single business process with 2-3 teams. Uses commands, policies, and read models to capture how work flows through the system.' },
+  { value: 'design', label: 'Design', description: 'Design software at feature level with your dev team. Adds aggregates to model state and behavior for implementation.' },
+  { value: 'big-picture', label: 'Big Picture', description: 'Explore an entire value stream with diverse stakeholders. Focus on discovering events, pain points, and opportunities across organizational silos.' },
+  { value: 'team-flow', label: 'Team Flow', description: 'Map how teams interact and hand off work. Useful for understanding organizational dynamics and collaboration patterns.' },
 ]
 
 // Facilitation phases (only used for Big Picture and Team Flow)
