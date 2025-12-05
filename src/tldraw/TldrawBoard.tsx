@@ -130,7 +130,8 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
 
     editor.sideEffects.registerAfterCreateHandler('shape', (shape) => {
       if (BACKGROUND_SHAPE_TYPES.includes(shape.type)) {
-        setTimeout(() => editor.sendToBack([shape.id]), 0)
+        const sendToBackAfterCreation = () => editor.sendToBack([shape.id])
+        setTimeout(sendToBackAfterCreation, 0)
       }
     })
   }, [])

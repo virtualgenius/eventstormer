@@ -65,7 +65,8 @@ export function getEditingOrSelectedShape(editor: Editor): TLShape | null {
 
 export function selectAndStartEditing(editor: Editor, shapeId: TLShapeId): void {
   editor.select(shapeId)
-  requestAnimationFrame(() => editor.setEditingShape(shapeId))
+  const startEditingAfterSelection = () => editor.setEditingShape(shapeId)
+  requestAnimationFrame(startEditingAfterSelection)
 }
 
 export function downloadAsJsonFile(content: string, filename: string): void {

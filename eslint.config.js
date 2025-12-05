@@ -2,12 +2,62 @@ import eslint from '@eslint/js'
 import tseslint from 'typescript-eslint'
 import sonarjs from 'eslint-plugin-sonarjs'
 
+// Custom rule: require named functions for timing workarounds
+const requireNamedTimingWorkaround = {
+  meta: {
+    type: 'suggestion',
+    docs: {
+      description: 'Require named functions for setTimeout(fn, 0) and requestAnimationFrame workarounds',
+    },
+    schema: [],
+  },
+  create(context) {
+    return {
+      CallExpression(node) {
+        // Check setTimeout(..., 0)
+        if (
+          node.callee.name === 'setTimeout' &&
+          node.arguments.length >= 2 &&
+          node.arguments[1].type === 'Literal' &&
+          node.arguments[1].value === 0
+        ) {
+          const callback = node.arguments[0]
+          if (callback.type === 'ArrowFunctionExpression' || callback.type === 'FunctionExpression') {
+            context.report({
+              node,
+              message: 'setTimeout(..., 0) should use a named function explaining WHY the defer is needed',
+            })
+          }
+        }
+        // Check requestAnimationFrame
+        if (node.callee.name === 'requestAnimationFrame') {
+          const callback = node.arguments[0]
+          if (callback && (callback.type === 'ArrowFunctionExpression' || callback.type === 'FunctionExpression')) {
+            context.report({
+              node,
+              message: 'requestAnimationFrame should use a named function explaining WHY the defer is needed',
+            })
+          }
+        }
+      },
+    }
+  },
+}
+
+// Custom plugin for project-specific clarity rules
+const clarityPlugin = {
+  rules: {
+    'require-named-timing-workaround': requireNamedTimingWorkaround,
+  },
+}
+
 export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
     plugins: {
       sonarjs,
+      clarity: clarityPlugin,
     },
     languageOptions: {
       parserOptions: {
@@ -41,6 +91,9 @@ export default tseslint.config(
         enforceConst: true,
         detectObjects: false,
       }],
+
+      // Custom clarity rules
+      'clarity/require-named-timing-workaround': 'warn',
     },
   },
   {
