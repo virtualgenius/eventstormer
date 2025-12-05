@@ -44,6 +44,12 @@ type AnyStickyShape =
   | AggregateStickyShape
   | ReadModelStickyShape
 
+// Default shape dimensions
+const DEFAULT_STICKY_HEIGHT = 100
+const DEFAULT_STICKY_WIDTH = 120
+const HALF_HEIGHT_STICKY = 50
+const WIDE_STICKY_WIDTH = 240
+
 // Color configurations matching EventStormer
 const COLORS = {
   event: { fill: '#fed7aa', border: '#fdba74', text: '#1e293b' },
@@ -182,8 +188,8 @@ function EditableStickyComponent({
 function createStickyShapeUtil<T extends AnyStickyShape>(
   type: T['type'],
   colors: { fill: string; border: string; text: string },
-  defaultHeight: number = 100,
-  defaultWidth: number = 120
+  defaultHeight: number = DEFAULT_STICKY_HEIGHT,
+  defaultWidth: number = DEFAULT_STICKY_WIDTH
 ) {
   return class extends ShapeUtil<T> {
     static override type = type as T['type']
@@ -218,62 +224,62 @@ function createStickyShapeUtil<T extends AnyStickyShape>(
 export const EventStickyShapeUtil = createStickyShapeUtil<EventStickyShape>(
   'event-sticky',
   COLORS.event,
-  100
+  DEFAULT_STICKY_HEIGHT
 )
 
 export const HotspotStickyShapeUtil = createStickyShapeUtil<HotspotStickyShape>(
   'hotspot-sticky',
   COLORS.hotspot,
-  100
+  DEFAULT_STICKY_HEIGHT
 )
 
 export const PersonStickyShapeUtil = createStickyShapeUtil<PersonStickyShape>(
   'person-sticky',
   COLORS.person,
-  50
+  HALF_HEIGHT_STICKY
 )
 
 export const SystemStickyShapeUtil = createStickyShapeUtil<SystemStickyShape>(
   'system-sticky',
   COLORS.system,
-  100,
-  240
+  DEFAULT_STICKY_HEIGHT,
+  WIDE_STICKY_WIDTH
 )
 
 export const OpportunityStickyShapeUtil = createStickyShapeUtil<OpportunityStickyShape>(
   'opportunity-sticky',
   COLORS.opportunity,
-  100
+  DEFAULT_STICKY_HEIGHT
 )
 
 export const GlossaryStickyShapeUtil = createStickyShapeUtil<GlossaryStickyShape>(
   'glossary-sticky',
   COLORS.glossary,
-  100
+  DEFAULT_STICKY_HEIGHT
 )
 
 export const CommandStickyShapeUtil = createStickyShapeUtil<CommandStickyShape>(
   'command-sticky',
   COLORS.command,
-  100
+  DEFAULT_STICKY_HEIGHT
 )
 
 export const PolicyStickyShapeUtil = createStickyShapeUtil<PolicyStickyShape>(
   'policy-sticky',
   COLORS.policy,
-  100,
-  240
+  DEFAULT_STICKY_HEIGHT,
+  WIDE_STICKY_WIDTH
 )
 
 export const AggregateStickyShapeUtil = createStickyShapeUtil<AggregateStickyShape>(
   'aggregate-sticky',
   COLORS.aggregate,
-  100,
-  240
+  DEFAULT_STICKY_HEIGHT,
+  WIDE_STICKY_WIDTH
 )
 
 export const ReadModelStickyShapeUtil = createStickyShapeUtil<ReadModelStickyShape>(
   'readmodel-sticky',
   COLORS.readmodel,
-  100
+  DEFAULT_STICKY_HEIGHT
 )

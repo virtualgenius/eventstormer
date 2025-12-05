@@ -8,7 +8,7 @@ import {
   shouldHandleShapeCreationShortcut,
   FlowState,
 } from '../keyboardHandlers'
-import type { TLShape } from 'tldraw'
+import type { TLShape, TLShapeId, TLPageId, IndexKey } from 'tldraw'
 
 function createKeyboardEvent(
   key: string,
@@ -43,7 +43,7 @@ describe('shouldHandleTabNavigation', () => {
 
 function createMockShape(type: string): TLShape {
   return {
-    id: 'shape:test' as any,
+    id: 'shape:test' as TLShapeId,
     type,
     x: 0,
     y: 0,
@@ -51,8 +51,8 @@ function createMockShape(type: string): TLShape {
     isLocked: false,
     opacity: 1,
     props: { w: 200, h: 120, text: '' },
-    parentId: 'page:page' as any,
-    index: 'a1' as any,
+    parentId: 'page:page' as TLPageId,
+    index: 'a1' as IndexKey,
     typeName: 'shape',
     meta: {},
   }
@@ -87,7 +87,7 @@ describe('shouldHandleFlowNavigation', () => {
 
 describe('shouldCycleAlternative', () => {
   const mockFlowState: FlowState = {
-    lastCreatedId: 'shape:test' as any,
+    lastCreatedId: 'shape:test' as TLShapeId,
     direction: 'forward',
     sourceType: 'command',
     alternativeIndex: 0,

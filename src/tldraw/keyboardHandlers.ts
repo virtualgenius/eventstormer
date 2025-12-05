@@ -72,18 +72,19 @@ export function shouldCycleAlternative(
   )
 }
 
+function isValidBranchSourceShape(sourceShape: TLShape | null): boolean {
+  if (!sourceShape) return false
+  const flowType = fromStickyType(sourceShape.type)
+  return flowType !== null && canCreateBranch(flowType)
+}
+
 export function shouldCreateBranch(
   e: KeyboardEvent,
   workshopMode: WorkshopMode,
   sourceShape: TLShape | null
 ): boolean {
-  if (!isFlowModeActive(workshopMode)) return false
-  if (e.key !== 'ArrowDown') return false
-  if (!isUnmodifiedArrowKey(e, ['ArrowDown'])) return false
-  if (!sourceShape) return false
-
-  const flowType = fromStickyType(sourceShape.type)
-  return flowType !== null && canCreateBranch(flowType)
+  const isValidKey = e.key === 'ArrowDown' && isUnmodifiedArrowKey(e, ['ArrowDown'])
+  return isFlowModeActive(workshopMode) && isValidKey && isValidBranchSourceShape(sourceShape)
 }
 
 export function shouldHandleDuplicateShortcut(e: KeyboardEvent): boolean {
@@ -111,59 +112,73 @@ export function handleTabToNextSticky(
   return { handled: true }
 }
 
-export function handleFlowNavigation(
-  ctx: KeyboardContext,
-  createFlowShape: (
-    sourceShape: { x: number; y: number; props: { w: number; h: number } },
-    targetStickyType: string,
-    direction: 'right' | 'left' | 'down'
-  ) => TLShapeId | null
-): HandlerResult {
-  if (!shouldHandleFlowNavigation(ctx.event, ctx.workshopMode)) {
-    return { handled: false }
-  }
+type FlowShapeCreator = (
+  sourceShape: { x: number; y: number; props: { w: number; h: number } },
+  targetStickyType: string,
+  direction: 'right' | 'left' | 'down'
+) => TLShapeId | null
 
+interface FlowNavigationParams {
+  sourceShape: TLShape
+  flowType: FlowElementType
+  direction: FlowDirection
+  nextType: FlowElementType
+}
+
+function getFlowNavigationParams(
+  ctx: KeyboardContext
+): FlowNavigationParams | null {
   const sourceShape = getEditingOrSelectedShape(ctx.editor)
-  if (!sourceShape) return { handled: false }
+  if (!sourceShape) return null
 
   const flowType = fromStickyType(sourceShape.type)
-  if (!flowType) return { handled: false }
+  if (!flowType) return null
 
   const direction = ctx.event.key === 'ArrowRight' ? 'forward' : 'backward'
-  const nextType = getDefaultNext(flowType, direction)
-  if (!nextType) return { handled: false }
+  const nextType = getDefaultNext(flowType, direction as FlowDirection)
+  if (!nextType) return null
+
+  return { sourceShape, flowType, direction: direction as FlowDirection, nextType }
+}
+
+function createFlowStateFromNavigation(
+  newId: TLShapeId,
+  params: FlowNavigationParams
+): FlowState {
+  return {
+    lastCreatedId: newId,
+    direction: params.direction,
+    sourceType: params.flowType,
+    alternativeIndex: 0,
+  }
+}
+
+function saveEditingTextIfNeeded(ctx: KeyboardContext): void {
+  if (ctx.editor.getEditingShapeId() && ctx.isInTextInput) {
+    saveEditingShapeText(ctx.editor, ctx.target)
+  }
+}
+
+export function handleFlowNavigation(
+  ctx: KeyboardContext,
+  createFlowShape: FlowShapeCreator
+): HandlerResult {
+  if (!shouldHandleFlowNavigation(ctx.event, ctx.workshopMode)) return { handled: false }
+
+  const params = getFlowNavigationParams(ctx)
+  if (!params) return { handled: false }
 
   ctx.event.preventDefault()
   ctx.event.stopPropagation()
+  saveEditingTextIfNeeded(ctx)
 
-  const editingId = ctx.editor.getEditingShapeId()
-  if (editingId && ctx.isInTextInput) {
-    saveEditingShapeText(ctx.editor, ctx.target)
-  }
+  const layoutDirection = ctx.event.key === 'ArrowRight' ? 'right' : 'left'
+  const shapeData = { x: params.sourceShape.x, y: params.sourceShape.y, props: params.sourceShape.props as { w: number; h: number } }
+  const newId = createFlowShape(shapeData, toStickyType(params.nextType), layoutDirection)
 
-  const newId = createFlowShape(
-    {
-      x: sourceShape.x,
-      y: sourceShape.y,
-      props: sourceShape.props as { w: number; h: number },
-    },
-    toStickyType(nextType),
-    ctx.event.key === 'ArrowRight' ? 'right' : 'left'
-  )
-
-  if (newId) {
-    return {
-      handled: true,
-      newFlowState: {
-        lastCreatedId: newId,
-        direction,
-        sourceType: flowType,
-        alternativeIndex: 0,
-      },
-    }
-  }
-
-  return { handled: true }
+  return newId
+    ? { handled: true, newFlowState: createFlowStateFromNavigation(newId, params) }
+    : { handled: true }
 }
 
 export function handleAlternativeCycle(
@@ -196,39 +211,45 @@ export function handleAlternativeCycle(
   }
 }
 
-export function handleBranchCreation(
-  ctx: KeyboardContext,
-  createFlowShape: (
-    sourceShape: { x: number; y: number; props: { w: number; h: number } },
-    targetStickyType: string,
-    direction: 'right' | 'left' | 'down'
-  ) => TLShapeId | null
-): HandlerResult {
-  if (!isFlowModeActive(ctx.workshopMode)) return { handled: false }
-  if (!isUnmodifiedArrowKey(ctx.event, ['ArrowDown'])) return { handled: false }
+interface BranchCreationParams {
+  sourceShape: TLShape
+  flowType: FlowElementType
+  branchType: FlowElementType
+}
 
+function getBranchCreationParams(ctx: KeyboardContext): BranchCreationParams | null {
   const sourceShape = getEditingOrSelectedShape(ctx.editor)
-  if (!sourceShape) return { handled: false }
+  if (!sourceShape) return null
 
   const flowType = fromStickyType(sourceShape.type)
-  if (!flowType || !canCreateBranch(flowType)) return { handled: false }
+  if (!flowType || !canCreateBranch(flowType)) return null
+
+  const branchType = getBranchType(flowType)
+  if (!branchType) return null
+
+  return { sourceShape, flowType, branchType }
+}
+
+export function handleBranchCreation(
+  ctx: KeyboardContext,
+  createFlowShape: FlowShapeCreator
+): HandlerResult {
+  if (!isFlowModeActive(ctx.workshopMode) || !isUnmodifiedArrowKey(ctx.event, ['ArrowDown'])) {
+    return { handled: false }
+  }
+
+  const params = getBranchCreationParams(ctx)
+  if (!params) return { handled: false }
 
   ctx.event.preventDefault()
   ctx.event.stopPropagation()
   saveEditingShapeText(ctx.editor, ctx.target)
 
-  const branchType = getBranchType(flowType)
-  if (branchType) {
-    createFlowShape(
-      {
-        x: sourceShape.x,
-        y: sourceShape.y,
-        props: sourceShape.props as { w: number; h: number },
-      },
-      toStickyType(branchType),
-      'down'
-    )
-  }
+  createFlowShape(
+    { x: params.sourceShape.x, y: params.sourceShape.y, props: params.sourceShape.props as { w: number; h: number } },
+    toStickyType(params.branchType),
+    'down'
+  )
 
   return { handled: true, newFlowState: null }
 }

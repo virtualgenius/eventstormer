@@ -18,6 +18,8 @@ const verticalLineProps = {
 type VerticalLineProps = RecordPropsType<typeof verticalLineProps>
 type VerticalLineShape = TLBaseShape<'vertical-line', VerticalLineProps>
 
+const MIN_LINE_HEIGHT = 50
+
 // Vertical Line (Blue pivotal boundary)
 export class VerticalLineShapeUtil extends ShapeUtil<VerticalLineShape> {
   static override type = 'vertical-line' as const
@@ -78,7 +80,7 @@ export class VerticalLineShapeUtil extends ShapeUtil<VerticalLineShape> {
     return {
       props: {
         w: shape.props.w, // Keep width fixed
-        h: Math.max(50, shape.props.h * scaleY),
+        h: Math.max(MIN_LINE_HEIGHT, shape.props.h * scaleY),
       },
     }
   }

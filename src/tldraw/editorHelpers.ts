@@ -82,26 +82,35 @@ export function downloadAsJsonFile(content: string, filename: string): void {
   URL.revokeObjectURL(url)
 }
 
+function getEditingShapeAndText(
+  editor: Editor,
+  activeElement: HTMLElement
+): { editingShape: TLShape; currentText: string } | null {
+  if (!isTextInputElement(activeElement)) return null
+
+  const editingId = editor.getEditingShapeId()
+  if (!editingId) return null
+
+  const editingShape = editor.getShape(editingId)
+  if (!editingShape) return null
+
+  const currentText = getTextFromTextInput(activeElement)
+  if (currentText === null) return null
+
+  return { editingShape, currentText }
+}
+
 export function saveEditingShapeText(
   editor: Editor,
   activeElement: HTMLElement
 ): void {
-  if (!isTextInputElement(activeElement)) return
+  const context = getEditingShapeAndText(editor, activeElement)
 
-  const editingId = editor.getEditingShapeId()
-  if (!editingId) return
-
-  const editingShape = editor.getShape(editingId)
-  if (!editingShape) return
-
-  const currentText = getTextFromTextInput(activeElement)
-  const currentProps = editingShape.props as { text?: string }
-
-  if (currentText !== null && hasTextChanged(currentText, currentProps)) {
+  if (context && hasTextChanged(context.currentText, context.editingShape.props as { text?: string })) {
     editor.updateShape({
-      id: editingId,
-      type: editingShape.type,
-      props: { text: currentText },
+      id: context.editingShape.id,
+      type: context.editingShape.type,
+      props: { text: context.currentText },
     })
   }
 

@@ -153,7 +153,7 @@ describe('filterShapeRecords', () => {
       'invalid': null,
       'also-invalid': 'string',
     }
-    const result = filterShapeRecords(store as any)
+    const result = filterShapeRecords(store as Record<string, unknown>)
     expect(result).toHaveLength(1)
   })
 })

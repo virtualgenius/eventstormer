@@ -18,6 +18,8 @@ interface RecentBoard {
 }
 
 const STORAGE_KEY = "eventstormer-recent-boards";
+const BOARD_ID_PREFIX_LENGTH = 6;
+const MAX_RECENT_BOARDS = 10;
 
 function getRecentBoards(): RecentBoard[] {
   try {
@@ -27,7 +29,7 @@ function getRecentBoards(): RecentBoard[] {
     // Migration: add name field if missing
     return boards.map((b: RecentBoard) => ({
       ...b,
-      name: b.name || `Board ${b.id.slice(0, 6)}`,
+      name: b.name || `Board ${b.id.slice(0, BOARD_ID_PREFIX_LENGTH)}`,
     }));
   } catch {
     return [];
@@ -35,7 +37,7 @@ function getRecentBoards(): RecentBoard[] {
 }
 
 function saveRecentBoards(boards: RecentBoard[]): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(boards.slice(0, 10)));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(boards.slice(0, MAX_RECENT_BOARDS)));
 }
 
 function removeRecentBoard(boardId: string): RecentBoard[] {
@@ -47,7 +49,7 @@ function removeRecentBoard(boardId: string): RecentBoard[] {
 export function addRecentBoard(boardId: string, name?: string): void {
   const existing = getRecentBoards();
   const existingBoard = existing.find((b) => b.id === boardId);
-  const boardName = name || existingBoard?.name || `Board ${boardId.slice(0, 6)}`;
+  const boardName = name || existingBoard?.name || `Board ${boardId.slice(0, BOARD_ID_PREFIX_LENGTH)}`;
 
   const boards = existing.filter((b) => b.id !== boardId);
   boards.unshift({
@@ -86,6 +88,208 @@ function getNextBoardName(baseName: string): string {
   return `${baseName} ${counter}`;
 }
 
+function formatDate(isoString: string) {
+  const date = new Date(isoString);
+  return date.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function formatTime(isoString: string) {
+  const date = new Date(isoString);
+  return date.toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+interface BoardCardProps {
+  board: RecentBoard;
+  isEditing: boolean;
+  editingName: string;
+  onNavigate: () => void;
+  onStartRename: (e: React.MouseEvent) => void;
+  onDelete: (e: React.MouseEvent) => void;
+  onSaveRename: (e: React.FormEvent) => void;
+  onCancelRename: (e: React.MouseEvent) => void;
+  onEditingNameChange: (value: string) => void;
+}
+
+function BoardCard({
+  board,
+  isEditing,
+  editingName,
+  onNavigate,
+  onStartRename,
+  onDelete,
+  onSaveRename,
+  onCancelRename,
+  onEditingNameChange,
+}: BoardCardProps) {
+  return (
+    <div
+      onClick={() => !isEditing && onNavigate()}
+      className="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md transition-all"
+    >
+      <div className="flex items-start justify-between mb-3">
+        {isEditing ? (
+          <form onSubmit={onSaveRename} className="flex-1 mr-2">
+            <input
+              type="text"
+              value={editingName}
+              onChange={(e) => onEditingNameChange(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") onCancelRename(e as unknown as React.MouseEvent);
+              }}
+              autoFocus
+              className="w-full px-2 py-1 text-sm font-semibold border border-blue-400 rounded bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <div className="flex gap-2 mt-2">
+              <button
+                type="submit"
+                className="px-2 py-1 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded"
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                onClick={onCancelRename}
+                className="px-2 py-1 text-xs bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 rounded"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        ) : (
+          <h3 className="font-semibold text-slate-900 dark:text-slate-100 truncate flex-1 mr-2">
+            {board.name}
+          </h3>
+        )}
+        {!isEditing && (
+          <div className="flex gap-1">
+            <button
+              onClick={onStartRename}
+              className="p-1.5 text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity rounded hover:bg-slate-100 dark:hover:bg-slate-700"
+              title="Rename board"
+            >
+              <Pencil className="w-4 h-4" />
+            </button>
+            <button
+              onClick={onDelete}
+              className="p-1.5 text-slate-400 hover:text-red-500 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity rounded hover:bg-slate-100 dark:hover:bg-slate-700"
+              title="Delete board"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+      </div>
+      <div className="text-xs text-slate-500 dark:text-slate-400 font-mono mb-2 truncate">
+        {board.id}
+      </div>
+      <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+        <span className="flex items-center gap-1">
+          <Calendar className="w-3.5 h-3.5" />
+          {formatDate(board.lastVisited)}
+        </span>
+        <span className="flex items-center gap-1">
+          <Clock className="w-3.5 h-3.5" />
+          {formatTime(board.lastVisited)}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+interface SampleBoardCardProps {
+  sample: SampleBoard;
+  onOpen: () => void;
+}
+
+function SampleBoardCard({ sample, onOpen }: SampleBoardCardProps) {
+  return (
+    <div
+      onClick={onOpen}
+      className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md transition-all"
+    >
+      <div className="flex items-start justify-between">
+        <div>
+          <h3 className="font-medium text-slate-900 dark:text-slate-100">
+            {sample.name}
+          </h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            {sample.description}
+          </p>
+        </div>
+        <span className="text-xs px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded">
+          {sample.mode}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+interface JoinBoardSectionProps {
+  showInput: boolean;
+  roomIdInput: string;
+  onShowInput: () => void;
+  onHideInput: () => void;
+  onRoomIdChange: (value: string) => void;
+  onJoin: (e: React.FormEvent) => void;
+}
+
+function JoinBoardSection({
+  showInput,
+  roomIdInput,
+  onShowInput,
+  onHideInput,
+  onRoomIdChange,
+  onJoin,
+}: JoinBoardSectionProps) {
+  if (showInput) {
+    return (
+      <form onSubmit={onJoin} className="flex items-center gap-2">
+        <span className="text-sm text-slate-500 dark:text-slate-400">Room ID:</span>
+        <input
+          type="text"
+          value={roomIdInput}
+          onChange={(e) => onRoomIdChange(e.target.value)}
+          placeholder="paste room ID here"
+          autoFocus
+          className="px-3 py-1.5 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm w-48"
+        />
+        <button
+          type="submit"
+          disabled={!roomIdInput.trim()}
+          className="px-3 py-1.5 bg-slate-600 hover:bg-slate-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded text-sm"
+        >
+          Join
+        </button>
+        <button
+          type="button"
+          onClick={onHideInput}
+          className="text-sm text-slate-400 hover:text-slate-600"
+        >
+          Cancel
+        </button>
+      </form>
+    );
+  }
+
+  return (
+    <button
+      onClick={onShowInput}
+      className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 px-2 py-1 -ml-2 rounded transition-colors"
+    >
+      <ChevronRight className="w-4 h-4" />
+      Have a room ID? Join an existing board...
+    </button>
+  );
+}
+
 export const BoardList: React.FC = () => {
   const navigate = useNavigate();
   const [roomIdInput, setRoomIdInput] = useState("");
@@ -116,11 +320,7 @@ export const BoardList: React.FC = () => {
     navigate(`/board/${newBoardId}?template=${encodeURIComponent(sample.file)}&name=${encodeURIComponent(boardName)}`);
   };
 
-  const handleDeleteBoard = (
-    e: React.MouseEvent,
-    boardId: string,
-    boardName: string
-  ) => {
+  const handleDeleteBoard = (e: React.MouseEvent, boardId: string, boardName: string) => {
     e.stopPropagation();
     if (confirm(`Delete "${boardName}"? This will remove it from your recent boards.`)) {
       setRecentBoards(removeRecentBoard(boardId));
@@ -155,23 +355,6 @@ export const BoardList: React.FC = () => {
     if (roomIdInput.trim()) {
       navigate(`/board/${roomIdInput.trim()}`);
     }
-  };
-
-  const formatDate = (isoString: string) => {
-    const date = new Date(isoString);
-    return date.toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
-  const formatTime = (isoString: string) => {
-    const date = new Date(isoString);
-    return date.toLocaleTimeString(undefined, {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
   };
 
   if (loading) {
@@ -213,84 +396,22 @@ export const BoardList: React.FC = () => {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
             {recentBoards.map((board) => (
-              <div
+              <BoardCard
                 key={board.id}
-                onClick={() => editingBoardId !== board.id && navigate(`/board/${board.id}`)}
-                className="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md transition-all"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  {editingBoardId === board.id ? (
-                    <form onSubmit={handleSaveRename} className="flex-1 mr-2">
-                      <input
-                        type="text"
-                        value={editingName}
-                        onChange={(e) => setEditingName(e.target.value)}
-                        onClick={(e) => e.stopPropagation()}
-                        onKeyDown={(e) => {
-                          if (e.key === "Escape") handleCancelRename(e as unknown as React.MouseEvent);
-                        }}
-                        autoFocus
-                        className="w-full px-2 py-1 text-sm font-semibold border border-blue-400 rounded bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                      <div className="flex gap-2 mt-2">
-                        <button
-                          type="submit"
-                          className="px-2 py-1 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded"
-                        >
-                          Save
-                        </button>
-                        <button
-                          type="button"
-                          onClick={handleCancelRename}
-                          className="px-2 py-1 text-xs bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 rounded"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </form>
-                  ) : (
-                    <h3 className="font-semibold text-slate-900 dark:text-slate-100 truncate flex-1 mr-2">
-                      {board.name}
-                    </h3>
-                  )}
-                  {editingBoardId !== board.id && (
-                    <div className="flex gap-1">
-                      <button
-                        onClick={(e) => handleStartRename(e, board)}
-                        className="p-1.5 text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity rounded hover:bg-slate-100 dark:hover:bg-slate-700"
-                        title="Rename board"
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={(e) => handleDeleteBoard(e, board.id, board.name)}
-                        className="p-1.5 text-slate-400 hover:text-red-500 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity rounded hover:bg-slate-100 dark:hover:bg-slate-700"
-                        title="Delete board"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  )}
-                </div>
-                <div className="text-xs text-slate-500 dark:text-slate-400 font-mono mb-2 truncate">
-                  {board.id}
-                </div>
-                <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
-                  <span className="flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5" />
-                    {formatDate(board.lastVisited)}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5" />
-                    {formatTime(board.lastVisited)}
-                  </span>
-                </div>
-              </div>
+                board={board}
+                isEditing={editingBoardId === board.id}
+                editingName={editingName}
+                onNavigate={() => navigate(`/board/${board.id}`)}
+                onStartRename={(e) => handleStartRename(e, board)}
+                onDelete={(e) => handleDeleteBoard(e, board.id, board.name)}
+                onSaveRename={handleSaveRename}
+                onCancelRename={handleCancelRename}
+                onEditingNameChange={setEditingName}
+              />
             ))}
           </div>
         )}
 
-        {/* Example boards section */}
         {sampleBoards.length > 0 && (
           <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
             <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2">
@@ -299,67 +420,25 @@ export const BoardList: React.FC = () => {
             </h2>
             <div className="grid gap-3">
               {sampleBoards.map((sample) => (
-                <div
+                <SampleBoardCard
                   key={sample.id}
-                  onClick={() => handleOpenSample(sample)}
-                  className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md transition-all"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-medium text-slate-900 dark:text-slate-100">
-                        {sample.name}
-                      </h3>
-                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                        {sample.description}
-                      </p>
-                    </div>
-                    <span className="text-xs px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded">
-                      {sample.mode}
-                    </span>
-                  </div>
-                </div>
+                  sample={sample}
+                  onOpen={() => handleOpenSample(sample)}
+                />
               ))}
             </div>
           </div>
         )}
 
-        {/* Collapsible join section */}
         <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
-          {showJoinInput ? (
-            <form onSubmit={handleJoinBoard} className="flex items-center gap-2">
-              <span className="text-sm text-slate-500 dark:text-slate-400">Room ID:</span>
-              <input
-                type="text"
-                value={roomIdInput}
-                onChange={(e) => setRoomIdInput(e.target.value)}
-                placeholder="paste room ID here"
-                autoFocus
-                className="px-3 py-1.5 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm w-48"
-              />
-              <button
-                type="submit"
-                disabled={!roomIdInput.trim()}
-                className="px-3 py-1.5 bg-slate-600 hover:bg-slate-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded text-sm"
-              >
-                Join
-              </button>
-              <button
-                type="button"
-                onClick={() => { setShowJoinInput(false); setRoomIdInput(""); }}
-                className="text-sm text-slate-400 hover:text-slate-600"
-              >
-                Cancel
-              </button>
-            </form>
-          ) : (
-            <button
-              onClick={() => setShowJoinInput(true)}
-              className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 px-2 py-1 -ml-2 rounded transition-colors"
-            >
-              <ChevronRight className="w-4 h-4" />
-              Have a room ID? Join an existing board...
-            </button>
-          )}
+          <JoinBoardSection
+            showInput={showJoinInput}
+            roomIdInput={roomIdInput}
+            onShowInput={() => setShowJoinInput(true)}
+            onHideInput={() => { setShowJoinInput(false); setRoomIdInput(""); }}
+            onRoomIdChange={setRoomIdInput}
+            onJoin={handleJoinBoard}
+          />
         </div>
       </div>
     </div>

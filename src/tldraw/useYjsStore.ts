@@ -27,6 +27,8 @@ import { HorizontalLaneShapeUtil } from './shapes/HorizontalLaneShape'
 import { ThemeAreaShapeUtil } from './shapes/ThemeAreaShape'
 import { LabelShapeUtil } from './shapes/LabelShape'
 
+const DEBUG_LOG_LIMIT = 5
+
 const customShapeUtils = [
   EventStickyShapeUtil,
   HotspotStickyShapeUtil,
@@ -93,40 +95,50 @@ export function loadYjsRecordsIntoStore(
   })
 }
 
-export function syncYjsChangesToStore(
-  yRecords: Y.Map<TLRecord>,
-  store: TLStore,
-  transaction: Y.Transaction,
-  events: Y.YEvent<any>[]
-): void {
-  if (transaction.local) return
+interface YjsSyncChanges {
+  toRemove: TLRecord['id'][]
+  toPut: TLRecord[]
+}
 
+function collectYjsChanges(
+  yRecords: Y.Map<TLRecord>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  events: Y.YEvent<any>[]
+): YjsSyncChanges {
   const toRemove: TLRecord['id'][] = []
   const toPut: TLRecord[] = []
 
   for (const event of events) {
     if (event instanceof Y.YMapEvent) {
       event.changes.keys.forEach((change, id) => {
-        switch (change.action) {
-          case 'add':
-          case 'update': {
-            const record = yRecords.get(id)
-            if (record) toPut.push(record)
-            break
-          }
-          case 'delete': {
-            toRemove.push(id as TLRecord['id'])
-            break
-          }
+        if (change.action === 'add' || change.action === 'update') {
+          const record = yRecords.get(id)
+          if (record) toPut.push(record)
+        } else if (change.action === 'delete') {
+          toRemove.push(id as TLRecord['id'])
         }
       })
     }
   }
 
+  return { toRemove, toPut }
+}
+
+export function syncYjsChangesToStore(
+  yRecords: Y.Map<TLRecord>,
+  store: TLStore,
+  transaction: Y.Transaction,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  events: Y.YEvent<any>[]
+): void {
+  if (transaction.local) return
+
+  const { toRemove, toPut } = collectYjsChanges(yRecords, events)
+
   if (toRemove.length > 0 || toPut.length > 0) {
     console.log('[syncYjsChangesToStore] toRemove:', toRemove.length, 'toPut:', toPut.length, 'origin:', transaction.origin)
     if (toRemove.length > 0) {
-      console.log('[syncYjsChangesToStore] REMOVING:', toRemove.slice(0, 5))
+      console.log('[syncYjsChangesToStore] REMOVING:', toRemove.slice(0, DEBUG_LOG_LIMIT))
     }
   }
 
@@ -136,35 +148,39 @@ export function syncYjsChangesToStore(
   })
 }
 
+function hasChanges(event: TLStoreEventInfo): boolean {
+  return (
+    Object.keys(event.changes.added).length > 0 ||
+    Object.keys(event.changes.updated).length > 0 ||
+    Object.keys(event.changes.removed).length > 0
+  )
+}
+
+function applyStoreChangesToYjs(yRecords: Y.Map<TLRecord>, event: TLStoreEventInfo): void {
+  Object.entries(event.changes.added).forEach(([id, record]) => {
+    yRecords.set(id, record)
+  })
+  Object.entries(event.changes.updated).forEach(([id, [_prev, next]]) => {
+    yRecords.set(id, next)
+  })
+  Object.entries(event.changes.removed).forEach(([id]) => {
+    yRecords.delete(id)
+  })
+}
+
 export function syncStoreChangesToYjs(
   yDoc: Y.Doc,
   yRecords: Y.Map<TLRecord>,
   event: TLStoreEventInfo
 ): void {
-  if (event.source === 'remote') return
+  if (event.source === 'remote' || !hasChanges(event)) return
 
-  const addedCount = Object.keys(event.changes.added).length
-  const updatedCount = Object.keys(event.changes.updated).length
-  const removedCount = Object.keys(event.changes.removed).length
-
-  if (addedCount > 0 || updatedCount > 0 || removedCount > 0) {
-    console.log('[syncStoreChangesToYjs] added:', addedCount, 'updated:', updatedCount, 'removed:', removedCount, 'source:', event.source)
-    if (removedCount > 0) {
-      console.log('[syncStoreChangesToYjs] REMOVING:', Object.keys(event.changes.removed).slice(0, 5))
-    }
+  console.log('[syncStoreChangesToYjs] added:', Object.keys(event.changes.added).length, 'updated:', Object.keys(event.changes.updated).length, 'removed:', Object.keys(event.changes.removed).length)
+  if (Object.keys(event.changes.removed).length > 0) {
+    console.log('[syncStoreChangesToYjs] REMOVING:', Object.keys(event.changes.removed).slice(0, DEBUG_LOG_LIMIT))
   }
 
-  yDoc.transact(() => {
-    Object.entries(event.changes.added).forEach(([id, record]) => {
-      yRecords.set(id, record)
-    })
-    Object.entries(event.changes.updated).forEach(([id, [_prev, next]]) => {
-      yRecords.set(id, next)
-    })
-    Object.entries(event.changes.removed).forEach(([id]) => {
-      yRecords.delete(id)
-    })
-  })
+  yDoc.transact(() => applyStoreChangesToYjs(yRecords, event))
 }
 
 export interface YjsStoreOptions {
@@ -177,10 +193,38 @@ export interface YjsStoreResult {
   room: YProvider | null
 }
 
-export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): YjsStoreResult {
-  const [storeWithStatus, setStoreWithStatus] = useState<TLStoreWithStatus>({
-    status: 'loading',
+function createYjsStore(): TLStore {
+  return createTLStore({
+    shapeUtils: [...defaultShapeUtils, ...customShapeUtils],
+    bindingUtils: defaultBindingUtils,
   })
+}
+
+function getCollabHost(hostUrl?: string): string {
+  return hostUrl || (import.meta as unknown as { env?: { VITE_COLLAB_HOST?: string } }).env?.VITE_COLLAB_HOST || 'localhost:8800'
+}
+
+function setupYjsSync(
+  yDoc: Y.Doc,
+  yRecords: Y.Map<TLRecord>,
+  store: TLStore,
+  unsubs: (() => void)[]
+): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleYjsChange = (events: Y.YEvent<any>[], transaction: Y.Transaction) => {
+    syncYjsChangesToStore(yRecords, store, transaction, events)
+  }
+  yRecords.observeDeep(handleYjsChange)
+  unsubs.push(() => yRecords.unobserveDeep(handleYjsChange))
+
+  const handleStoreChange = (event: TLStoreEventInfo) => {
+    syncStoreChangesToYjs(yDoc, yRecords, event)
+  }
+  unsubs.push(store.listen(handleStoreChange, { scope: 'document' }))
+}
+
+export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): YjsStoreResult {
+  const [storeWithStatus, setStoreWithStatus] = useState<TLStoreWithStatus>({ status: 'loading' })
   const [room, setRoom] = useState<YProvider | null>(null)
 
   const storeRef = useRef<TLStore | null>(null)
@@ -188,98 +232,53 @@ export function useYjsStore({ roomId, hostUrl }: YjsStoreOptions): YjsStoreResul
   const yDocRef = useRef<Y.Doc | null>(null)
 
   useEffect(() => {
-    const store = createTLStore({
-      shapeUtils: [...defaultShapeUtils, ...customShapeUtils],
-      bindingUtils: defaultBindingUtils,
-    })
+    const store = createYjsStore()
     storeRef.current = store
 
     const yDoc = new Y.Doc()
     yDocRef.current = yDoc
     const yRecords = yDoc.getMap<TLRecord>('tldraw-records')
 
-    const host = hostUrl || (import.meta as any).env?.VITE_COLLAB_HOST || 'localhost:8800'
-    console.log('[useYjsStore] Creating YProvider with host:', host, 'roomId:', roomId)
-
-    const room = new YProvider(host, roomId, yDoc, {
-      connect: true,
-      party: 'yjs-room',
-    })
-    roomRef.current = room
-    setRoom(room)
+    const host = getCollabHost(hostUrl)
+    const roomProvider = new YProvider(host, roomId, yDoc, { connect: true, party: 'yjs-room' })
+    roomRef.current = roomProvider
+    setRoom(roomProvider)
 
     const unsubs: (() => void)[] = []
     let didConnect = false
 
     const handleSync = (isSynced: boolean) => {
-      console.log('[useYjsStore] handleSync called:', isSynced, 'didConnect:', didConnect)
-
       if (!isSynced) {
         setStoreWithStatus({ status: 'not-synced', store })
         return
       }
-
       if (didConnect) return
       didConnect = true
 
-      console.log('[useYjsStore] yRecords.size:', yRecords.size, 'hasPage:', yRecords.has('page:page'), 'hasDocument:', yRecords.has('document:document'))
-
-      if (yRecords.size > 0) {
-        ensureEssentialRecordsExistInYjs(yDoc, yRecords)
-        console.log('[useYjsStore] After ensureEssential - hasPage:', yRecords.has('page:page'), 'hasDocument:', yRecords.has('document:document'))
-      }
+      if (yRecords.size > 0) ensureEssentialRecordsExistInYjs(yDoc, yRecords)
       loadYjsRecordsIntoStore(yRecords, store)
-      const allRecords = store.allRecords()
-      const shapeCount = allRecords.filter(r => r.typeName === 'shape').length
-      console.log('[useYjsStore] After loadYjsRecords - store has page:', !!store.get('page:page' as any), 'total records:', allRecords.length, 'shapes:', shapeCount)
-
-      const handleYjsChange = (events: Y.YEvent<any>[], transaction: Y.Transaction) => {
-        syncYjsChangesToStore(yRecords, store, transaction, events)
-      }
-      yRecords.observeDeep(handleYjsChange)
-      unsubs.push(() => yRecords.unobserveDeep(handleYjsChange))
-
-      const handleStoreChange = (event: TLStoreEventInfo) => {
-        syncStoreChangesToYjs(yDoc, yRecords, event)
-      }
-      unsubs.push(
-        store.listen(handleStoreChange, { scope: 'document' })
-      )
-
-      console.log('[useYjsStore] Setting status to synced-remote')
-      setStoreWithStatus({
-        status: 'synced-remote',
-        store,
-        connectionStatus: 'online',
-      })
+      setupYjsSync(yDoc, yRecords, store, unsubs)
+      setStoreWithStatus({ status: 'synced-remote', store, connectionStatus: 'online' })
     }
 
     const handleStatus = ({ status }: { status: string }) => {
-      if (status === 'connected' && room.synced) {
+      if (status === 'connected' && roomProvider.synced) {
         handleSync(true)
       } else if (status !== 'connected') {
-        setStoreWithStatus(prev => {
-          if (prev.status === 'synced-remote') {
-            return { ...prev, connectionStatus: 'offline' as const }
-          }
-          return prev
-        })
+        setStoreWithStatus(prev => prev.status === 'synced-remote' ? { ...prev, connectionStatus: 'offline' as const } : prev)
       }
     }
 
-    room.on('status', handleStatus)
-    room.on('sync', handleSync)
+    roomProvider.on('status', handleStatus)
+    roomProvider.on('sync', handleSync)
 
-    if (room.synced) {
-      handleSync(true)
-    }
+    if (roomProvider.synced) handleSync(true)
 
     return () => {
-      console.log('[useYjsStore] Cleanup')
       unsubs.forEach(fn => fn())
-      room.off('status', handleStatus)
-      room.off('sync', handleSync)
-      room.disconnect()
+      roomProvider.off('status', handleStatus)
+      roomProvider.off('sync', handleSync)
+      roomProvider.disconnect()
       yDoc.destroy()
       setRoom(null)
     }

@@ -18,6 +18,8 @@ const horizontalLaneProps = {
 type HorizontalLaneProps = RecordPropsType<typeof horizontalLaneProps>
 type HorizontalLaneShape = TLBaseShape<'horizontal-lane', HorizontalLaneProps>
 
+const MIN_LANE_WIDTH = 100
+
 // Horizontal Lane (Swimlane)
 export class HorizontalLaneShapeUtil extends ShapeUtil<HorizontalLaneShape> {
   static override type = 'horizontal-lane' as const
@@ -76,7 +78,7 @@ export class HorizontalLaneShapeUtil extends ShapeUtil<HorizontalLaneShape> {
     const { scaleX } = info
     return {
       props: {
-        w: Math.max(100, shape.props.w * scaleX),
+        w: Math.max(MIN_LANE_WIDTH, shape.props.w * scaleX),
         h: shape.props.h, // Keep height fixed
       },
     }

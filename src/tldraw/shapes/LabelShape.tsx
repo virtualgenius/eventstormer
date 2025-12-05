@@ -20,6 +20,13 @@ const labelProps = {
 type LabelProps = RecordPropsType<typeof labelProps>
 type LabelShape = TLBaseShape<'label', LabelProps>
 
+const MIN_LABEL_WIDTH = 60
+const MIN_LABEL_DISPLAY_WIDTH = 40
+const LABEL_FONT_SIZE = 16
+const LABEL_FONT_WEIGHT = 500
+const LABEL_HEIGHT = 24
+const LABEL_WIDTH_PADDING = 8
+
 // Editable label component
 function EditableLabelComponent({ shape }: { shape: LabelShape }) {
   const editor = useEditor()
@@ -106,7 +113,7 @@ function EditableLabelComponent({ shape }: { shape: LabelShape }) {
               fontFamily: 'system-ui, -apple-system, sans-serif',
               background: 'transparent',
               outline: 'none',
-              minWidth: 60,
+              minWidth: MIN_LABEL_WIDTH,
             }}
           />
         ) : (
@@ -121,7 +128,7 @@ function EditableLabelComponent({ shape }: { shape: LabelShape }) {
 function measureText(text: string, fontSize: number, fontWeight: number): number {
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
-  if (!ctx) return 60
+  if (!ctx) return MIN_LABEL_WIDTH
   ctx.font = `${fontWeight} ${fontSize}px system-ui, -apple-system, sans-serif`
   return ctx.measureText(text || 'Label').width
 }
@@ -138,10 +145,10 @@ export class LabelShapeUtil extends ShapeUtil<LabelShape> {
   }
 
   getGeometry(shape: LabelShape) {
-    const width = Math.max(40, measureText(shape.props.text, 16, 500) + 8)
+    const width = Math.max(MIN_LABEL_DISPLAY_WIDTH, measureText(shape.props.text, LABEL_FONT_SIZE, LABEL_FONT_WEIGHT) + LABEL_WIDTH_PADDING)
     return new Rectangle2d({
       width,
-      height: 24,
+      height: LABEL_HEIGHT,
       isFilled: false,
     })
   }
@@ -151,7 +158,7 @@ export class LabelShapeUtil extends ShapeUtil<LabelShape> {
   }
 
   indicator(shape: LabelShape) {
-    const width = Math.max(40, measureText(shape.props.text, 16, 500) + 8)
-    return <rect width={width} height={24} />
+    const width = Math.max(MIN_LABEL_DISPLAY_WIDTH, measureText(shape.props.text, LABEL_FONT_SIZE, LABEL_FONT_WEIGHT) + LABEL_WIDTH_PADDING)
+    return <rect width={width} height={LABEL_HEIGHT} />
   }
 }
