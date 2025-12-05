@@ -154,6 +154,69 @@ Core infrastructure complete:
 - 🚧 Export/import functionality
 - 🚧 Multiple room support
 
+## Code Clarity (Enforced by ESLint)
+
+Pre-commit hooks block commits with ESLint warnings. Claude should proactively fix these patterns:
+
+### Timing Workarounds
+
+```typescript
+// ❌ Anonymous callback hides intent
+setTimeout(() => editor.sendToBack([shape.id]), 0)
+
+// ✅ Named function reveals intent
+const sendToBackAfterCreation = () => editor.sendToBack([shape.id])
+setTimeout(sendToBackAfterCreation, 0)
+```
+
+### Inline Callbacks > 4 Lines
+
+```typescript
+// ❌ Long inline callback
+array.map((item) => {
+  const processed = transform(item)
+  const validated = validate(processed)
+  return format(validated)
+})
+
+// ✅ Extracted to named function
+const processItem = (item: Item) => {
+  const processed = transform(item)
+  const validated = validate(processed)
+  return format(validated)
+}
+array.map(processItem)
+```
+
+### Magic Numbers
+
+```typescript
+// ❌ Unnamed literals
+setTimeout(fn, 200)
+const dims = { w: 120, h: 100 }
+
+// ✅ Named constants
+const ANIMATION_DURATION_MS = 200
+const DEFAULT_STICKY_DIMENSIONS = { w: 120, h: 100 }
+```
+
+### Complex Conditions (> 2 clauses)
+
+```typescript
+// ❌ Complex inline condition
+if (isFlowModeActive(mode) && isUnmodifiedArrowKey(e, keys) && !isEditing) { ... }
+
+// ✅ Extracted predicate
+const shouldNavigateFlow = (e: KeyboardEvent, mode: WorkshopMode, isEditing: boolean) =>
+  isFlowModeActive(mode) && isUnmodifiedArrowKey(e, ['ArrowRight', 'ArrowLeft']) && !isEditing
+
+if (shouldNavigateFlow(e, workshopMode, isEditing)) { ... }
+```
+
+### Function Length (max 25 lines)
+
+Extract when functions exceed 25 lines. Each extracted function should have a descriptive name.
+
 ## Testing
 
 E2E tests using Playwright in [tests/e2e/](tests/e2e/):
