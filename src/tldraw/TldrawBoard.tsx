@@ -65,6 +65,7 @@ import {
 import {
   FlowState,
   KeyboardContext,
+  HandlerResult,
   handleTabToNextSticky,
   handleFlowNavigation,
   handleAlternativeCycle,
@@ -73,7 +74,6 @@ import {
   handleShapeCreationShortcut,
 } from './keyboardHandlers'
 
-// Register all custom shape utils
 const customShapeUtils = [
   EventStickyShapeUtil,
   HotspotStickyShapeUtil,
@@ -91,12 +91,181 @@ const customShapeUtils = [
   LabelShapeUtil,
 ]
 
-// Custom UI: hide tldraw chrome, keep share panel for presence avatars
+// Keep share panel for presence avatars
 const components: TLComponents = {
   TopPanel: () => null,
   MenuPanel: () => null,
   StylePanel: () => null,
   SharePanel: DefaultSharePanel,
+}
+
+const DEFER_TO_NEXT_TICK_MS = 0
+const JSON_INDENT_SPACES = 2
+const TOOLTIP_DELAY_MS = 0
+const TOOLTIP_SIDE_OFFSET_SM = 5
+const TOOLTIP_SIDE_OFFSET_MD = 8
+
+const PALETTE_ICON_SIZE_DEFAULT = 24
+const PALETTE_ICON_SIZE_WIDE = 32
+const PALETTE_ICON_SIZE_HALF = 12
+
+const STRUCTURAL_TOOL_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  'vertical-line': SeparatorVertical,
+  'horizontal-lane': SeparatorHorizontal,
+  'theme-area': RectangleHorizontal,
+  'label': Type,
+}
+
+const STRUCTURAL_TOOL_CLASSES: Record<string, string> = {
+  'vertical-line': 'w-6 h-6 text-slate-500',
+  'horizontal-lane': 'w-6 h-6 text-slate-500',
+  'theme-area': 'w-6 h-6 text-slate-400',
+  'label': 'w-6 h-6 text-slate-500',
+}
+
+function renderToolIcon(type: ToolType, config: { color: string }) {
+  const IconComponent = STRUCTURAL_TOOL_ICONS[type]
+  if (IconComponent) {
+    return <IconComponent className={STRUCTURAL_TOOL_CLASSES[type]} />
+  }
+
+  return (
+    <div
+      className="rounded"
+      style={{
+        width: isDoubleWide(type) ? PALETTE_ICON_SIZE_WIDE : PALETTE_ICON_SIZE_DEFAULT,
+        height: isHalfHeight(type) ? PALETTE_ICON_SIZE_HALF : PALETTE_ICON_SIZE_DEFAULT,
+        backgroundColor: config.color,
+        border: '1px solid rgba(0,0,0,0.1)',
+      }}
+    />
+  )
+}
+
+interface WorkshopModeSelectorProps {
+  workshopMode: WorkshopMode
+  onModeChange: (mode: WorkshopMode) => void
+}
+
+interface WorkshopModeButtonProps {
+  mode: { value: WorkshopMode; label: string; description: string }
+  isActive: boolean
+  onClick: () => void
+}
+
+function WorkshopModeButton({ mode, isActive, onClick }: WorkshopModeButtonProps) {
+  const buttonClass = isActive ? 'bg-slate-800 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'
+  return (
+    <Tooltip.Root>
+      <Tooltip.Trigger asChild>
+        <button onClick={onClick} className={`px-3 py-1.5 text-sm font-medium transition-colors ${buttonClass}`}>{mode.label}</button>
+      </Tooltip.Trigger>
+      <Tooltip.Portal>
+        <Tooltip.Content className="bg-slate-800 text-white text-xs px-3 py-2 rounded-md shadow-lg max-w-xs" sideOffset={TOOLTIP_SIDE_OFFSET_SM}>
+          {mode.description}<Tooltip.Arrow className="fill-slate-800" />
+        </Tooltip.Content>
+      </Tooltip.Portal>
+    </Tooltip.Root>
+  )
+}
+
+function WorkshopModeSelector({ workshopMode, onModeChange }: WorkshopModeSelectorProps) {
+  return (
+    <div className="flex rounded-lg border border-slate-200 overflow-hidden">
+      {WORKSHOP_MODES.map((mode) => (
+        <WorkshopModeButton
+          key={mode.value}
+          mode={mode}
+          isActive={workshopMode === mode.value}
+          onClick={() => onModeChange(mode.value)}
+        />
+      ))}
+    </div>
+  )
+}
+
+interface PhaseSelectorProps {
+  phase: FacilitationPhase
+  onPhaseChange: (phase: FacilitationPhase) => void
+}
+
+function PhaseSelector({ phase, onPhaseChange }: PhaseSelectorProps) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-sm text-slate-500">Phase:</span>
+      <select
+        value={phase}
+        onChange={(e) => onPhaseChange(e.target.value as FacilitationPhase)}
+        className="px-3 py-1.5 text-sm border border-slate-200 rounded-md bg-white"
+      >
+        <option value="chaotic-exploration">1. Chaotic Exploration</option>
+        <option value="enforce-timeline">2. Enforce Timeline</option>
+        <option value="people-and-systems">3. People & Systems</option>
+        <option value="problems-and-opportunities">4. Value & Opportunities</option>
+        <option value="next-steps">5. Next Steps</option>
+      </select>
+    </div>
+  )
+}
+
+interface ConnectionStatusProps {
+  status: string
+}
+
+function ConnectionStatus({ status }: ConnectionStatusProps) {
+  return (
+    <div className="flex items-center gap-2">
+      <div className={`w-2 h-2 rounded-full ${getConnectionStatusColor(status)}`} />
+      <span className="text-xs text-slate-500">
+        {getConnectionStatusText(status)}
+      </span>
+    </div>
+  )
+}
+
+interface PaletteToolButtonProps {
+  type: ToolType
+  config: { color: string; label: string; description: string }
+  isActive: boolean
+  onClick: () => void
+}
+
+function PaletteToolButton({ type, config, isActive, onClick }: PaletteToolButtonProps) {
+  const buttonClass = isActive ? 'border-2 border-blue-500 bg-blue-50' : 'border border-slate-200 hover:bg-slate-50'
+  return (
+    <Tooltip.Root>
+      <Tooltip.Trigger asChild>
+        <button onClick={onClick} className={`flex items-center justify-center p-2 rounded transition-colors ${buttonClass}`}>{renderToolIcon(type, config)}</button>
+      </Tooltip.Trigger>
+      <Tooltip.Portal>
+        <Tooltip.Content className="bg-slate-800 text-white text-xs px-3 py-2 rounded-md shadow-lg max-w-xs" side="right" sideOffset={TOOLTIP_SIDE_OFFSET_MD}>
+          <span className="font-semibold">{config.label}</span> - {config.description}<Tooltip.Arrow className="fill-slate-800" />
+        </Tooltip.Content>
+      </Tooltip.Portal>
+    </Tooltip.Root>
+  )
+}
+
+interface FacilitationPaletteProps {
+  availableTools: [ToolType, { color: string; label: string; description: string }][]
+  activeTool: ToolType | null
+  onToolSelect: (type: ToolType) => void
+}
+
+function FacilitationPalette({ availableTools, activeTool, onToolSelect }: FacilitationPaletteProps) {
+  return (
+    <div className="absolute top-3 left-3 z-10 bg-white p-1.5 rounded-lg shadow-md flex flex-col gap-1">
+      {availableTools.map(([type, config]) => (
+        <PaletteToolButton
+          key={type}
+          type={type}
+          config={config}
+          isActive={activeTool === type}
+          onClick={() => onToolSelect(type)}
+        />
+      ))}
+    </div>
+  )
 }
 
 interface TldrawBoardProps {
@@ -122,18 +291,19 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
 
   const { storeWithStatus, room } = useYjsStore({ roomId })
 
-  // Set up presence sync
   useYjsPresence({ editor, room, userName })
 
   const handleMount = useCallback((editor: Editor) => {
     setEditor(editor)
 
-    editor.sideEffects.registerAfterCreateHandler('shape', (shape) => {
-      if (BACKGROUND_SHAPE_TYPES.includes(shape.type)) {
-        const sendToBackAfterCreation = () => editor.sendToBack([shape.id])
-        setTimeout(sendToBackAfterCreation, 0)
-      }
-    })
+    const handleBackgroundShapeCreated = (shape: { id: TLShapeId; type: string }) => {
+      if (!BACKGROUND_SHAPE_TYPES.includes(shape.type)) return
+
+      const sendToBackAfterCreation = () => editor.sendToBack([shape.id])
+      setTimeout(sendToBackAfterCreation, DEFER_TO_NEXT_TICK_MS)
+    }
+
+    editor.sideEffects.registerAfterCreateHandler('shape', handleBackgroundShapeCreated)
   }, [])
 
   const hasMigratedRef = useRef(false)
@@ -151,27 +321,37 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
   }, [editor, storeWithStatus.status])
 
   const hasLoadedTemplateRef = useRef(false)
-  useEffect(function loadTemplateBoard() {
-    if (!editor || !templateFile || hasLoadedTemplateRef.current) return
-    if (storeWithStatus.status !== 'synced-remote') return
 
+  const shouldLoadTemplate = useCallback(() => {
+    if (!editor || !templateFile || hasLoadedTemplateRef.current) return false
+    if (storeWithStatus.status !== 'synced-remote') return false
     const existingShapes = editor.getCurrentPageShapes()
-    if (existingShapes.length > 0) {
-      hasLoadedTemplateRef.current = true
-      return
-    }
+    return existingShapes.length === 0
+  }, [editor, templateFile, storeWithStatus.status])
 
-    hasLoadedTemplateRef.current = true
-    fetch(`/samples/${templateFile}`)
+  const loadAndImportTemplate = useCallback((templatePath: string) => {
+    fetch(`/samples/${templatePath}`)
       .then(res => res.json())
       .then(data => {
+        if (!editor) return
         if (isEventStormerBoardFormat(data)) {
           const shapes = convertBoardToShapes(data)
           importEventStormerShapes(editor, shapes, { zoomToFit: true })
         }
       })
       .catch(err => console.error('Failed to load template board:', err))
-  }, [editor, templateFile, storeWithStatus.status])
+  }, [editor])
+
+  useEffect(function loadTemplateBoard() {
+    if (!shouldLoadTemplate()) {
+      if (editor && templateFile && storeWithStatus.status === 'synced-remote') {
+        hasLoadedTemplateRef.current = true
+      }
+      return
+    }
+    hasLoadedTemplateRef.current = true
+    loadAndImportTemplate(templateFile!)
+  }, [shouldLoadTemplate, loadAndImportTemplate, editor, templateFile, storeWithStatus.status])
 
   const createShape = useCallback((type: ToolType) => {
     if (!editor) return
@@ -195,27 +375,29 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
     }
   }, [editor])
 
+  const finishCurrentEditing = useCallback(() => {
+    if (!editor) return
+    const editingId = editor.getEditingShapeId()
+    if (!editingId) return
+
+    const activeEl = document.activeElement as HTMLElement
+    if (activeEl) {
+      saveEditingShapeText(editor, activeEl)
+    } else {
+      editor.setEditingShape(null)
+    }
+  }, [editor])
+
   const createNextSticky = useCallback(() => {
     if (!editor) return
 
     const sourceShape = getEditingOrSelectedShape(editor)
     if (!sourceShape) return
 
-    const editingId = editor.getEditingShapeId()
-
     const shapeType = sourceShape.type as ToolType
-
-    // Only works for sticky types
     if (!STICKY_TYPES.includes(shapeType)) return
 
-    if (editingId) {
-      const activeEl = document.activeElement as HTMLElement
-      if (activeEl) {
-        saveEditingShapeText(editor, activeEl)
-      } else {
-        editor.setEditingShape(null)
-      }
-    }
+    finishCurrentEditing()
 
     const props = sourceShape.props as { w: number; h: number; text?: string }
     const position = calculateNextStickyPosition({ x: sourceShape.x, y: sourceShape.y, props })
@@ -226,15 +408,11 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
       type: shapeType,
       x: position.x,
       y: position.y,
-      props: {
-        text: '',
-        w: props.w,
-        h: props.h,
-      },
+      props: { text: '', w: props.w, h: props.h },
     })
 
     selectAndStartEditing(editor, newId)
-  }, [editor])
+  }, [editor, finishCurrentEditing])
 
   const duplicateSelected = useCallback(() => {
     if (!editor) return
@@ -309,6 +487,14 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
   useEffect(() => {
     if (!editor) return
 
+    const applyFlowStateUpdate = (result: HandlerResult): boolean => {
+      if (!result.handled) return false
+      if (result.newFlowState !== undefined) {
+        setFlowState(result.newFlowState)
+      }
+      return true
+    }
+
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement
       const ctx: KeyboardContext = {
@@ -321,45 +507,12 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
         flowState,
       }
 
-      // Tab: create next sticky in sequence
-      const tabResult = handleTabToNextSticky(ctx, createNextSticky)
-      if (tabResult.handled) return
-
-      // Arrow Left/Right: flow navigation (create next element in flow)
-      const flowResult = handleFlowNavigation(ctx, createFlowShape)
-      if (flowResult.handled) {
-        if (flowResult.newFlowState !== undefined) {
-          setFlowState(flowResult.newFlowState)
-        }
-        return
-      }
-
-      // Arrow Up/Down: cycle through alternative types
-      const cycleResult = handleAlternativeCycle(ctx, swapShapeType)
-      if (cycleResult.handled) {
-        if (cycleResult.newFlowState !== undefined) {
-          setFlowState(cycleResult.newFlowState)
-        }
-        return
-      }
-
-      // Arrow Down: create branch (e.g., policy from command)
-      const branchResult = handleBranchCreation(ctx, createFlowShape)
-      if (branchResult.handled) {
-        if (branchResult.newFlowState !== undefined) {
-          setFlowState(branchResult.newFlowState)
-        }
-        return
-      }
-
-      // Skip remaining shortcuts when in text input
+      if (handleTabToNextSticky(ctx, createNextSticky).handled) return
+      if (applyFlowStateUpdate(handleFlowNavigation(ctx, createFlowShape))) return
+      if (applyFlowStateUpdate(handleAlternativeCycle(ctx, swapShapeType))) return
+      if (applyFlowStateUpdate(handleBranchCreation(ctx, createFlowShape))) return
       if (ctx.isInTextInput) return
-
-      // Cmd/Ctrl+D: duplicate selected shapes
-      const dupResult = handleDuplicateShortcut(ctx, duplicateSelected)
-      if (dupResult.handled) return
-
-      // Single-key shortcuts: create shapes or switch tldraw tools
+      if (handleDuplicateShortcut(ctx, duplicateSelected).handled) return
       handleShapeCreationShortcut(ctx, createShape)
     }
 
@@ -371,13 +524,45 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
     if (!editor) return
 
     const snapshot = editor.getSnapshot()
-    const json = JSON.stringify(snapshot, null, 2)
+    const json = JSON.stringify(snapshot, null, JSON_INDENT_SPACES)
     downloadAsJsonFile(json, `board-${roomId}.json`)
   }, [editor, roomId])
 
-  // Import board from JSON
   const handleImportJSON = useCallback(() => {
     fileInputRef.current?.click()
+  }, [])
+
+  const clearExistingShapes = useCallback(() => {
+    if (!editor) return
+    const currentIds = editor.getCurrentPageShapeIds()
+    if (currentIds.size > 0) {
+      editor.deleteShapes([...currentIds])
+    }
+  }, [editor])
+
+  const importBoardData = useCallback((data: unknown) => {
+    if (!editor) return
+
+    if (isEventStormerBoardFormat(data)) {
+      const shapes = convertBoardToShapes(data)
+      importEventStormerShapes(editor, shapes)
+      console.log(`Imported ${shapes.length} shapes from EventStormer format`)
+      return
+    }
+
+    const result = parseTldrawSnapshot(data)
+    if (result.error) {
+      throw new Error(result.error)
+    }
+
+    importTldrawShapes(editor, result.shapes)
+    console.log(`Imported ${result.shapes.length} shapes from tldraw format`)
+  }, [editor])
+
+  const resetFileInput = useCallback(() => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
   }, [])
 
   const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -387,48 +572,27 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
     try {
       const text = await file.text()
       const data = JSON.parse(text)
-
-      const currentIds = editor.getCurrentPageShapeIds()
-      if (currentIds.size > 0) {
-        editor.deleteShapes([...currentIds])
-      }
-
-      if (isEventStormerBoardFormat(data)) {
-        const shapes = convertBoardToShapes(data)
-        importEventStormerShapes(editor, shapes)
-        console.log(`Imported ${shapes.length} shapes from EventStormer format`)
-        return
-      }
-
-      const result = parseTldrawSnapshot(data)
-      if (result.error) {
-        throw new Error(result.error)
-      }
-
-      importTldrawShapes(editor, result.shapes)
-      console.log(`Imported ${result.shapes.length} shapes from tldraw format`)
+      clearExistingShapes()
+      importBoardData(data)
     } catch (error) {
       console.error('Failed to import board:', error)
       alert('Failed to import board JSON. Please check the file format.')
     } finally {
-      if (fileInputRef.current) {
-        fileInputRef.current.value = ''
-      }
+      resetFileInput()
     }
-  }, [editor])
+  }, [editor, clearExistingShapes, importBoardData, resetFileInput])
 
-  // Check if phase selector should be shown (only for Big Picture and Team Flow)
+  const handleToolSelect = useCallback((type: ToolType) => {
+    setActiveTool(type)
+    createShape(type)
+  }, [createShape])
+
   const showPhaseSelector = usesPhases(workshopMode)
-
-  // Get tools available for current mode and phase
   const availableTools = getAvailableTools(workshopMode, phase)
-
-  // Connection status indicator
   const connectionStatus = storeWithStatus.status === 'synced-remote'
     ? storeWithStatus.connectionStatus
     : storeWithStatus.status
 
-  // Notify parent of state changes via render prop callback
   useEffect(() => {
     if (renderHeaderRight) {
       renderHeaderRight({
@@ -441,76 +605,27 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
   }, [renderHeaderRight, connectionStatus, roomId, handleExportJSON, handleImportJSON])
 
   return (
-    <Tooltip.Provider delayDuration={0}>
+    <Tooltip.Provider delayDuration={TOOLTIP_DELAY_MS}>
       <div className="flex flex-col h-full w-full relative">
-      {/* Header bar with mode and phase selector */}
       <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-slate-200 z-10">
-        {/* Mode Selector (Segmented Control) and Phase Selector */}
         <div className="flex items-center gap-4">
-          {/* Workshop Mode Segmented Control */}
-          <div className="flex rounded-lg border border-slate-200 overflow-hidden">
-            {WORKSHOP_MODES.map((mode) => (
-              <Tooltip.Root key={mode.value}>
-                <Tooltip.Trigger asChild>
-                  <button
-                    onClick={() => setWorkshopMode(mode.value)}
-                    className={`px-3 py-1.5 text-sm font-medium transition-colors ${
-                      workshopMode === mode.value
-                        ? 'bg-slate-800 text-white'
-                        : 'bg-white text-slate-600 hover:bg-slate-50'
-                    }`}
-                  >
-                    {mode.label}
-                  </button>
-                </Tooltip.Trigger>
-                <Tooltip.Portal>
-                  <Tooltip.Content
-                    className="bg-slate-800 text-white text-xs px-3 py-2 rounded-md shadow-lg max-w-xs"
-                    sideOffset={5}
-                  >
-                    {mode.description}
-                    <Tooltip.Arrow className="fill-slate-800" />
-                  </Tooltip.Content>
-                </Tooltip.Portal>
-              </Tooltip.Root>
-            ))}
-          </div>
-
-          {/* Phase Selector - only show for Big Picture and Team Flow */}
+          <WorkshopModeSelector
+            workshopMode={workshopMode}
+            onModeChange={setWorkshopMode}
+          />
           {showPhaseSelector && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-slate-500">Phase:</span>
-              <select
-                value={phase}
-                onChange={(e) => setPhase(e.target.value as FacilitationPhase)}
-                className="px-3 py-1.5 text-sm border border-slate-200 rounded-md bg-white"
-              >
-                <option value="chaotic-exploration">1. Chaotic Exploration</option>
-                <option value="enforce-timeline">2. Enforce Timeline</option>
-                <option value="people-and-systems">3. People & Systems</option>
-                <option value="problems-and-opportunities">4. Value & Opportunities</option>
-                <option value="next-steps">5. Next Steps</option>
-              </select>
-            </div>
+            <PhaseSelector phase={phase} onPhaseChange={setPhase} />
           )}
         </div>
 
-        {/* Render header right content if no external render prop */}
         {!renderHeaderRight && (
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${getConnectionStatusColor(connectionStatus)}`} />
-              <span className="text-xs text-slate-500">
-                {getConnectionStatusText(connectionStatus)}
-              </span>
-            </div>
+            <ConnectionStatus status={connectionStatus} />
 
-            {/* Room ID */}
             <span className="text-xs text-slate-400">
               Room: {roomId}
             </span>
 
-            {/* Import/Export Buttons */}
             <div className="flex items-center gap-2">
               <button
                 onClick={handleExportJSON}
@@ -533,7 +648,6 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
         )}
       </div>
 
-      {/* Hidden file input for import */}
       <input
         ref={fileInputRef}
         type="file"
@@ -542,60 +656,13 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
         className="hidden"
       />
 
-      {/* Main content area */}
       <div className="flex-1 relative">
-        {/* Facilitation Palette */}
-        <div className="absolute top-3 left-3 z-10 bg-white p-1.5 rounded-lg shadow-md flex flex-col gap-1">
-          {availableTools.map(([type, config]) => (
-              <Tooltip.Root key={type}>
-                <Tooltip.Trigger asChild>
-                  <button
-                    onClick={() => {
-                      setActiveTool(type)
-                      createShape(type)
-                    }}
-                    className={`flex items-center justify-center p-2 rounded transition-colors ${
-                      activeTool === type
-                        ? 'border-2 border-blue-500 bg-blue-50'
-                        : 'border border-slate-200 hover:bg-slate-50'
-                    }`}
-                  >
-                    {type === 'vertical-line' ? (
-                      <SeparatorVertical className="w-6 h-6 text-slate-500" />
-                    ) : type === 'horizontal-lane' ? (
-                      <SeparatorHorizontal className="w-6 h-6 text-slate-500" />
-                    ) : type === 'theme-area' ? (
-                      <RectangleHorizontal className="w-6 h-6 text-slate-400" />
-                    ) : type === 'label' ? (
-                      <Type className="w-6 h-6 text-slate-500" />
-                    ) : (
-                      <div
-                        className="rounded"
-                        style={{
-                          width: isDoubleWide(type) ? 32 : 24,
-                          height: isHalfHeight(type) ? 12 : 24,
-                          backgroundColor: config.color,
-                          border: '1px solid rgba(0,0,0,0.1)',
-                        }}
-                      />
-                    )}
-                  </button>
-                </Tooltip.Trigger>
-                <Tooltip.Portal>
-                  <Tooltip.Content
-                    className="bg-slate-800 text-white text-xs px-3 py-2 rounded-md shadow-lg max-w-xs"
-                    side="right"
-                    sideOffset={8}
-                  >
-                    <span className="font-semibold">{config.label}</span> - {config.description}
-                    <Tooltip.Arrow className="fill-slate-800" />
-                  </Tooltip.Content>
-                </Tooltip.Portal>
-              </Tooltip.Root>
-          ))}
-        </div>
+        <FacilitationPalette
+          availableTools={availableTools}
+          activeTool={activeTool}
+          onToolSelect={handleToolSelect}
+        />
 
-        {/* tldraw Canvas */}
         <Tldraw
           licenseKey={import.meta.env.VITE_TLDRAW_LICENSE_KEY}
           store={storeWithStatus}
