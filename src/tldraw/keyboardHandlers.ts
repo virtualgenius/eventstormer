@@ -10,13 +10,11 @@ import {
   toStickyType,
 } from '@/lib/flowSequence'
 import {
-  STICKY_TYPES,
   getShapeTypeForKey,
   getTldrawToolForKey,
 } from '@/lib/workshopConfig'
 import {
   isFlowModeActive,
-  isTextInputElement,
   isUnmodifiedArrowKey,
   getEditingOrSelectedShape,
   saveEditingShapeText,
