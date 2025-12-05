@@ -20,7 +20,8 @@ import { LabelShapeUtil } from './shapes/LabelShape'
 import { useYjsStore } from './useYjsStore'
 import { useYjsPresence } from './useYjsPresence'
 import { useKeyboardShortcuts } from './useKeyboardShortcuts'
-import { isEventStormerBoardFormat, convertBoardToShapes, parseTldrawSnapshot } from './boardFormat'
+import { useFileOperations } from './useFileOperations'
+import { useTemplateLoader } from './useTemplateLoader'
 import { Download, Upload, SeparatorVertical, SeparatorHorizontal, RectangleHorizontal, Type } from 'lucide-react'
 import * as Tooltip from '@radix-ui/react-tooltip'
 import {
@@ -37,9 +38,6 @@ import {
 import {
   getConnectionStatusText,
   getConnectionStatusColor,
-  downloadAsJsonFile,
-  importEventStormerShapes,
-  importTldrawShapes,
   MAX_SHAPES_PER_PAGE,
 } from './editorHelpers'
 
@@ -69,7 +67,6 @@ const components: TLComponents = {
 }
 
 const DEFER_TO_NEXT_TICK_MS = 0
-const JSON_INDENT_SPACES = 2
 const TOOLTIP_DELAY_MS = 0
 const TOOLTIP_SIDE_OFFSET_SM = 5
 const TOOLTIP_SIDE_OFFSET_MD = 8
@@ -254,12 +251,13 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
   const [workshopMode, setWorkshopMode] = useState<WorkshopMode>('big-picture')
   const [phase, setPhase] = useState<FacilitationPhase>('chaotic-exploration')
   const [activeTool, setActiveTool] = useState<ToolType | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const { storeWithStatus, room } = useYjsStore({ roomId })
 
   useYjsPresence({ editor, room, userName })
   const { createShape } = useKeyboardShortcuts({ editor, workshopMode, phase })
+  const { fileInputRef, handleExportJSON, handleImportJSON, handleFileChange } = useFileOperations({ editor, roomId })
+  useTemplateLoader({ editor, templateFile, storeStatus: storeWithStatus.status })
 
   const handleMount = useCallback((editor: Editor) => {
     setEditor(editor)
@@ -287,101 +285,6 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
       editor.sendToBack(backgroundShapes.map(s => s.id))
     }
   }, [editor, storeWithStatus.status])
-
-  const hasLoadedTemplateRef = useRef(false)
-
-  const shouldLoadTemplate = useCallback(() => {
-    if (!editor || !templateFile || hasLoadedTemplateRef.current) return false
-    if (storeWithStatus.status !== 'synced-remote') return false
-    const existingShapes = editor.getCurrentPageShapes()
-    return existingShapes.length === 0
-  }, [editor, templateFile, storeWithStatus.status])
-
-  const loadAndImportTemplate = useCallback((templatePath: string) => {
-    fetch(`/samples/${templatePath}`)
-      .then(res => res.json())
-      .then(data => {
-        if (!editor) return
-        if (isEventStormerBoardFormat(data)) {
-          const shapes = convertBoardToShapes(data)
-          importEventStormerShapes(editor, shapes, { zoomToFit: true })
-        }
-      })
-      .catch(err => console.error('Failed to load template board:', err))
-  }, [editor])
-
-  useEffect(function loadTemplateBoard() {
-    if (!shouldLoadTemplate()) {
-      if (editor && templateFile && storeWithStatus.status === 'synced-remote') {
-        hasLoadedTemplateRef.current = true
-      }
-      return
-    }
-    hasLoadedTemplateRef.current = true
-    loadAndImportTemplate(templateFile!)
-  }, [shouldLoadTemplate, loadAndImportTemplate, editor, templateFile, storeWithStatus.status])
-
-  const handleExportJSON = useCallback(() => {
-    if (!editor) return
-
-    const snapshot = editor.getSnapshot()
-    const json = JSON.stringify(snapshot, null, JSON_INDENT_SPACES)
-    downloadAsJsonFile(json, `board-${roomId}.json`)
-  }, [editor, roomId])
-
-  const handleImportJSON = useCallback(() => {
-    fileInputRef.current?.click()
-  }, [])
-
-  const clearExistingShapes = useCallback(() => {
-    if (!editor) return
-    const currentIds = editor.getCurrentPageShapeIds()
-    if (currentIds.size > 0) {
-      editor.deleteShapes([...currentIds])
-    }
-  }, [editor])
-
-  const importBoardData = useCallback((data: unknown) => {
-    if (!editor) return
-
-    if (isEventStormerBoardFormat(data)) {
-      const shapes = convertBoardToShapes(data)
-      importEventStormerShapes(editor, shapes)
-      console.log(`Imported ${shapes.length} shapes from EventStormer format`)
-      return
-    }
-
-    const result = parseTldrawSnapshot(data)
-    if (result.error) {
-      throw new Error(result.error)
-    }
-
-    importTldrawShapes(editor, result.shapes)
-    console.log(`Imported ${result.shapes.length} shapes from tldraw format`)
-  }, [editor])
-
-  const resetFileInput = useCallback(() => {
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
-    }
-  }, [])
-
-  const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file || !editor) return
-
-    try {
-      const text = await file.text()
-      const data = JSON.parse(text)
-      clearExistingShapes()
-      importBoardData(data)
-    } catch (error) {
-      console.error('Failed to import board:', error)
-      alert('Failed to import board JSON. Please check the file format.')
-    } finally {
-      resetFileInput()
-    }
-  }, [editor, clearExistingShapes, importBoardData, resetFileInput])
 
   const handleToolSelect = useCallback((type: ToolType) => {
     setActiveTool(type)

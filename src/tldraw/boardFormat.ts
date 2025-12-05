@@ -81,7 +81,7 @@ const WIDE_WIDTH = 240
 const FULL_HEIGHT = 100
 const HALF_HEIGHT = 50
 
-export function isEventStormerBoardFormat(data: unknown): boolean {
+export function isEventStormerBoardFormat(data: unknown): data is EventStormerBoard {
   if (!data || typeof data !== 'object') return false
   const obj = data as Record<string, unknown>
   return Array.isArray(obj.stickies)
