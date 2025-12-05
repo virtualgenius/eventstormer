@@ -27,8 +27,6 @@ import { HorizontalLaneShapeUtil } from './shapes/HorizontalLaneShape'
 import { ThemeAreaShapeUtil } from './shapes/ThemeAreaShape'
 import { LabelShapeUtil } from './shapes/LabelShape'
 
-const DEBUG_LOG_LIMIT = 5
-
 const customShapeUtils = [
   EventStickyShapeUtil,
   HotspotStickyShapeUtil,
@@ -70,8 +68,6 @@ export function ensureEssentialRecordsExistInYjs(
   const hasDocument = yRecords.has('document:document')
 
   if (hasPage && hasDocument) return
-
-  console.log('[ensureEssentialRecords] Adding missing records - hasPage:', hasPage, 'hasDocument:', hasDocument)
 
   yDoc.transact(() => {
     if (!hasPage) {
@@ -135,13 +131,6 @@ export function syncYjsChangesToStore(
 
   const { toRemove, toPut } = collectYjsChanges(yRecords, events)
 
-  if (toRemove.length > 0 || toPut.length > 0) {
-    console.log('[syncYjsChangesToStore] toRemove:', toRemove.length, 'toPut:', toPut.length, 'origin:', transaction.origin)
-    if (toRemove.length > 0) {
-      console.log('[syncYjsChangesToStore] REMOVING:', toRemove.slice(0, DEBUG_LOG_LIMIT))
-    }
-  }
-
   store.mergeRemoteChanges(() => {
     if (toRemove.length > 0) store.remove(toRemove)
     if (toPut.length > 0) store.put(toPut)
@@ -174,11 +163,6 @@ export function syncStoreChangesToYjs(
   event: TLStoreEventInfo
 ): void {
   if (event.source === 'remote' || !hasChanges(event)) return
-
-  console.log('[syncStoreChangesToYjs] added:', Object.keys(event.changes.added).length, 'updated:', Object.keys(event.changes.updated).length, 'removed:', Object.keys(event.changes.removed).length)
-  if (Object.keys(event.changes.removed).length > 0) {
-    console.log('[syncStoreChangesToYjs] REMOVING:', Object.keys(event.changes.removed).slice(0, DEBUG_LOG_LIMIT))
-  }
 
   yDoc.transact(() => applyStoreChangesToYjs(yRecords, event))
 }

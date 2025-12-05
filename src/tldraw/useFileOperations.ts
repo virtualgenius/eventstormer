@@ -39,7 +39,6 @@ export function useFileOperations({ editor, roomId }: UseFileOperationsParams) {
     if (isEventStormerBoardFormat(data)) {
       const shapes = convertBoardToShapes(data)
       importEventStormerShapes(editor, shapes)
-      console.log(`Imported ${shapes.length} shapes from EventStormer format`)
       return
     }
 
@@ -49,7 +48,6 @@ export function useFileOperations({ editor, roomId }: UseFileOperationsParams) {
     }
 
     importTldrawShapes(editor, result.shapes)
-    console.log(`Imported ${result.shapes.length} shapes from tldraw format`)
   }, [editor])
 
   const resetFileInput = useCallback(() => {
