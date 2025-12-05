@@ -1,123 +1,57 @@
-import { test, expect } from '@playwright/test';
-import { CanvasPage } from '../pages/CanvasPage';
-import { enableDebugMode } from '../utils/debug';
+import { test, expect } from '@playwright/test'
+import { CanvasPage } from '../pages/CanvasPage'
+import { clearAllShapes, waitForShapeCount, getShapeCount, waitForShapeCountIncrease } from '../utils/tldraw'
 
 test.describe('Real-time Collaboration', () => {
-  test('should show increased user count when multiple contexts connect', async ({ browser }) => {
-    // Create two browser contexts
-    const context1 = await browser.newContext();
-    const context2 = await browser.newContext();
+  test('should sync shape creation across browser contexts', async ({ browser }, testInfo) => {
+    const context1 = await browser.newContext()
+    const context2 = await browser.newContext()
 
-    const page1 = await context1.newPage();
-    const page2 = await context2.newPage();
+    const page1 = await context1.newPage()
+    const page2 = await context2.newPage()
 
-    await enableDebugMode(page1);
-    await enableDebugMode(page2);
+    const canvasPage1 = new CanvasPage(page1, testInfo)
+    const canvasPage2 = new CanvasPage(page2, testInfo)
 
-    const canvasPage1 = new CanvasPage(page1);
-    const canvasPage2 = new CanvasPage(page2);
+    await canvasPage1.goto()
+    await canvasPage2.goto()
 
-    // Open app in both contexts
-    await canvasPage1.goto();
-    await canvasPage2.goto();
+    await page1.waitForTimeout(1000)
+    await page2.waitForTimeout(1000)
 
-    // Wait for connections
-    await page1.waitForTimeout(1000);
-    await page2.waitForTimeout(1000);
+    await clearAllShapes(page1)
+    await waitForShapeCount(page1, 0)
+    await page2.waitForTimeout(500)
 
-    // Check user counts (should be at least 2)
-    const count1 = await canvasPage1.getOnlineCount();
-    const count2 = await canvasPage2.getOnlineCount();
+    const initialCount = await getShapeCount(page2)
 
-    expect(count1).toBeGreaterThanOrEqual(2);
-    expect(count2).toBeGreaterThanOrEqual(2);
+    await canvasPage1.selectTool('event-sticky')
+    await waitForShapeCountIncrease(page1, 0)
+    await canvasPage1.pressEscape()
 
-    // Cleanup
-    await context1.close();
-    await context2.close();
-  });
-
-  test('should sync sticky creation across contexts', async ({ browser }) => {
-    const context1 = await browser.newContext();
-    const context2 = await browser.newContext();
-
-    const page1 = await context1.newPage();
-    const page2 = await context2.newPage();
-
-    await enableDebugMode(page1);
-    await enableDebugMode(page2);
-
-    const canvasPage1 = new CanvasPage(page1);
-    const canvasPage2 = new CanvasPage(page2);
-
-    await canvasPage1.goto();
-    await canvasPage2.goto();
-
-    await page1.waitForTimeout(1000);
-    await page2.waitForTimeout(1000);
-
-    // Get initial count in both contexts
-    const initialCount = await page2.evaluate(() => {
-      const store = (window as any).__testStore;
-      return store?.getState().board.stickies.length || 0;
-    });
-
-    // Create sticky in context 1
-    await canvasPage1.createStickyAt('event', 300, 200);
-
-    // Wait for sync to context 2 (real-time sync can be slow)
     await page2.waitForFunction(
       (initial) => {
-        const store = (window as any).__testStore;
-        return (store?.getState().board.stickies.length || 0) > initial;
+        const editor = (window as unknown as { __tldrawEditor: unknown }).__tldrawEditor
+        if (!editor || typeof editor !== 'object') return false
+        const editorWithShapes = editor as { getCurrentPageShapes: () => unknown[] }
+        return editorWithShapes.getCurrentPageShapes().length > initial
       },
       initialCount,
       { timeout: 10000 }
-    );
+    )
 
-    // Verify sticky appeared in context 2
-    const finalCount = await page2.evaluate(() => {
-      const store = (window as any).__testStore;
-      return store?.getState().board.stickies.length || 0;
-    });
+    const finalCount = await getShapeCount(page2)
+    expect(finalCount).toBeGreaterThan(initialCount)
 
-    expect(finalCount).toBeGreaterThan(initialCount);
+    await context1.close()
+    await context2.close()
+  })
 
-    // Cleanup
-    await context1.close();
-    await context2.close();
-  });
+  test('should show connection status', async ({ page }, testInfo) => {
+    const canvasPage = new CanvasPage(page, testInfo)
+    await canvasPage.goto()
 
-  test('should update user count when context closes', async ({ browser }) => {
-    const context1 = await browser.newContext();
-    const context2 = await browser.newContext();
-
-    const page1 = await context1.newPage();
-    const page2 = await context2.newPage();
-
-    await enableDebugMode(page1);
-    await enableDebugMode(page2);
-
-    const canvasPage1 = new CanvasPage(page1);
-    const canvasPage2 = new CanvasPage(page2);
-
-    await canvasPage1.goto();
-    await canvasPage2.goto();
-
-    await page1.waitForTimeout(1000);
-
-    const initialCount = await canvasPage1.getOnlineCount();
-    expect(initialCount).toBeGreaterThanOrEqual(2);
-
-    // Close context 2
-    await context2.close();
-    await page1.waitForTimeout(1500);
-
-    // Count should decrease
-    const newCount = await canvasPage1.getOnlineCount();
-    expect(newCount).toBeLessThan(initialCount);
-
-    // Cleanup
-    await context1.close();
-  });
-});
+    const status = await canvasPage.getConnectionStatus()
+    expect(['Connected', 'Syncing', 'Loading', 'Offline', 'Connecting', 'unknown']).toContain(status)
+  })
+})

@@ -1,75 +1,96 @@
-import { test, expect } from '@playwright/test';
-import { CanvasPage } from '../pages/CanvasPage';
-import { enableDebugMode } from '../utils/debug';
-import { clearBoard, getStickies } from '../utils/store';
+import { test, expect } from '@playwright/test'
+import { CanvasPage } from '../pages/CanvasPage'
+import { getShapes, waitForShapeCountIncrease, clearAllShapes, waitForShapeCount, getShapeCount } from '../utils/tldraw'
 
-test.describe('Sticky Drag & Drop', () => {
-  let canvasPage: CanvasPage;
+test.describe('Shape Drag & Drop', () => {
+  let canvasPage: CanvasPage
 
-  test.beforeEach(async ({ page }) => {
-    await enableDebugMode(page);
-    canvasPage = new CanvasPage(page);
-    await canvasPage.goto();
-    await clearBoard(page);
-    await page.waitForTimeout(500);
-  });
+  test.beforeEach(async ({ page }, testInfo) => {
+    canvasPage = new CanvasPage(page, testInfo)
+    await canvasPage.goto()
+    await clearAllShapes(page)
+    await waitForShapeCount(page, 0)
+  })
 
-  test('should have draggable stickies', async ({ page }) => {
-    // Create sticky
-    await canvasPage.createStickyAt('event', 300, 200);
-    await page.waitForTimeout(500);
+  test('should have shapes with position properties', async ({ page }) => {
+    const initialCount = await getShapeCount(page)
 
-    // Verify sticky has position in store
-    const sticky = (await getStickies(page))[0];
-    expect(sticky.x).toBeDefined();
-    expect(sticky.y).toBeDefined();
-    expect(sticky.id).toBeDefined();
-  });
+    await canvasPage.selectTool('event-sticky')
+    await waitForShapeCountIncrease(page, initialCount)
+    await canvasPage.pressEscape()
+
+    const shapes = await getShapes(page)
+    const shape = shapes[0] as { x: number; y: number; id: string }
+
+    expect(shape.x).toBeDefined()
+    expect(shape.y).toBeDefined()
+    expect(shape.id).toBeDefined()
+  })
 
   test('should allow programmatic position update', async ({ page }) => {
-    // Create sticky
-    await canvasPage.createStickyAt('event', 300, 200);
-    await page.waitForTimeout(500);
+    const initialCount = await getShapeCount(page)
 
-    const stickyBefore = (await getStickies(page))[0];
+    await canvasPage.selectTool('event-sticky')
+    await waitForShapeCountIncrease(page, initialCount)
+    await canvasPage.pressEscape()
 
-    // Update position programmatically via store
+    const shapesBefore = await getShapes(page)
+    const shapeBefore = shapesBefore[0] as { x: number; y: number; id: string }
+
     await page.evaluate((id) => {
-      const store = (window as any).__testStore;
-      const stickies = store.getState().board.stickies;
-      const sticky = stickies.find((s: any) => s.id === id);
-      if (sticky) {
-        store.getState().updateSticky(id, { x: sticky.x + 100, y: sticky.y + 50 });
+      const editor = (window as unknown as { __tldrawEditor: unknown }).__tldrawEditor as {
+        updateShape: (update: { id: string; type: string; x: number; y: number }) => void
+        getShape: (id: string) => { type: string; x: number; y: number }
       }
-    }, stickyBefore.id);
+      const shape = editor.getShape(id)
+      editor.updateShape({
+        id,
+        type: shape.type,
+        x: shape.x + 100,
+        y: shape.y + 50,
+      })
+    }, shapeBefore.id)
 
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(200)
 
-    // Verify position changed
-    const stickyAfter = (await getStickies(page))[0];
-    expect(stickyAfter.x).toBeGreaterThan(stickyBefore.x);
-    expect(stickyAfter.y).toBeGreaterThan(stickyBefore.y);
-  });
+    const shapesAfter = await getShapes(page)
+    const shapeAfter = shapesAfter[0] as { x: number; y: number }
 
-  test('should preserve sticky properties during updates', async ({ page }) => {
-    // Create sticky
-    await canvasPage.createStickyAt('event', 300, 200);
-    await page.waitForTimeout(500);
+    expect(shapeAfter.x).toBeGreaterThan(shapeBefore.x)
+    expect(shapeAfter.y).toBeGreaterThan(shapeBefore.y)
+  })
 
-    const stickyBefore = (await getStickies(page))[0];
+  test('should preserve shape properties during position updates', async ({ page }) => {
+    const initialCount = await getShapeCount(page)
 
-    // Update position
+    await canvasPage.selectTool('event-sticky')
+    await waitForShapeCountIncrease(page, initialCount)
+    await canvasPage.pressEscape()
+
+    const shapesBefore = await getShapes(page)
+    const shapeBefore = shapesBefore[0] as { x: number; y: number; id: string; type: string; props: { text: string } }
+
     await page.evaluate((id) => {
-      const store = (window as any).__testStore;
-      store.getState().updateSticky(id, { x: 400, y: 300 });
-    }, stickyBefore.id);
+      const editor = (window as unknown as { __tldrawEditor: unknown }).__tldrawEditor as {
+        updateShape: (update: { id: string; type: string; x: number; y: number }) => void
+        getShape: (id: string) => { type: string }
+      }
+      const shape = editor.getShape(id)
+      editor.updateShape({
+        id,
+        type: shape.type,
+        x: 400,
+        y: 300,
+      })
+    }, shapeBefore.id)
 
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(200)
 
-    // Verify properties preserved
-    const stickyAfter = (await getStickies(page))[0];
-    expect(stickyAfter.id).toBe(stickyBefore.id);
-    expect(stickyAfter.kind).toBe(stickyBefore.kind);
-    expect(stickyAfter.text).toBe(stickyBefore.text);
-  });
-});
+    const shapesAfter = await getShapes(page)
+    const shapeAfter = shapesAfter[0] as { id: string; type: string; props: { text: string } }
+
+    expect(shapeAfter.id).toBe(shapeBefore.id)
+    expect(shapeAfter.type).toBe(shapeBefore.type)
+    expect(shapeAfter.props.text).toBe(shapeBefore.props.text)
+  })
+})
