@@ -87,7 +87,7 @@ interface TldrawBoardProps {
 
 export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight }: TldrawBoardProps) {
   const [editor, setEditor] = useState<Editor | null>(null)
-  const [workshopMode, setWorkshopMode] = useState<WorkshopMode>('big-picture')
+  const [workshopMode, setWorkshopMode] = useState<WorkshopMode>('process')
   const [phase, setPhase] = useState<FacilitationPhase>('chaotic-exploration')
   const [activeTool, setActiveTool] = useState<ToolType | null>(null)
 

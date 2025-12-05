@@ -61,7 +61,20 @@
       "Bash(src/store/useCollabStore.ts)",
       "Bash(npx wrangler pages:*)",
       "Bash(npx wrangler tail:*)",
-      "Bash(npx vitest:*)"
+      "Bash(npx vitest:*)",
+      "Bash(bd init:*)",
+      "Bash(bd config set:*)",
+      "Bash(bd add:*)",
+      "Bash(bd --help:*)",
+      "Bash(bd create:*)",
+      "Bash(bd list:*)",
+      "Bash(bd update:*)",
+      "Bash(bd close:*)",
+      "Bash(bd sync:*)",
+      "Bash(bd ready:*)",
+      "Bash(bd show:*)",
+      "Bash(bd dep add:*)",
+      "Bash(bd stats:*)"
     ],
     "deny": [],
     "ask": []
