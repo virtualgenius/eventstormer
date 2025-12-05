@@ -66,13 +66,16 @@ import {
 import {
   isFlowModeActive,
   isTextInputElement,
-  getTextFromTextInput,
-  hasTextChanged,
   isUnmodifiedArrowKey,
   getConnectionStatusText,
   getConnectionStatusColor,
   getEditingOrSelectedShape,
   selectAndStartEditing,
+  downloadAsJsonFile,
+  saveEditingShapeText,
+  importEventStormerShapes,
+  importTldrawShapes,
+  MAX_SHAPES_PER_PAGE,
 } from './editorHelpers'
 
 // Register all custom shape utils
@@ -173,16 +176,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
       .then(data => {
         if (isEventStormerBoardFormat(data)) {
           const shapes = convertBoardToShapes(data)
-          if (shapes.length > 0) {
-            editor.createShapes(shapes.map(shape => ({
-              id: createShapeId(),
-              type: shape.type,
-              x: shape.x,
-              y: shape.y,
-              props: shape.props,
-            })))
-            editor.zoomToFit({ animation: { duration: 200 } })
-          }
+          importEventStormerShapes(editor, shapes, { zoomToFit: true })
         }
       })
       .catch(err => console.error('Failed to load template board:', err))
@@ -225,18 +219,11 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
 
     if (editingId) {
       const activeEl = document.activeElement as HTMLElement
-      if (activeEl && isTextInputElement(activeEl)) {
-        const currentText = getTextFromTextInput(activeEl)
-        const currentProps = sourceShape.props as { text?: string }
-        if (currentText !== null && hasTextChanged(currentText, currentProps)) {
-          editor.updateShape({
-            id: editingId,
-            type: sourceShape.type,
-            props: { text: currentText },
-          })
-        }
+      if (activeEl) {
+        saveEditingShapeText(editor, activeEl)
+      } else {
+        editor.setEditingShape(null)
       }
-      editor.setEditingShape(null)
     }
 
     const props = sourceShape.props as { w: number; h: number; text?: string }
@@ -360,16 +347,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
         e.stopPropagation()
 
         if (editingId && isInTextInput) {
-          const currentText = getTextFromTextInput(target)
-          const currentProps = sourceShape.props as { text?: string }
-          if (currentText !== null && hasTextChanged(currentText, currentProps)) {
-            editor.updateShape({
-              id: editingId,
-              type: sourceShape.type,
-              props: { text: currentText },
-            })
-          }
-          editor.setEditingShape(null)
+          saveEditingShapeText(editor, target)
         }
 
         const newId = createFlowShape(
@@ -386,35 +364,13 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
       if (isFlowModeActive(workshopMode) &&
           isUnmodifiedArrowKey(e, ['ArrowDown', 'ArrowUp'])) {
 
-        const saveAndExitEditMode = () => {
-          if (isInTextInput) {
-            const editingId = editor.getEditingShapeId()
-            if (editingId) {
-              const editingShape = editor.getShape(editingId)
-              if (editingShape) {
-                const currentText = getTextFromTextInput(target)
-                const currentProps = editingShape.props as { text?: string }
-                if (currentText !== null && hasTextChanged(currentText, currentProps)) {
-                  editor.updateShape({
-                    id: editingId,
-                    type: editingShape.type,
-                    props: { text: currentText },
-                  })
-                }
-                editor.setEditingShape(null)
-              }
-            }
-          }
-        }
-
-        // If we have flowState, try cycling alternatives first
         if (flowState) {
           const cycleDir = e.key === 'ArrowDown' ? 'down' : 'up'
           const result = cycleAlternative(flowState.sourceType, flowState.direction, flowState.alternativeIndex, cycleDir)
           if (result) {
             e.preventDefault()
             e.stopPropagation()
-            saveAndExitEditMode()
+            saveEditingShapeText(editor, target)
             swapShapeType(flowState.lastCreatedId, toStickyType(result.newType))
             setFlowState({ ...flowState, alternativeIndex: result.newIndex })
             return
@@ -428,7 +384,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
             if (flowType && canCreateBranch(flowType)) {
               e.preventDefault()
               e.stopPropagation()
-              saveAndExitEditMode()
+              saveEditingShapeText(editor, target)
               const branchType = getBranchType(flowType)
               if (branchType) {
                 createFlowShape(
@@ -477,22 +433,12 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
     return () => window.removeEventListener('keydown', handleKeyDown, true)
   }, [editor, createNextSticky, duplicateSelected, workshopMode, phase, createShape, flowState, createFlowShape, swapShapeType])
 
-  // Export board as JSON
   const handleExportJSON = useCallback(() => {
     if (!editor) return
 
     const snapshot = editor.getSnapshot()
     const json = JSON.stringify(snapshot, null, 2)
-    const blob = new Blob([json], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `board-${roomId}.json`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
+    downloadAsJsonFile(json, `board-${roomId}.json`)
   }, [editor, roomId])
 
   // Import board from JSON
@@ -508,24 +454,14 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
       const text = await file.text()
       const data = JSON.parse(text)
 
-      // Delete existing shapes first
       const currentIds = editor.getCurrentPageShapeIds()
       if (currentIds.size > 0) {
         editor.deleteShapes([...currentIds])
       }
 
-      // Check if this is EventStormer board format
       if (isEventStormerBoardFormat(data)) {
         const shapes = convertBoardToShapes(data)
-        if (shapes.length > 0) {
-          editor.createShapes(shapes.map((shape) => ({
-            id: createShapeId(),
-            type: shape.type,
-            x: shape.x,
-            y: shape.y,
-            props: shape.props,
-          })))
-        }
+        importEventStormerShapes(editor, shapes)
         console.log(`Imported ${shapes.length} shapes from EventStormer format`)
         return
       }
@@ -535,19 +471,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
         throw new Error(result.error)
       }
 
-      if (result.shapes.length > 0) {
-        editor.createShapes(result.shapes.map((record) => ({
-          id: record.id,
-          type: record.type,
-          x: record.x,
-          y: record.y,
-          rotation: record.rotation,
-          props: record.props,
-          parentId: record.parentId,
-          index: record.index,
-        })))
-      }
-
+      importTldrawShapes(editor, result.shapes)
       console.log(`Imported ${result.shapes.length} shapes from tldraw format`)
     } catch (error) {
       console.error('Failed to import board:', error)
@@ -746,7 +670,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
           onMount={handleMount}
           inferDarkMode={false}
           options={{
-            maxShapesPerPage: 10000,
+            maxShapesPerPage: MAX_SHAPES_PER_PAGE,
           }}
         />
       </div>

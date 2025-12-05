@@ -1,5 +1,10 @@
 import type { WorkshopMode } from '@/lib/workshopConfig'
 import type { Editor, TLShape, TLShapeId } from 'tldraw'
+import { createShapeId } from 'tldraw'
+import type { ShapeToCreate, TldrawShapeRecord } from './boardFormat'
+
+export const ZOOM_TO_FIT_ANIMATION_DURATION_MS = 200
+export const MAX_SHAPES_PER_PAGE = 10000
 
 export function isFlowModeActive(mode: WorkshopMode): boolean {
   return mode === 'process' || mode === 'design'
@@ -61,4 +66,87 @@ export function getEditingOrSelectedShape(editor: Editor): TLShape | null {
 export function selectAndStartEditing(editor: Editor, shapeId: TLShapeId): void {
   editor.select(shapeId)
   requestAnimationFrame(() => editor.setEditingShape(shapeId))
+}
+
+export function downloadAsJsonFile(content: string, filename: string): void {
+  const blob = new Blob([content], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}
+
+export function saveEditingShapeText(
+  editor: Editor,
+  activeElement: HTMLElement
+): void {
+  if (!isTextInputElement(activeElement)) return
+
+  const editingId = editor.getEditingShapeId()
+  if (!editingId) return
+
+  const editingShape = editor.getShape(editingId)
+  if (!editingShape) return
+
+  const currentText = getTextFromTextInput(activeElement)
+  const currentProps = editingShape.props as { text?: string }
+
+  if (currentText !== null && hasTextChanged(currentText, currentProps)) {
+    editor.updateShape({
+      id: editingId,
+      type: editingShape.type,
+      props: { text: currentText },
+    })
+  }
+
+  editor.setEditingShape(null)
+}
+
+export interface ImportOptions {
+  zoomToFit?: boolean
+}
+
+export function importEventStormerShapes(
+  editor: Editor,
+  shapes: ShapeToCreate[],
+  options: ImportOptions = {}
+): void {
+  if (shapes.length === 0) return
+
+  editor.createShapes(shapes.map(shape => ({
+    id: createShapeId(),
+    type: shape.type,
+    x: shape.x,
+    y: shape.y,
+    props: shape.props,
+  })))
+
+  if (options.zoomToFit) {
+    editor.zoomToFit({ animation: { duration: ZOOM_TO_FIT_ANIMATION_DURATION_MS } })
+  }
+}
+
+export function importTldrawShapes(
+  editor: Editor,
+  shapes: TldrawShapeRecord[]
+): void {
+  if (shapes.length === 0) return
+
+  // Type assertions needed due to tldraw's branded types
+  editor.createShapes(shapes.map(record => ({
+    id: record.id,
+    type: record.type,
+    x: record.x,
+    y: record.y,
+    rotation: record.rotation,
+    props: record.props,
+    parentId: record.parentId,
+    index: record.index,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  })) as any)
 }

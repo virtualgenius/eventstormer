@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import {
   isFlowModeActive,
   isTextInputElement,
@@ -7,7 +7,14 @@ import {
   isUnmodifiedArrowKey,
   getConnectionStatusText,
   getConnectionStatusColor,
+  ZOOM_TO_FIT_ANIMATION_DURATION_MS,
+  MAX_SHAPES_PER_PAGE,
+  downloadAsJsonFile,
+  saveEditingShapeText,
+  importEventStormerShapes,
+  importTldrawShapes,
 } from '../editorHelpers'
+import type { Editor } from 'tldraw'
 
 function mockElement(tagName: string, value?: string): HTMLElement {
   return { tagName, value } as unknown as HTMLElement
@@ -165,5 +172,183 @@ describe('getConnectionStatusColor', () => {
 
   it('returns slate for not-synced', () => {
     expect(getConnectionStatusColor('not-synced')).toBe('bg-slate-400')
+  })
+})
+
+describe('constants', () => {
+  it('ZOOM_TO_FIT_ANIMATION_DURATION_MS is 200', () => {
+    expect(ZOOM_TO_FIT_ANIMATION_DURATION_MS).toBe(200)
+  })
+
+  it('MAX_SHAPES_PER_PAGE is 10000', () => {
+    expect(MAX_SHAPES_PER_PAGE).toBe(10000)
+  })
+})
+
+describe('downloadAsJsonFile', () => {
+  it('is a function that accepts content and filename', () => {
+    expect(typeof downloadAsJsonFile).toBe('function')
+    expect(downloadAsJsonFile.length).toBe(2)
+  })
+})
+
+function mockEditor(overrides: Partial<Editor> = {}): Editor {
+  return {
+    getEditingShapeId: vi.fn().mockReturnValue(null),
+    getShape: vi.fn().mockReturnValue(null),
+    updateShape: vi.fn(),
+    setEditingShape: vi.fn(),
+    createShapes: vi.fn(),
+    zoomToFit: vi.fn(),
+    ...overrides,
+  } as unknown as Editor
+}
+
+describe('saveEditingShapeText', () => {
+  it('does nothing for non-text input elements', () => {
+    const editor = mockEditor()
+    const element = mockElement('DIV')
+
+    saveEditingShapeText(editor, element)
+
+    expect(editor.getEditingShapeId).not.toHaveBeenCalled()
+  })
+
+  it('does nothing when no shape is being edited', () => {
+    const editor = mockEditor({ getEditingShapeId: vi.fn().mockReturnValue(null) })
+    const element = mockElement('INPUT', 'test')
+
+    saveEditingShapeText(editor, element)
+
+    expect(editor.updateShape).not.toHaveBeenCalled()
+  })
+
+  it('does nothing when editing shape not found', () => {
+    const editor = mockEditor({
+      getEditingShapeId: vi.fn().mockReturnValue('shape:123'),
+      getShape: vi.fn().mockReturnValue(null),
+    })
+    const element = mockElement('INPUT', 'test')
+
+    saveEditingShapeText(editor, element)
+
+    expect(editor.updateShape).not.toHaveBeenCalled()
+  })
+
+  it('updates shape when text has changed', () => {
+    const mockShape = { id: 'shape:123', type: 'event-sticky', props: { text: 'old text' } }
+    const editor = mockEditor({
+      getEditingShapeId: vi.fn().mockReturnValue('shape:123'),
+      getShape: vi.fn().mockReturnValue(mockShape),
+    })
+    const element = mockElement('TEXTAREA', 'new text')
+
+    saveEditingShapeText(editor, element)
+
+    expect(editor.updateShape).toHaveBeenCalledWith({
+      id: 'shape:123',
+      type: 'event-sticky',
+      props: { text: 'new text' },
+    })
+    expect(editor.setEditingShape).toHaveBeenCalledWith(null)
+  })
+
+  it('does not update shape when text is unchanged', () => {
+    const mockShape = { id: 'shape:123', type: 'event-sticky', props: { text: 'same text' } }
+    const editor = mockEditor({
+      getEditingShapeId: vi.fn().mockReturnValue('shape:123'),
+      getShape: vi.fn().mockReturnValue(mockShape),
+    })
+    const element = mockElement('INPUT', 'same text')
+
+    saveEditingShapeText(editor, element)
+
+    expect(editor.updateShape).not.toHaveBeenCalled()
+    expect(editor.setEditingShape).toHaveBeenCalledWith(null)
+  })
+})
+
+describe('importEventStormerShapes', () => {
+  it('does nothing for empty shapes array', () => {
+    const editor = mockEditor()
+
+    importEventStormerShapes(editor, [])
+
+    expect(editor.createShapes).not.toHaveBeenCalled()
+  })
+
+  it('creates shapes from EventStormer format', () => {
+    const editor = mockEditor()
+    const shapes = [
+      { type: 'event-sticky', x: 100, y: 200, props: { text: 'Event 1', w: 120, h: 100 } },
+      { type: 'hotspot-sticky', x: 300, y: 200, props: { text: 'Hotspot', w: 120, h: 100 } },
+    ]
+
+    importEventStormerShapes(editor, shapes)
+
+    expect(editor.createShapes).toHaveBeenCalledTimes(1)
+    const createdShapes = (editor.createShapes as ReturnType<typeof vi.fn>).mock.calls[0][0]
+    expect(createdShapes).toHaveLength(2)
+    expect(createdShapes[0].type).toBe('event-sticky')
+    expect(createdShapes[0].x).toBe(100)
+    expect(createdShapes[0].y).toBe(200)
+    expect(createdShapes[1].type).toBe('hotspot-sticky')
+  })
+
+  it('zooms to fit when option is set', () => {
+    const editor = mockEditor()
+    const shapes = [{ type: 'event-sticky', x: 100, y: 200, props: { text: 'Test', w: 120, h: 100 } }]
+
+    importEventStormerShapes(editor, shapes, { zoomToFit: true })
+
+    expect(editor.zoomToFit).toHaveBeenCalledWith({
+      animation: { duration: ZOOM_TO_FIT_ANIMATION_DURATION_MS },
+    })
+  })
+
+  it('does not zoom when option is false', () => {
+    const editor = mockEditor()
+    const shapes = [{ type: 'event-sticky', x: 100, y: 200, props: { text: 'Test', w: 120, h: 100 } }]
+
+    importEventStormerShapes(editor, shapes, { zoomToFit: false })
+
+    expect(editor.zoomToFit).not.toHaveBeenCalled()
+  })
+})
+
+describe('importTldrawShapes', () => {
+  it('does nothing for empty shapes array', () => {
+    const editor = mockEditor()
+
+    importTldrawShapes(editor, [])
+
+    expect(editor.createShapes).not.toHaveBeenCalled()
+  })
+
+  it('creates shapes from tldraw snapshot format', () => {
+    const editor = mockEditor()
+    const shapes = [
+      {
+        id: 'shape:abc123',
+        type: 'event-sticky',
+        typeName: 'shape',
+        x: 100,
+        y: 200,
+        rotation: 0,
+        props: { text: 'Event', w: 120, h: 100 },
+        parentId: 'page:page1',
+        index: 'a1',
+      },
+    ]
+
+    importTldrawShapes(editor, shapes)
+
+    expect(editor.createShapes).toHaveBeenCalledTimes(1)
+    const createdShapes = (editor.createShapes as ReturnType<typeof vi.fn>).mock.calls[0][0]
+    expect(createdShapes).toHaveLength(1)
+    expect(createdShapes[0].id).toBe('shape:abc123')
+    expect(createdShapes[0].type).toBe('event-sticky')
+    expect(createdShapes[0].x).toBe(100)
+    expect(createdShapes[0].y).toBe(200)
   })
 })

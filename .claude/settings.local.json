@@ -60,7 +60,8 @@
       "Bash(src/components/UserCursor.tsx )",
       "Bash(src/store/useCollabStore.ts)",
       "Bash(npx wrangler pages:*)",
-      "Bash(npx wrangler tail:*)"
+      "Bash(npx wrangler tail:*)",
+      "Bash(npx vitest:*)"
     ],
     "deny": [],
     "ask": []
