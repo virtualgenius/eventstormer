@@ -98,7 +98,7 @@ export default tseslint.config(
   },
   {
     // Relaxed rules for test files
-    files: ['**/*.test.ts', '**/*.test.tsx', '**/__tests__/**'],
+    files: ['**/*.test.ts', '**/*.test.tsx', '**/__tests__/**', '**/tests/**/*.ts'],
     rules: {
       'max-lines-per-function': 'off',
       'max-nested-callbacks': 'off',

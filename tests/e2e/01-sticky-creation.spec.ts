@@ -1,98 +1,71 @@
-import { test, expect } from '@playwright/test';
-import { CanvasPage } from '../pages/CanvasPage';
-import { enableDebugMode } from '../utils/debug';
-import { getStickyCount, getActiveTool, waitForStickyCount, waitForActiveTool, getStickies, clearBoard } from '../utils/store';
+import { test, expect } from '@playwright/test'
+import { CanvasPage } from '../pages/CanvasPage'
+import { getShapeCount, getShapesByType, waitForShapeCountIncrease, clearAllShapes, waitForShapeCount, waitForEditMode } from '../utils/tldraw'
 
-test.describe('Sticky Creation', () => {
-  let canvasPage: CanvasPage;
+test.describe('Shape Creation', () => {
+  let canvasPage: CanvasPage
 
-  test.beforeEach(async ({ page }) => {
-    await enableDebugMode(page);
-    canvasPage = new CanvasPage(page);
-    await canvasPage.goto();
-    await clearBoard(page);
-    await page.waitForTimeout(500); // Give time for clear to propagate
-  });
+  test.beforeEach(async ({ page }, testInfo) => {
+    canvasPage = new CanvasPage(page, testInfo)
+    await canvasPage.goto()
+    await clearAllShapes(page)
+    await waitForShapeCount(page, 0)
+  })
 
-  test('should select Event tool from palette', async ({ page }) => {
-    await canvasPage.selectTool('event');
+  test('should create event sticky when clicking palette tool', async ({ page }) => {
+    const initialCount = await getShapeCount(page)
 
-    // Verify active tool is set in store
-    await waitForActiveTool(page, 'event');
-    const activeTool = await getActiveTool(page);
-    expect(activeTool).toBe('event');
-  });
+    await canvasPage.selectTool('event-sticky')
 
-  test('should create sticky when clicking canvas with tool selected', async ({ page }) => {
-    const initialCount = await getStickyCount(page);
+    await waitForShapeCountIncrease(page, initialCount)
 
-    await canvasPage.selectTool('event');
-    await canvasPage.clickCanvasAt(300, 200);
+    const eventShapes = await getShapesByType(page, 'event-sticky')
+    expect(eventShapes.length).toBeGreaterThan(0)
+  })
 
-    // Wait for sticky count to increase
-    await page.waitForFunction(
-      (initial) => {
-        const store = (window as any).__testStore;
-        return store?.getState().board.stickies.length > initial;
-      },
-      initialCount,
-      { timeout: 3000 }
-    );
+  test('should create hotspot sticky when clicking palette tool', async ({ page }) => {
+    const initialCount = await getShapeCount(page)
 
-    // Verify sticky was created
-    const stickies = await getStickies(page);
-    expect(stickies.length).toBeGreaterThan(initialCount);
-    expect(stickies[stickies.length - 1].kind).toBe('event');
-    expect(stickies[stickies.length - 1].text).toBe('');
-  });
+    await canvasPage.selectTool('hotspot-sticky')
 
-  test('should support creating multiple event stickies', async ({ page }) => {
-    const initialCount = await getStickyCount(page);
+    await waitForShapeCountIncrease(page, initialCount)
 
-    // Create first sticky
-    await canvasPage.createStickyAt('event', 200, 200);
-    await page.waitForTimeout(500);
+    const hotspotShapes = await getShapesByType(page, 'hotspot-sticky')
+    expect(hotspotShapes.length).toBeGreaterThan(0)
+  })
 
-    const count1 = await getStickyCount(page);
-    expect(count1).toBeGreaterThan(initialCount);
+  test('should create multiple stickies', async ({ page }) => {
+    const initialCount = await getShapeCount(page)
 
-    // Create second sticky at different position
-    await canvasPage.createStickyAt('event', 900, 400);
-    await page.waitForTimeout(500);
+    await canvasPage.selectTool('event-sticky')
+    await waitForShapeCountIncrease(page, initialCount)
 
-    const count2 = await getStickyCount(page);
-    expect(count2).toBeGreaterThan(count1);
-  });
+    const countAfterFirst = await getShapeCount(page)
+    expect(countAfterFirst).toBeGreaterThan(initialCount)
 
-  test('should deactivate tool after creating sticky', async ({ page }) => {
-    await canvasPage.selectTool('event');
-    await canvasPage.clickCanvasAt(300, 200);
+    await canvasPage.pressEscape()
 
-    // Wait for sticky creation and tool deactivation
-    await waitForActiveTool(page, null);
+    await canvasPage.selectTool('event-sticky')
+    await waitForShapeCountIncrease(page, countAfterFirst)
 
-    const activeTool = await getActiveTool(page);
-    expect(activeTool).toBeNull();
-  });
+    const finalCount = await getShapeCount(page)
+    expect(finalCount).toBeGreaterThan(countAfterFirst)
+  })
+
+  test('should enter edit mode after creating sticky', async ({ page }) => {
+    await canvasPage.selectTool('event-sticky')
+
+    await waitForEditMode(page)
+  })
 
   test('should create sticky with empty text initially', async ({ page }) => {
-    const initialCount = await getStickyCount(page);
+    const initialCount = await getShapeCount(page)
 
-    await canvasPage.selectTool('event');
-    await canvasPage.clickCanvasAt(300, 200);
+    await canvasPage.selectTool('event-sticky')
+    await waitForShapeCountIncrease(page, initialCount)
 
-    // Wait for sticky creation
-    await page.waitForFunction(
-      (initial) => {
-        const store = (window as any).__testStore;
-        return store?.getState().board.stickies.length > initial;
-      },
-      initialCount,
-      { timeout: 3000 }
-    );
-
-    const stickies = await getStickies(page);
-    const lastSticky = stickies[stickies.length - 1];
-    expect(lastSticky.text).toBe('');
-  });
-});
+    const eventShapes = await getShapesByType(page, 'event-sticky')
+    const lastShape = eventShapes[eventShapes.length - 1] as { props: { text: string } }
+    expect(lastShape.props.text).toBe('')
+  })
+})

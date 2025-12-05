@@ -67,6 +67,12 @@ const components: TLComponents = {
 const DEFER_TO_NEXT_TICK_MS = 0
 const TOOLTIP_DELAY_MS = 0
 
+function exposeEditorForTesting(editor: Editor): void {
+  if (typeof window !== 'undefined') {
+    (window as unknown as { __tldrawEditor: Editor }).__tldrawEditor = editor
+  }
+}
+
 interface TldrawBoardProps {
   roomId: string
   userName: string
@@ -94,6 +100,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
 
   const handleMount = useCallback((editor: Editor) => {
     setEditor(editor)
+    exposeEditorForTesting(editor)
 
     const handleBackgroundShapeCreated = (shape: { id: TLShapeId; type: string }) => {
       if (!BACKGROUND_SHAPE_TYPES.includes(shape.type)) return
