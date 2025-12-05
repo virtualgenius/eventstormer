@@ -106,6 +106,30 @@ export default tseslint.config(
     },
   },
   {
+    // Relaxed line limits for React hooks
+    files: ['**/use*.ts', '**/use*.tsx'],
+    rules: {
+      'max-lines-per-function': ['warn', {
+        max: 75,
+        skipBlankLines: true,
+        skipComments: true,
+        IIFEs: true,
+      }],
+    },
+  },
+  {
+    // React components need more lines for JSX templates
+    files: ['**/*.tsx'],
+    rules: {
+      'max-lines-per-function': ['warn', {
+        max: 150,
+        skipBlankLines: true,
+        skipComments: true,
+        IIFEs: true,
+      }],
+    },
+  },
+  {
     ignores: ['node_modules/**', 'dist/**', 'build/**', '*.config.js', '*.config.ts'],
   }
 )
