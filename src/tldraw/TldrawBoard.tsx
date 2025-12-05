@@ -68,6 +68,11 @@ import {
   isTextInputElement,
   getTextFromTextInput,
   hasTextChanged,
+  isUnmodifiedArrowKey,
+  getConnectionStatusText,
+  getConnectionStatusColor,
+  getEditingOrSelectedShape,
+  selectAndStartEditing,
 } from './editorHelpers'
 
 // Register all custom shape utils
@@ -200,31 +205,18 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
       props: config,
     })
 
-    // Select and enter edit mode for editable shapes
     if (EDITABLE_TYPES.includes(type)) {
-      editor.select(newId)
-      requestAnimationFrame(() => {
-        editor.setEditingShape(newId)
-      })
+      selectAndStartEditing(editor, newId)
     }
   }, [editor])
 
-  // Create a new sticky to the right of selected shape (Tab workflow)
   const createNextSticky = useCallback(() => {
     if (!editor) return
 
-    // Get the shape to base the new sticky on
-    const editingId = editor.getEditingShapeId()
-    let sourceShape = editingId ? editor.getShape(editingId) : null
-
-    // If not editing, use selected shape
-    if (!sourceShape) {
-      const selectedShapes = editor.getSelectedShapes()
-      if (selectedShapes.length !== 1) return
-      sourceShape = selectedShapes[0]
-    }
-
+    const sourceShape = getEditingOrSelectedShape(editor)
     if (!sourceShape) return
+
+    const editingId = editor.getEditingShapeId()
 
     const shapeType = sourceShape.type as ToolType
 
@@ -263,11 +255,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
       },
     })
 
-    // Select the new shape and enter edit mode
-    editor.select(newId)
-    requestAnimationFrame(() => {
-      editor.setEditingShape(newId)
-    })
+    selectAndStartEditing(editor, newId)
   }, [editor])
 
   const duplicateSelected = useCallback(() => {
@@ -314,8 +302,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
       props: { text: '', w: targetDims.w, h: targetDims.h },
     })
 
-    editor.select(newId)
-    requestAnimationFrame(() => editor.setEditingShape(newId))
+    selectAndStartEditing(editor, newId)
 
     return newId
   }, [editor])
@@ -338,8 +325,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
       props: { text: props.text || '', w: newDims.w, h: newDims.h },
     })
 
-    editor.select(shapeId)
-    requestAnimationFrame(() => editor.setEditingShape(shapeId))
+    selectAndStartEditing(editor, shapeId)
   }, [editor])
 
   useEffect(() => {
@@ -356,20 +342,12 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
       }
 
       if (isFlowModeActive(workshopMode) &&
-          (e.key === 'ArrowRight' || e.key === 'ArrowLeft') &&
-          !e.metaKey && !e.ctrlKey && !e.altKey) {
+          isUnmodifiedArrowKey(e, ['ArrowRight', 'ArrowLeft'])) {
+
+        const sourceShape = getEditingOrSelectedShape(editor)
+        if (!sourceShape) return
 
         const editingId = editor.getEditingShapeId()
-        let sourceShape = editingId ? editor.getShape(editingId) : null
-
-        if (!sourceShape) {
-          const selectedShapes = editor.getSelectedShapes()
-          if (selectedShapes.length === 1) {
-            sourceShape = selectedShapes[0]
-          }
-        }
-
-        if (!sourceShape) return
 
         const flowType = fromStickyType(sourceShape.type)
         if (!flowType) return
@@ -406,8 +384,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
       }
 
       if (isFlowModeActive(workshopMode) &&
-          (e.key === 'ArrowDown' || e.key === 'ArrowUp') &&
-          !e.metaKey && !e.ctrlKey && !e.altKey) {
+          isUnmodifiedArrowKey(e, ['ArrowDown', 'ArrowUp'])) {
 
         const saveAndExitEditMode = () => {
           if (isInTextInput) {
@@ -444,18 +421,8 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
           }
         }
 
-        // Down arrow on policy (no flowState or no alternatives) = create branch below
         if (e.key === 'ArrowDown') {
-          const editingId = editor.getEditingShapeId()
-          let sourceShape = editingId ? editor.getShape(editingId) : null
-
-          if (!sourceShape) {
-            const selectedShapes = editor.getSelectedShapes()
-            if (selectedShapes.length === 1) {
-              sourceShape = selectedShapes[0]
-            }
-          }
-
+          const sourceShape = getEditingOrSelectedShape(editor)
           if (sourceShape) {
             const flowType = fromStickyType(sourceShape.type)
             if (flowType && canCreateBranch(flowType)) {
@@ -673,20 +640,10 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
         {/* Render header right content if no external render prop */}
         {!renderHeaderRight && (
           <div className="flex items-center gap-4">
-            {/* Connection Status */}
             <div className="flex items-center gap-2">
-              <div
-                className={`w-2 h-2 rounded-full ${
-                  connectionStatus === 'online' ? 'bg-green-500' :
-                  connectionStatus === 'offline' ? 'bg-red-500' :
-                  connectionStatus === 'loading' ? 'bg-yellow-500' : 'bg-slate-400'
-                }`}
-              />
+              <div className={`w-2 h-2 rounded-full ${getConnectionStatusColor(connectionStatus)}`} />
               <span className="text-xs text-slate-500">
-                {connectionStatus === 'online' ? 'Connected' :
-                 connectionStatus === 'offline' ? 'Offline' :
-                 connectionStatus === 'loading' ? 'Connecting...' :
-                 connectionStatus === 'not-synced' ? 'Syncing...' : 'Loading...'}
+                {getConnectionStatusText(connectionStatus)}
               </span>
             </div>
 
