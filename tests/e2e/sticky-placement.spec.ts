@@ -160,3 +160,54 @@ test.describe('Sticky Placement - Custom Cursor', () => {
     expect(eventCursor).not.toBe(hotspotCursor)
   })
 })
+
+test.describe('Sticky Placement - Keyboard Shortcuts', () => {
+  let canvasPage: CanvasPage
+
+  test.beforeEach(async ({ page }, testInfo) => {
+    canvasPage = new CanvasPage(page, testInfo)
+    await canvasPage.goto()
+    await clearAllShapes(page)
+    await waitForShapeCount(page, 0)
+  })
+
+  test('keyboard shortcut creates sticky at cursor position', async ({ page }) => {
+    const canvas = page.locator('.tl-container')
+    const box = await canvas.boundingBox()
+
+    const targetX = box!.x + 500
+    const targetY = box!.y + 300
+    await page.mouse.move(targetX, targetY)
+
+    await page.keyboard.press('e')
+    await waitForShapeCountIncrease(page, 0)
+
+    interface TldrawEditor {
+      screenToPage: (p: { x: number; y: number }) => { x: number; y: number }
+    }
+    const expectedPagePoint = await page.evaluate(([sx, sy]) => {
+      const editor = (window as unknown as { __tldrawEditor: TldrawEditor }).__tldrawEditor
+      return editor.screenToPage({ x: sx, y: sy })
+    }, [targetX, targetY])
+
+    const shapes = await getShapesByType(page, 'event-sticky') as Array<{ x: number; y: number; props: { w: number; h: number } }>
+    const shape = shapes[0]
+    const centerX = shape.x + shape.props.w / 2
+    const centerY = shape.y + shape.props.h / 2
+
+    expect(centerX).toBeCloseTo(expectedPagePoint.x, 0)
+    expect(centerY).toBeCloseTo(expectedPagePoint.y, 0)
+  })
+
+  test('pressing h creates hotspot at cursor', async ({ page }) => {
+    const canvas = page.locator('.tl-container')
+    const box = await canvas.boundingBox()
+    await page.mouse.move(box!.x + 300, box!.y + 200)
+
+    await page.keyboard.press('h')
+    await waitForShapeCountIncrease(page, 0)
+
+    const shapes = await getShapesByType(page, 'hotspot-sticky')
+    expect(shapes.length).toBe(1)
+  })
+})

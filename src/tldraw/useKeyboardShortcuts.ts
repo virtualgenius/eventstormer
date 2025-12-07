@@ -1,8 +1,8 @@
 import { useEffect, useCallback, useState } from 'react'
 import { Editor, TLShapeId, TLShape, createShapeId } from 'tldraw'
 import { WorkshopMode, FacilitationPhase, ToolType, STICKY_TYPES, EDITABLE_TYPES } from '@/lib/workshopConfig'
-import { calculateFlowShapePosition, calculateCenterPosition, calculateDuplicatePosition, calculateNextStickyPosition } from '@/lib/shapeLayout'
-import { getDefaultProps, getShapeDimensions, isHalfHeight } from '@/lib/workshopConfig'
+import { calculateFlowShapePosition, calculateClickPlacementPosition, calculateDuplicatePosition, calculateNextStickyPosition } from '@/lib/shapeLayout'
+import { getDefaultProps, getShapeDimensions } from '@/lib/workshopConfig'
 import { isTextInputElement, getEditingOrSelectedShape, selectAndStartEditing, saveEditingShapeText } from './editorHelpers'
 import {
   FlowState,
@@ -36,10 +36,9 @@ function useFinishEditing(editor: Editor | null) {
 function useCreateShape(editor: Editor | null) {
   return useCallback((type: ToolType) => {
     if (!editor) return
-    const viewportCenter = editor.getViewportScreenCenter()
-    const pagePoint = editor.screenToPage(viewportCenter)
+    const cursorPoint = editor.inputs.currentPagePoint
     const config = getDefaultProps(type)
-    const position = calculateCenterPosition(pagePoint, config, isHalfHeight(type))
+    const position = calculateClickPlacementPosition(cursorPoint, config)
     const newId = createShapeId()
     editor.createShape({ id: newId, type, x: position.x, y: position.y, props: config })
     if (EDITABLE_TYPES.includes(type)) selectAndStartEditing(editor, newId)
