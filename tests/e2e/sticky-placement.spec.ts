@@ -90,3 +90,31 @@ test.describe('Sticky Placement - Canvas Click', () => {
     await expect(page.locator('[data-tool="event-sticky"]')).toHaveAttribute('data-active', 'false')
   })
 })
+
+test.describe('Sticky Placement - Escape Key', () => {
+  let canvasPage: CanvasPage
+
+  test.beforeEach(async ({ page }, testInfo) => {
+    canvasPage = new CanvasPage(page, testInfo)
+    await canvasPage.goto()
+    await clearAllShapes(page)
+    await waitForShapeCount(page, 0)
+  })
+
+  test('Escape deselects active tool', async ({ page }) => {
+    await page.click('[data-tool="event-sticky"]')
+    await expect(page.locator('[data-tool="event-sticky"]')).toHaveAttribute('data-active', 'true')
+
+    await page.keyboard.press('Escape')
+
+    await expect(page.locator('[data-tool="event-sticky"]')).toHaveAttribute('data-active', 'false')
+  })
+
+  test('Escape does nothing when no tool selected', async ({ page }) => {
+    await expect(page.locator('[data-tool="event-sticky"]')).toHaveAttribute('data-active', 'false')
+
+    await page.keyboard.press('Escape')
+
+    await expect(page.locator('[data-tool="event-sticky"]')).toHaveAttribute('data-active', 'false')
+  })
+})

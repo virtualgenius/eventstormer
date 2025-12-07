@@ -142,6 +142,16 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
     onPlacementComplete: handlePlacementComplete,
   })
 
+  useEffect(function handleEscapeKeyDeselect() {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && activeTool !== null) {
+        setActiveTool(null)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [activeTool])
+
   const showPhaseSelector = usesPhases(workshopMode)
   const availableTools = getAvailableTools(workshopMode, phase)
   const connectionStatus = storeWithStatus.status === 'synced-remote'
