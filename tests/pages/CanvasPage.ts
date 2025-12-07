@@ -16,13 +16,6 @@ export type ToolType =
   | 'theme-area'
   | 'label'
 
-const CHAOTIC_EXPLORATION_TOOLS: ToolType[] = [
-  'event-sticky',
-  'hotspot-sticky',
-  'theme-area',
-  'label',
-]
-
 const USER_NAME_KEY = 'eventstormer-user-name'
 const TEST_USER_NAME = 'Test User'
 const FALLBACK_BOARD_ID = 'e2e-test-board'
@@ -36,7 +29,7 @@ export class CanvasPage {
 
   constructor(page: Page, testInfo?: TestInfo) {
     this.page = page
-    this.canvas = page.locator('.tl-container canvas').first()
+    this.canvas = page.locator('.tl-container').first()
     this.testInfo = testInfo
   }
 
@@ -81,18 +74,12 @@ export class CanvasPage {
   }
 
   async selectTool(toolType: ToolType): Promise<void> {
-    const palette = this.page.locator('.absolute.top-3.left-3')
-    const toolIndex = this.getToolIndex(toolType)
-    const toolButton = palette.locator('button').nth(toolIndex)
-    await toolButton.click()
+    await this.page.click(`[data-tool="${toolType}"]`)
   }
 
-  private getToolIndex(toolType: ToolType): number {
-    const index = CHAOTIC_EXPLORATION_TOOLS.indexOf(toolType)
-    if (index === -1) {
-      throw new Error(`Tool ${toolType} not available in chaotic-exploration phase`)
-    }
-    return index
+  async createShapeAt(toolType: ToolType, x: number, y: number): Promise<void> {
+    await this.selectTool(toolType)
+    await this.clickCanvasAt(x, y)
   }
 
   async clickCanvasAt(x: number, y: number): Promise<void> {

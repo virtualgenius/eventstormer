@@ -7,6 +7,7 @@ import {
   calculateCenterPosition,
   calculateDuplicatePosition,
   calculateNextStickyPosition,
+  calculateClickPlacementPosition,
   SourceShape,
 } from '../shapeLayout'
 
@@ -137,5 +138,47 @@ describe('calculateNextStickyPosition', () => {
       x: 240 + GAP,
       y: 500,
     })
+  })
+})
+
+describe('calculateClickPlacementPosition', () => {
+  it('centers standard sticky (120x100) on click point', () => {
+    const result = calculateClickPlacementPosition(
+      { x: 500, y: 300 },
+      { w: 120, h: 100 }
+    )
+    expect(result).toEqual({ x: 440, y: 250 })
+  })
+
+  it('centers half-height sticky (120x50) on click point', () => {
+    const result = calculateClickPlacementPosition(
+      { x: 500, y: 300 },
+      { w: 120, h: 50 }
+    )
+    expect(result).toEqual({ x: 440, y: 275 })
+  })
+
+  it('centers wide sticky (240x100) on click point', () => {
+    const result = calculateClickPlacementPosition(
+      { x: 500, y: 300 },
+      { w: 240, h: 100 }
+    )
+    expect(result).toEqual({ x: 380, y: 250 })
+  })
+
+  it('handles click at origin', () => {
+    const result = calculateClickPlacementPosition(
+      { x: 0, y: 0 },
+      { w: 120, h: 100 }
+    )
+    expect(result).toEqual({ x: -60, y: -50 })
+  })
+
+  it('handles negative coordinates', () => {
+    const result = calculateClickPlacementPosition(
+      { x: -200, y: -150 },
+      { w: 120, h: 100 }
+    )
+    expect(result).toEqual({ x: -260, y: -200 })
   })
 })

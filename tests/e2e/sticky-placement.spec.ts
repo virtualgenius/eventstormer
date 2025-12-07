@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { CanvasPage } from '../pages/CanvasPage'
-import { clearAllShapes, waitForShapeCount } from '../utils/tldraw'
+import { clearAllShapes, waitForShapeCount, getShapeCount, waitForShapeCountIncrease, getShapesByType } from '../utils/tldraw'
 
 test.describe('Sticky Placement - Data Attributes', () => {
   let canvasPage: CanvasPage
@@ -22,5 +22,71 @@ test.describe('Sticky Placement - Data Attributes', () => {
   test('palette buttons have data-active attribute set to false initially', async ({ page }) => {
     await expect(page.locator('[data-tool="event-sticky"]')).toHaveAttribute('data-active', 'false')
     await expect(page.locator('[data-tool="hotspot-sticky"]')).toHaveAttribute('data-active', 'false')
+  })
+})
+
+test.describe('Sticky Placement - Tool Selection', () => {
+  let canvasPage: CanvasPage
+
+  test.beforeEach(async ({ page }, testInfo) => {
+    canvasPage = new CanvasPage(page, testInfo)
+    await canvasPage.goto()
+    await clearAllShapes(page)
+    await waitForShapeCount(page, 0)
+  })
+
+  test('palette click selects tool without creating sticky', async ({ page }) => {
+    const initialCount = await getShapeCount(page)
+
+    await page.click('[data-tool="event-sticky"]')
+
+    await expect(page.locator('[data-tool="event-sticky"]')).toHaveAttribute('data-active', 'true')
+    expect(await getShapeCount(page)).toBe(initialCount)
+  })
+
+  test('clicking same tool toggles it off', async ({ page }) => {
+    await page.click('[data-tool="event-sticky"]')
+    await expect(page.locator('[data-tool="event-sticky"]')).toHaveAttribute('data-active', 'true')
+
+    await page.click('[data-tool="event-sticky"]')
+    await expect(page.locator('[data-tool="event-sticky"]')).toHaveAttribute('data-active', 'false')
+  })
+
+  test('clicking different tool switches selection', async ({ page }) => {
+    await page.click('[data-tool="event-sticky"]')
+    await expect(page.locator('[data-tool="event-sticky"]')).toHaveAttribute('data-active', 'true')
+
+    await page.click('[data-tool="hotspot-sticky"]')
+    await expect(page.locator('[data-tool="event-sticky"]')).toHaveAttribute('data-active', 'false')
+    await expect(page.locator('[data-tool="hotspot-sticky"]')).toHaveAttribute('data-active', 'true')
+  })
+})
+
+test.describe('Sticky Placement - Canvas Click', () => {
+  let canvasPage: CanvasPage
+
+  test.beforeEach(async ({ page }, testInfo) => {
+    canvasPage = new CanvasPage(page, testInfo)
+    await canvasPage.goto()
+    await clearAllShapes(page)
+    await waitForShapeCount(page, 0)
+  })
+
+  test('canvas click creates sticky at click position', async ({ page }) => {
+    await page.click('[data-tool="event-sticky"]')
+    const initialCount = await getShapeCount(page)
+
+    await canvasPage.clickCanvasAt(400, 300)
+
+    await waitForShapeCountIncrease(page, initialCount)
+    const shapes = await getShapesByType(page, 'event-sticky')
+    expect(shapes.length).toBe(1)
+  })
+
+  test('tool deselects after placing sticky', async ({ page }) => {
+    await page.click('[data-tool="event-sticky"]')
+    await canvasPage.clickCanvasAt(400, 300)
+
+    await expect(page.locator('[data-tool="event-sticky"]')).toHaveAttribute('data-active', 'false')
   })
 })

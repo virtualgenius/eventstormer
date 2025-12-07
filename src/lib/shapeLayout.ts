@@ -74,3 +74,13 @@ export function calculateNextStickyPosition(
     y: sourceShape.y,
   }
 }
+
+export function calculateClickPlacementPosition(
+  clickPoint: ShapePosition,
+  shapeDims: ShapeDimensions
+): ShapePosition {
+  return {
+    x: clickPoint.x - shapeDims.w / 2,
+    y: clickPoint.y - shapeDims.h / 2,
+  }
+}

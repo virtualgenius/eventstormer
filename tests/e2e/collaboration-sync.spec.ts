@@ -25,9 +25,8 @@ test.describe('Real-time Collaboration', () => {
 
     const initialCount = await getShapeCount(page2)
 
-    await canvasPage1.selectTool('event-sticky')
+    await canvasPage1.createShapeAt('event-sticky', 400, 300)
     await waitForShapeCountIncrease(page1, 0)
-    await canvasPage1.pressEscape()
 
     await page2.waitForFunction(
       (initial) => {

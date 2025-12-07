@@ -27,9 +27,8 @@ test.describe('JSON Export', () => {
   test('should download JSON file when export button clicked', async ({ page }) => {
     const initialCount = await getShapeCount(page)
 
-    await canvasPage.selectTool('event-sticky')
+    await canvasPage.createShapeAt('event-sticky', 400, 300)
     await waitForShapeCountIncrease(page, initialCount)
-    await canvasPage.pressEscape()
 
     const downloadPromise = page.waitForEvent('download')
     await canvasPage.clickExport()
@@ -41,9 +40,8 @@ test.describe('JSON Export', () => {
   test('should export valid JSON file', async ({ page }) => {
     const initialCount = await getShapeCount(page)
 
-    await canvasPage.selectTool('event-sticky')
+    await canvasPage.createShapeAt('event-sticky', 400, 300)
     await waitForShapeCountIncrease(page, initialCount)
-    await canvasPage.pressEscape()
 
     const downloadPromise = page.waitForEvent('download')
     await canvasPage.clickExport()

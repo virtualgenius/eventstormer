@@ -10,6 +10,7 @@ test.describe('Phase-based element filtering', () => {
   test.beforeEach(async ({ page }, testInfo) => {
     canvasPage = new CanvasPage(page, testInfo)
     await canvasPage.goto()
+    await canvasPage.selectWorkshopMode('big-picture')
     await clearAllShapes(page)
     await waitForShapeCount(page, 0)
   })

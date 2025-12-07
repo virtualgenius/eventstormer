@@ -24,6 +24,7 @@ import { useYjsPresence } from './useYjsPresence'
 import { useKeyboardShortcuts } from './useKeyboardShortcuts'
 import { useFileOperations } from './useFileOperations'
 import { useTemplateLoader } from './useTemplateLoader'
+import { useCanvasClickPlacement } from './useCanvasClickPlacement'
 import { MAX_SHAPES_PER_PAGE } from './editorHelpers'
 import {
   WorkshopMode,
@@ -94,7 +95,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
   const { storeWithStatus, room } = useYjsStore({ roomId })
 
   useYjsPresence({ editor, room, userName })
-  const { createShape } = useKeyboardShortcuts({ editor, workshopMode, phase })
+  useKeyboardShortcuts({ editor, workshopMode, phase })
   const { fileInputRef, handleExportJSON, handleImportJSON, handleFileChange } = useFileOperations({ editor, roomId })
   useTemplateLoader({ editor, templateFile, storeStatus: storeWithStatus.status })
 
@@ -127,9 +128,19 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
   }, [editor, storeWithStatus.status])
 
   const handleToolSelect = useCallback((type: ToolType) => {
-    setActiveTool(type)
-    createShape(type)
-  }, [createShape])
+    const shouldToggleOff = activeTool === type
+    setActiveTool(shouldToggleOff ? null : type)
+  }, [activeTool])
+
+  const handlePlacementComplete = useCallback(() => {
+    setActiveTool(null)
+  }, [])
+
+  useCanvasClickPlacement({
+    editor,
+    activeTool,
+    onPlacementComplete: handlePlacementComplete,
+  })
 
   const showPhaseSelector = usesPhases(workshopMode)
   const availableTools = getAvailableTools(workshopMode, phase)
