@@ -25,6 +25,7 @@ EventStorming is a rapid, collaborative workshop format for exploring complex bu
 
 **Learn more:**
 - [Introducing EventStorming](https://www.eventstorming.com/) by Alberto Brandolini
+- [EventStorming Resources](https://www.eventstorming.com/resources/) — official Miro templates (basis for our example boards)
 - [EventStorming Glossary](https://www.eventstorming.com/resources/#glossary)
 - [Awesome EventStorming](https://github.com/mariuszgil/awesome-eventstorming) — curated resources
 
