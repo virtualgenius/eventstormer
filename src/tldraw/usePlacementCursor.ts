@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { ToolType } from '@/lib/workshopConfig'
-import { generatePlacementCursor } from '@/lib/cursorGeneration'
+import { applyPlacementCursor } from './placementCursorHandlers'
 
 interface UsePlacementCursorParams {
   activeTool: ToolType | null
@@ -8,20 +8,10 @@ interface UsePlacementCursorParams {
 
 export function usePlacementCursor({ activeTool }: UsePlacementCursorParams) {
   useEffect(function updatePlacementCursor() {
-    const container = document.querySelector('.tl-container') as HTMLElement | null
-    if (!container) return
-
-    if (activeTool) {
-      const cursor = generatePlacementCursor(activeTool)
-      if (cursor) {
-        container.style.cursor = cursor
-      }
-    }
+    applyPlacementCursor(activeTool)
 
     return () => {
-      if (container) {
-        container.style.cursor = ''
-      }
+      applyPlacementCursor(null)
     }
   }, [activeTool])
 }

@@ -30,20 +30,66 @@ describe('buildCursorCssValue', () => {
 })
 
 describe('generatePlacementCursor', () => {
-  it('returns cursor CSS for event-sticky', () => {
-    const cursor = generatePlacementCursor('event-sticky')
-    expect(cursor).toContain('url(data:image/svg+xml,')
-    expect(cursor).toContain('crosshair')
+  describe('sticky types', () => {
+    it('returns cursor CSS for event-sticky', () => {
+      const cursor = generatePlacementCursor('event-sticky')
+      expect(cursor).toContain('url(data:image/svg+xml,')
+      expect(cursor).toContain('crosshair')
+    })
+
+    it('returns different cursors for different sticky types', () => {
+      const eventCursor = generatePlacementCursor('event-sticky')
+      const hotspotCursor = generatePlacementCursor('hotspot-sticky')
+      expect(eventCursor).not.toBe(hotspotCursor)
+    })
+
+    it('returns cursor with correct color for person-sticky (bright yellow)', () => {
+      const cursor = generatePlacementCursor('person-sticky')
+      expect(cursor).toContain('%23ffef00') // URL-encoded #ffef00
+    })
   })
 
-  it('returns null for unknown tool type', () => {
-    const cursor = generatePlacementCursor('vertical-line')
-    expect(cursor).toBeNull()
+  describe('non-sticky tools', () => {
+    it('returns cursor for vertical-line', () => {
+      const cursor = generatePlacementCursor('vertical-line')
+      expect(cursor).toContain('url(data:image/svg+xml,')
+      expect(cursor).toContain('crosshair')
+    })
+
+    it('returns cursor for horizontal-lane', () => {
+      const cursor = generatePlacementCursor('horizontal-lane')
+      expect(cursor).toContain('url(data:image/svg+xml,')
+    })
+
+    it('returns cursor for theme-area', () => {
+      const cursor = generatePlacementCursor('theme-area')
+      expect(cursor).toContain('url(data:image/svg+xml,')
+    })
+
+    it('returns cursor for label', () => {
+      const cursor = generatePlacementCursor('label')
+      expect(cursor).toContain('url(data:image/svg+xml,')
+    })
   })
 
-  it('returns different cursors for different sticky types', () => {
-    const eventCursor = generatePlacementCursor('event-sticky')
-    const hotspotCursor = generatePlacementCursor('hotspot-sticky')
-    expect(eventCursor).not.toBe(hotspotCursor)
+  describe('cursor shape variations', () => {
+    it('person-sticky uses half-height shape', () => {
+      const cursor = generatePlacementCursor('person-sticky')
+      // Half-height has y="7" and height="10"
+      expect(cursor).toContain('y%3D%227%22') // URL-encoded y="7"
+    })
+
+    it('system-sticky uses wide shape', () => {
+      const cursor = generatePlacementCursor('system-sticky')
+      // Wide has width="22"
+      expect(cursor).toContain('width%3D%2222%22') // URL-encoded width="22"
+    })
+
+    it('event-sticky uses standard square shape', () => {
+      const cursor = generatePlacementCursor('event-sticky')
+      // Standard has width="20" height="20"
+      expect(cursor).toContain('width%3D%2220%22')
+      expect(cursor).toContain('height%3D%2220%22')
+    })
   })
 })
