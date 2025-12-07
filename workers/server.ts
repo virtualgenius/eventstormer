@@ -6,7 +6,8 @@ const STORAGE_KEY = "yjs-document";
 
 // Yjs collaboration server using Durable Objects with SQLite persistence
 export class YjsRoom extends YServer {
-  // Configure save timing - save 2 seconds after last edit, max 10 seconds
+  static options = { hibernate: true };
+
   static callbackOptions = {
     debounceWait: 2000,
     debounceMaxWait: 10000,
