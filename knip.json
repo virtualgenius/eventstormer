@@ -1,0 +1,23 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/main.tsx",
+    "workers/server.ts"
+  ],
+  "project": ["src/**/*.{ts,tsx}", "workers/**/*.ts"],
+  "ignore": [
+    "scripts/**",
+    "tests/**"
+  ],
+  "ignoreDependencies": [
+    "@typescript-eslint/eslint-plugin",
+    "@typescript-eslint/parser",
+    "partykit",
+    "dexie",
+    "nanoid",
+    "partysocket",
+    "y-protocols",
+    "zustand"
+  ],
+  "ignoreExportsUsedInFile": true
+}

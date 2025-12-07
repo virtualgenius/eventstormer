@@ -225,3 +225,19 @@ npm run test:e2e        # Run all tests
 npm run test:e2e:ui     # Interactive UI mode
 npm run test:e2e:headed # Run with browser visible
 ```
+
+## Dead Code Prevention
+
+When replacing functionality with new code, **delete the old code immediately** - don't leave it "for reference" or "in case we need it". Version control preserves history.
+
+Run dead code detection periodically:
+```bash
+npm run lint:deadcode   # Check for unused exports, files, and dependencies
+```
+
+**Replacement checklist:**
+
+- [ ] New function/module works and has tests
+- [ ] Old function/module is deleted (not just unused)
+- [ ] Tests for old function are deleted
+- [ ] No orphaned constants or types remain

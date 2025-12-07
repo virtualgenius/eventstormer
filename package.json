@@ -43,6 +43,7 @@
     "test:e2e:debug": "playwright test --debug",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
+    "lint:deadcode": "knip",
     "prepare": "husky"
   },
   "dependencies": {
@@ -73,6 +74,7 @@
     "eslint": "^9.39.1",
     "eslint-plugin-sonarjs": "^3.0.5",
     "husky": "^9.1.7",
+    "knip": "^5.71.0",
     "lint-staged": "^16.2.7",
     "partykit": "^0.0.115",
     "postcss": "^8.4.41",
