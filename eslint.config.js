@@ -130,6 +130,7 @@ export default tseslint.config(
     },
   },
   {
-    ignores: ['node_modules/**', 'dist/**', 'build/**', '*.config.js', '*.config.ts'],
+    // Workers have separate tsconfig, skip eslint type checking
+    ignores: ['node_modules/**', 'dist/**', 'build/**', 'workers/**', '*.config.js', '*.config.ts'],
   }
 )
