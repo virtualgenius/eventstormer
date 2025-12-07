@@ -118,3 +118,45 @@ test.describe('Sticky Placement - Escape Key', () => {
     await expect(page.locator('[data-tool="event-sticky"]')).toHaveAttribute('data-active', 'false')
   })
 })
+
+test.describe('Sticky Placement - Custom Cursor', () => {
+  let canvasPage: CanvasPage
+
+  test.beforeEach(async ({ page }, testInfo) => {
+    canvasPage = new CanvasPage(page, testInfo)
+    await canvasPage.goto()
+    await clearAllShapes(page)
+    await waitForShapeCount(page, 0)
+  })
+
+  test('cursor changes when tool selected', async ({ page }) => {
+    await page.click('[data-tool="event-sticky"]')
+
+    const container = page.locator('.tl-container')
+    const cursor = await container.evaluate(el => getComputedStyle(el).cursor)
+
+    expect(cursor).toContain('url(')
+    expect(cursor).toContain('crosshair')
+  })
+
+  test('cursor resets when tool deselected', async ({ page }) => {
+    await page.click('[data-tool="event-sticky"]')
+    await page.keyboard.press('Escape')
+
+    const container = page.locator('.tl-container')
+    const cursor = await container.evaluate(el => getComputedStyle(el).cursor)
+
+    expect(cursor).not.toContain('url(data:image/svg')
+  })
+
+  test('different tools show different cursors', async ({ page }) => {
+    await page.click('[data-tool="event-sticky"]')
+    const container = page.locator('.tl-container')
+    const eventCursor = await container.evaluate(el => getComputedStyle(el).cursor)
+
+    await page.click('[data-tool="hotspot-sticky"]')
+    const hotspotCursor = await container.evaluate(el => getComputedStyle(el).cursor)
+
+    expect(eventCursor).not.toBe(hotspotCursor)
+  })
+})

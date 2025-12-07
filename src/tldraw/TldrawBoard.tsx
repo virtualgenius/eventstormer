@@ -25,6 +25,7 @@ import { useKeyboardShortcuts } from './useKeyboardShortcuts'
 import { useFileOperations } from './useFileOperations'
 import { useTemplateLoader } from './useTemplateLoader'
 import { useCanvasClickPlacement } from './useCanvasClickPlacement'
+import { usePlacementCursor } from './usePlacementCursor'
 import { MAX_SHAPES_PER_PAGE } from './editorHelpers'
 import {
   WorkshopMode,
@@ -151,6 +152,8 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [activeTool])
+
+  usePlacementCursor({ activeTool })
 
   const showPhaseSelector = usesPhases(workshopMode)
   const availableTools = getAvailableTools(workshopMode, phase)
