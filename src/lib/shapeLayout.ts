@@ -43,20 +43,6 @@ export function calculateFlowShapePosition(
   return { x: newX, y: newY }
 }
 
-const HALF_HEIGHT_SHAPE_VERTICAL_OFFSET = 25
-const FULL_HEIGHT_SHAPE_VERTICAL_OFFSET = 50
-
-export function calculateCenterPosition(
-  viewportCenter: ShapePosition,
-  shapeDims: ShapeDimensions,
-  halfHeight: boolean
-): ShapePosition {
-  return {
-    x: viewportCenter.x - (shapeDims.w / 2),
-    y: viewportCenter.y - (halfHeight ? HALF_HEIGHT_SHAPE_VERTICAL_OFFSET : FULL_HEIGHT_SHAPE_VERTICAL_OFFSET),
-  }
-}
-
 export function calculateDuplicatePosition(
   shapePosition: ShapePosition
 ): ShapePosition {

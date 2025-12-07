@@ -4,7 +4,6 @@ import {
   VERTICAL_GAP,
   DUPLICATE_OFFSET,
   calculateFlowShapePosition,
-  calculateCenterPosition,
   calculateDuplicatePosition,
   calculateNextStickyPosition,
   calculateClickPlacementPosition,
@@ -61,36 +60,6 @@ describe('calculateFlowShapePosition', () => {
     expect(result).toEqual({
       x: 100,
       y: 200 + 100 + VERTICAL_GAP,
-    })
-  })
-})
-
-describe('calculateCenterPosition', () => {
-  const viewportCenter = { x: 500, y: 400 }
-  const shapeDims = { w: 120, h: 100 }
-
-  it('calculates centered position for full-height shape', () => {
-    const result = calculateCenterPosition(viewportCenter, shapeDims, false)
-    expect(result).toEqual({
-      x: 500 - 60,
-      y: 400 - 50,
-    })
-  })
-
-  it('calculates centered position for half-height shape', () => {
-    const result = calculateCenterPosition(viewportCenter, shapeDims, true)
-    expect(result).toEqual({
-      x: 500 - 60,
-      y: 400 - 25,
-    })
-  })
-
-  it('handles wide shapes', () => {
-    const wideDims = { w: 240, h: 100 }
-    const result = calculateCenterPosition(viewportCenter, wideDims, false)
-    expect(result).toEqual({
-      x: 500 - 120,
-      y: 400 - 50,
     })
   })
 })
