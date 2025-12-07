@@ -9,6 +9,7 @@ import {
   useEditor,
   useValue,
 } from 'tldraw'
+import { SHAPE_COLORS } from '@/lib/shapeColors'
 
 // Shared props schema - define validators first, then derive types
 const stickyShapeProps = {
@@ -50,19 +51,6 @@ const DEFAULT_STICKY_WIDTH = 120
 const HALF_HEIGHT_STICKY = 50
 const WIDE_STICKY_WIDTH = 240
 
-// Color configurations matching EventStormer
-const COLORS = {
-  event: { fill: '#fed7aa', border: '#fdba74', text: '#1e293b' },
-  hotspot: { fill: '#fecaca', border: '#fca5a5', text: '#1e293b' },
-  person: { fill: '#ffef00', border: '#fde047', text: '#1e293b' },
-  system: { fill: '#fce7f3', border: '#fbcfe8', text: '#1e293b' },
-  opportunity: { fill: '#bbf7d0', border: '#86efac', text: '#1e293b' },
-  glossary: { fill: '#1e293b', border: '#334155', text: '#ffffff' },
-  command: { fill: '#bfdbfe', border: '#93c5fd', text: '#1e293b' },
-  policy: { fill: '#c4b5fd', border: '#a78bfa', text: '#1e293b' },
-  aggregate: { fill: '#fef9c3', border: '#fef08a', text: '#1e293b' },
-  readmodel: { fill: '#bbf7d0', border: '#86efac', text: '#1e293b' },
-}
 
 // Editable sticky component using tldraw's editing state
 function EditableStickyComponent({
@@ -223,63 +211,63 @@ function createStickyShapeUtil<T extends AnyStickyShape>(
 // Create all sticky shape utils
 export const EventStickyShapeUtil = createStickyShapeUtil<EventStickyShape>(
   'event-sticky',
-  COLORS.event,
+  SHAPE_COLORS.event,
   DEFAULT_STICKY_HEIGHT
 )
 
 export const HotspotStickyShapeUtil = createStickyShapeUtil<HotspotStickyShape>(
   'hotspot-sticky',
-  COLORS.hotspot,
+  SHAPE_COLORS.hotspot,
   DEFAULT_STICKY_HEIGHT
 )
 
 export const PersonStickyShapeUtil = createStickyShapeUtil<PersonStickyShape>(
   'person-sticky',
-  COLORS.person,
+  SHAPE_COLORS.person,
   HALF_HEIGHT_STICKY
 )
 
 export const SystemStickyShapeUtil = createStickyShapeUtil<SystemStickyShape>(
   'system-sticky',
-  COLORS.system,
+  SHAPE_COLORS.system,
   DEFAULT_STICKY_HEIGHT,
   WIDE_STICKY_WIDTH
 )
 
 export const OpportunityStickyShapeUtil = createStickyShapeUtil<OpportunityStickyShape>(
   'opportunity-sticky',
-  COLORS.opportunity,
+  SHAPE_COLORS.opportunity,
   DEFAULT_STICKY_HEIGHT
 )
 
 export const GlossaryStickyShapeUtil = createStickyShapeUtil<GlossaryStickyShape>(
   'glossary-sticky',
-  COLORS.glossary,
+  SHAPE_COLORS.glossary,
   DEFAULT_STICKY_HEIGHT
 )
 
 export const CommandStickyShapeUtil = createStickyShapeUtil<CommandStickyShape>(
   'command-sticky',
-  COLORS.command,
+  SHAPE_COLORS.command,
   DEFAULT_STICKY_HEIGHT
 )
 
 export const PolicyStickyShapeUtil = createStickyShapeUtil<PolicyStickyShape>(
   'policy-sticky',
-  COLORS.policy,
+  SHAPE_COLORS.policy,
   DEFAULT_STICKY_HEIGHT,
   WIDE_STICKY_WIDTH
 )
 
 export const AggregateStickyShapeUtil = createStickyShapeUtil<AggregateStickyShape>(
   'aggregate-sticky',
-  COLORS.aggregate,
+  SHAPE_COLORS.aggregate,
   DEFAULT_STICKY_HEIGHT,
   WIDE_STICKY_WIDTH
 )
 
 export const ReadModelStickyShapeUtil = createStickyShapeUtil<ReadModelStickyShape>(
   'readmodel-sticky',
-  COLORS.readmodel,
+  SHAPE_COLORS.readmodel,
   DEFAULT_STICKY_HEIGHT
 )

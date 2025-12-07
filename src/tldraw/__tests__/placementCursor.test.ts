@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { applyPlacementCursor } from '../placementCursorHandlers'
+import { applyPlacementCursor } from '../usePlacementCursor'
 
 describe('applyPlacementCursor', () => {
   let container: HTMLElement

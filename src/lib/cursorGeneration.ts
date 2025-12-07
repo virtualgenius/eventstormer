@@ -1,25 +1,8 @@
 import { ToolType } from './workshopConfig'
+import { getShapeColors } from './shapeColors'
 
 const CURSOR_SIZE_PX = 24
 const CURSOR_HOTSPOT_CENTER_PX = 12
-
-// Shape colors matching StickyShapes.tsx (source of truth for rendered shapes)
-const SHAPE_COLORS: Record<string, { fill: string; border: string }> = {
-  'event-sticky': { fill: '#fed7aa', border: '#fdba74' },
-  'hotspot-sticky': { fill: '#fecaca', border: '#fca5a5' },
-  'person-sticky': { fill: '#ffef00', border: '#fde047' },
-  'system-sticky': { fill: '#fce7f3', border: '#fbcfe8' },
-  'opportunity-sticky': { fill: '#bbf7d0', border: '#86efac' },
-  'glossary-sticky': { fill: '#1e293b', border: '#334155' },
-  'command-sticky': { fill: '#bfdbfe', border: '#93c5fd' },
-  'policy-sticky': { fill: '#c4b5fd', border: '#a78bfa' },
-  'aggregate-sticky': { fill: '#fef9c3', border: '#fef08a' },
-  'readmodel-sticky': { fill: '#bbf7d0', border: '#86efac' },
-  'vertical-line': { fill: '#cbd5e1', border: '#94a3b8' },
-  'horizontal-lane': { fill: '#e2e8f0', border: '#cbd5e1' },
-  'theme-area': { fill: 'rgba(226,232,240,0.3)', border: '#cbd5e1' },
-  'label': { fill: 'transparent', border: '#64748b' },
-}
 
 // Generate SVG for sticky note cursor (square with rounded corners)
 export const generateStickyPreviewSvg = (fillColor: string, borderColor: string): string =>
@@ -67,7 +50,7 @@ const getSvgForTool = (toolType: ToolType, fill: string, border: string): string
 }
 
 export const generatePlacementCursor = (toolType: ToolType): string | null => {
-  const colors = SHAPE_COLORS[toolType]
+  const colors = getShapeColors(toolType)
   if (!colors) return null
 
   const svg = getSvgForTool(toolType, colors.fill, colors.border)
