@@ -143,7 +143,14 @@ function PaletteToolButton({ type, config, isActive, onClick }: PaletteToolButto
   return (
     <Tooltip.Root>
       <Tooltip.Trigger asChild>
-        <button onClick={onClick} className={`flex items-center justify-center p-2 rounded transition-colors ${buttonClass}`}>{renderToolIcon(type, config)}</button>
+        <button
+          data-tool={type}
+          data-active={isActive}
+          onClick={onClick}
+          className={`flex items-center justify-center p-2 rounded transition-colors ${buttonClass}`}
+        >
+          {renderToolIcon(type, config)}
+        </button>
       </Tooltip.Trigger>
       <Tooltip.Portal>
         <Tooltip.Content className="bg-slate-800 text-white text-xs px-3 py-2 rounded-md shadow-lg max-w-xs" side="right" sideOffset={TOOLTIP_SIDE_OFFSET_MD}>
