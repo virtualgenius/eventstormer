@@ -52,6 +52,15 @@ const STANDARD_STICKY_SIZE = 100
 const HALF_HEIGHT_STICKY = 50
 const WIDE_STICKY_WIDTH = 200
 
+// Hotspot speech bubble dimensions
+const HOTSPOT_WIDTH = 140
+const HOTSPOT_HEIGHT = 115
+const HOTSPOT_ROTATION_DEG = -10
+const HOTSPOT_STROKE_WIDTH = 6
+const HOTSPOT_CORNER_RADIUS = 12
+const HOTSPOT_SVG_PADDING = 4
+const HOTSPOT_TAIL_HEIGHT = 15
+
 // Pivotal event styling
 const PIVOTAL_STICKY_SIZE = 130
 const PIVOTAL_FONT_WEIGHT = 700
@@ -214,6 +223,148 @@ function EditableStickyComponent({
   )
 }
 
+// Speech bubble SVG path for hotspot shape
+const HOTSPOT_BUBBLE_PATH = 'M 12,0 H 128 Q 140,0 140,12 V 88 Q 140,100 128,100 H 55 L 35,115 L 40,100 H 12 Q 0,100 0,88 V 12 Q 0,0 12,0 Z'
+
+function HotspotBubbleComponent({ shape }: { shape: HotspotStickyShape }) {
+  const editor = useEditor()
+  const colors = SHAPE_COLORS.hotspot
+
+  const isEditing = useValue(
+    'isEditing',
+    () => editor.getEditingShapeId() === shape.id,
+    [editor, shape.id]
+  )
+
+  const [text, setText] = useState(shape.props.text)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // Sync text when shape prop changes externally
+  useEffect(() => {
+    if (!isEditing) {
+      setText(shape.props.text)
+    }
+  }, [shape.props.text, isEditing])
+
+  // Focus textarea when entering edit mode
+  useEffect(() => {
+    if (isEditing && textareaRef.current) {
+      textareaRef.current.focus()
+      textareaRef.current.select()
+    }
+  }, [isEditing])
+
+  const handleBlur = useCallback(() => {
+    if (text !== shape.props.text) {
+      editor.updateShape({
+        id: shape.id,
+        type: shape.type,
+        props: { text },
+      })
+    }
+    editor.setEditingShape(null)
+  }, [editor, shape.id, shape.type, shape.props.text, text])
+
+  const handleEscapeKey = useCallback(() => {
+    setText(shape.props.text)
+    editor.setEditingShape(null)
+  }, [shape.props.text, editor])
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      handleEscapeKey()
+    } else if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleBlur()
+    }
+    e.stopPropagation()
+  }, [handleEscapeKey, handleBlur])
+
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    if (isEditing) {
+      e.stopPropagation()
+    }
+  }, [isEditing])
+
+  return (
+    <HTMLContainer>
+      <div
+        onPointerDown={handlePointerDown}
+        style={{
+          width: HOTSPOT_WIDTH,
+          height: HOTSPOT_HEIGHT,
+          position: 'relative',
+          transform: `rotate(${HOTSPOT_ROTATION_DEG}deg)`,
+          transformOrigin: 'center center',
+        }}
+      >
+        {/* Speech bubble SVG background */}
+        <svg
+          width={HOTSPOT_WIDTH + HOTSPOT_SVG_PADDING * 2}
+          height={HOTSPOT_HEIGHT + HOTSPOT_SVG_PADDING * 2 - 1}
+          viewBox="-4 -4 148 122"
+          style={{
+            position: 'absolute',
+            top: -HOTSPOT_SVG_PADDING,
+            left: -HOTSPOT_SVG_PADDING,
+          }}
+        >
+          <path
+            d={HOTSPOT_BUBBLE_PATH}
+            fill={colors.fill}
+            stroke={colors.border}
+            strokeWidth={HOTSPOT_STROKE_WIDTH}
+          />
+        </svg>
+
+        {/* Text content overlay */}
+        <div
+          style={{
+            position: 'absolute',
+            top: HOTSPOT_CORNER_RADIUS,
+            left: HOTSPOT_CORNER_RADIUS,
+            right: HOTSPOT_CORNER_RADIUS,
+            bottom: HOTSPOT_CORNER_RADIUS + HOTSPOT_TAIL_HEIGHT,
+            overflow: 'hidden',
+            fontSize: 16,
+            fontFamily: "'Bangers', cursive",
+            color: colors.text,
+            lineHeight: 1.2,
+            cursor: isEditing ? 'text' : 'default',
+          }}
+        >
+          {isEditing ? (
+            <textarea
+              ref={textareaRef}
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              onBlur={handleBlur}
+              onKeyDown={handleKeyDown}
+              onPointerDown={(e) => e.stopPropagation()}
+              style={{
+                width: '100%',
+                height: '100%',
+                border: 'none',
+                background: 'transparent',
+                resize: 'none',
+                outline: 'none',
+                fontSize: 16,
+                fontFamily: "'Bangers', cursive",
+                color: colors.text,
+                lineHeight: 1.2,
+                padding: 0,
+                margin: 0,
+              }}
+            />
+          ) : (
+            <StickyTextDisplay text={shape.props.text} />
+          )}
+        </div>
+      </div>
+    </HTMLContainer>
+  )
+}
+
 // Base class for sticky shape utils
 function createStickyShapeUtil<T extends AnyStickyShape>(
   type: T['type'],
@@ -278,11 +429,36 @@ export class EventStickyShapeUtil extends ShapeUtil<EventStickyShape> {
   }
 }
 
-export const HotspotStickyShapeUtil = createStickyShapeUtil<HotspotStickyShape>(
-  'hotspot-sticky',
-  SHAPE_COLORS.hotspot,
-  STANDARD_STICKY_SIZE
-)
+export class HotspotStickyShapeUtil extends ShapeUtil<HotspotStickyShape> {
+  static override type = 'hotspot-sticky' as const
+  static override props = stickyShapeProps
+
+  override canEdit = () => true
+
+  getDefaultProps(): HotspotStickyShape['props'] {
+    return { text: '', w: HOTSPOT_WIDTH, h: HOTSPOT_HEIGHT, isPivotal: false }
+  }
+
+  getGeometry(shape: HotspotStickyShape) {
+    return new Rectangle2d({
+      width: shape.props.w,
+      height: shape.props.h,
+      isFilled: true,
+    })
+  }
+
+  component(shape: HotspotStickyShape) {
+    return <HotspotBubbleComponent shape={shape} />
+  }
+
+  indicator(shape: HotspotStickyShape) {
+    return (
+      <g transform={`rotate(${HOTSPOT_ROTATION_DEG}, ${shape.props.w / 2}, ${shape.props.h / 2})`}>
+        <path d={HOTSPOT_BUBBLE_PATH} />
+      </g>
+    )
+  }
+}
 
 export const PersonStickyShapeUtil = createStickyShapeUtil<PersonStickyShape>(
   'person-sticky',

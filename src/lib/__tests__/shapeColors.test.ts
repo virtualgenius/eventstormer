@@ -49,8 +49,8 @@ describe('getShapeColors', () => {
   it('returns colors for hotspot-sticky tool type', () => {
     const colors = getShapeColors('hotspot-sticky')
     expect(colors).toEqual({
-      fill: '#fecaca',
-      border: '#fca5a5',
+      fill: '#ffffff',
+      border: '#b91c1c',
       text: '#1e293b',
     })
   })

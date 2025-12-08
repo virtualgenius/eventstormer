@@ -26,6 +26,12 @@ const generateThemeAreaPreviewSvg = (borderColor: string): string =>
 const generateLabelPreviewSvg = (color: string): string =>
   `<svg xmlns="http://www.w3.org/2000/svg" width="${CURSOR_SIZE_PX}" height="${CURSOR_SIZE_PX}" viewBox="0 0 24 24"><text x="12" y="16" font-family="sans-serif" font-size="14" font-weight="bold" fill="${color}" text-anchor="middle">T</text></svg>`
 
+// Speech bubble cursor for hotspot - rotation baked into SVG transform (CSS transforms don't work in cursors)
+const generateHotspotBubblePreviewSvg = (): string => {
+  const path = 'M 2,2 H 22 Q 24,2 24,4 V 16 Q 24,18 22,18 H 10 L 5,22 L 6,18 H 2 Q 0,18 0,16 V 4 Q 0,2 2,2 Z'
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${CURSOR_SIZE_PX}" height="${CURSOR_SIZE_PX}" viewBox="0 0 24 24"><g transform="rotate(-10, 12, 12)"><path d="${path}" transform="translate(0, 1)" fill="#ffffff" stroke="#b91c1c" stroke-width="1.5"/></g></svg>`
+}
+
 export const buildCursorCssValue = (dataUri: string): string =>
   `url(${dataUri}) ${CURSOR_HOTSPOT_CENTER_PX} ${CURSOR_HOTSPOT_CENTER_PX}, crosshair`
 
@@ -37,6 +43,7 @@ const SVG_GENERATORS: Record<string, SvgGenerator> = {
   'horizontal-lane': (_fill, border) => generateHorizontalLanePreviewSvg(border),
   'theme-area': (_fill, border) => generateThemeAreaPreviewSvg(border),
   'label': (_fill, border) => generateLabelPreviewSvg(border),
+  'hotspot-sticky': () => generateHotspotBubblePreviewSvg(),
   'person-sticky': generateHalfHeightStickyPreviewSvg,
   'system-sticky': generateWideStickyPreviewSvg,
   'policy-sticky': generateWideStickyPreviewSvg,

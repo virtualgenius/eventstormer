@@ -9,7 +9,7 @@ export interface ShapeColorSet {
 // Single source of truth for all shape colors
 export const SHAPE_COLORS: Record<string, ShapeColorSet> = {
   event: { fill: '#fed7aa', border: '#fdba74', text: '#1e293b' },
-  hotspot: { fill: '#fecaca', border: '#fca5a5', text: '#1e293b' },
+  hotspot: { fill: '#ffffff', border: '#b91c1c', text: '#1e293b' },
   person: { fill: '#fef9c3', border: '#fef08a', text: '#1e293b' },
   system: { fill: '#fce7f3', border: '#fbcfe8', text: '#1e293b' },
   opportunity: { fill: '#bbf7d0', border: '#86efac', text: '#1e293b' },

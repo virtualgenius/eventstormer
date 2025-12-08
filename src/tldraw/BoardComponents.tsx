@@ -31,10 +31,28 @@ const STRUCTURAL_TOOL_CLASSES: Record<string, string> = {
   'label': 'w-6 h-6 text-slate-500',
 }
 
+function HotspotIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" style={{ transform: 'rotate(-10deg)' }}>
+      <path
+        d="M 2,2 H 22 Q 24,2 24,4 V 16 Q 24,18 22,18 H 10 L 5,22 L 6,18 H 2 Q 0,18 0,16 V 4 Q 0,2 2,2 Z"
+        transform="translate(0, 1)"
+        fill="#ffffff"
+        stroke="#b91c1c"
+        strokeWidth="1.5"
+      />
+    </svg>
+  )
+}
+
 function renderToolIcon(type: ToolType, config: { color: string }) {
   const IconComponent = STRUCTURAL_TOOL_ICONS[type]
   if (IconComponent) {
     return <IconComponent className={STRUCTURAL_TOOL_CLASSES[type]} />
+  }
+
+  if (type === 'hotspot-sticky') {
+    return <HotspotIcon />
   }
 
   return (

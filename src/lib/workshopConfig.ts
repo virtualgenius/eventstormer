@@ -183,7 +183,7 @@ export const TLDRAW_TOOL_SHORTCUTS: Record<string, string> = {
 
 export const SHAPE_DIMENSIONS: Record<string, { w: number; h: number }> = {
   'event-sticky': { w: 120, h: 100 },
-  'hotspot-sticky': { w: 120, h: 100 },
+  'hotspot-sticky': { w: 140, h: 115 },
   'person-sticky': { w: 120, h: 50 },
   'system-sticky': { w: 240, h: 100 },
   'opportunity-sticky': { w: 120, h: 100 },
