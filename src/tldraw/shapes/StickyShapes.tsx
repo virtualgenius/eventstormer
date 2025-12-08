@@ -54,7 +54,7 @@ const HALF_HEIGHT_STICKY = 50
 const WIDE_STICKY_WIDTH = 240
 
 // Pivotal event styling
-const PIVOTAL_STICKY_WIDTH = 180
+const PIVOTAL_STICKY_SIZE = 130
 const PIVOTAL_FONT_WEIGHT = 700
 const PIVOTAL_TRANSITION_MS = 200
 
@@ -63,13 +63,25 @@ const isShapePivotal = (shape: AnyStickyShape): boolean =>
   shape.type === 'event-sticky' && shape.props.isPivotal
 
 const getEffectiveWidth = (shape: AnyStickyShape): number =>
-  isShapePivotal(shape) ? PIVOTAL_STICKY_WIDTH : shape.props.w
+  isShapePivotal(shape) ? PIVOTAL_STICKY_SIZE : shape.props.w
 
 const isPreviewingPivotal = (shape: AnyStickyShape, previewId: string | null): boolean =>
   shape.type === 'event-sticky' && previewId === shape.id
 
 const shouldAppearPivotal = (shape: AnyStickyShape, previewId: string | null): boolean =>
   isShapePivotal(shape) || isPreviewingPivotal(shape, previewId)
+
+interface EffectiveDimensions {
+  width: number
+  height: number
+  fontWeight: number | 'normal'
+}
+
+const getEffectiveDimensions = (shape: AnyStickyShape, appearsPivotal: boolean): EffectiveDimensions => ({
+  width: appearsPivotal ? PIVOTAL_STICKY_SIZE : shape.props.w,
+  height: appearsPivotal ? PIVOTAL_STICKY_SIZE : shape.props.h,
+  fontWeight: appearsPivotal ? PIVOTAL_FONT_WEIGHT : 'normal',
+})
 
 function StickyTextDisplay({ text }: { text: string }) {
   if (text) {
@@ -145,8 +157,7 @@ function EditableStickyComponent({
     }
   }, [isEditing])
 
-  const effectiveWidth = appearsPivotal ? PIVOTAL_STICKY_WIDTH : shape.props.w
-  const effectiveFontWeight = appearsPivotal ? PIVOTAL_FONT_WEIGHT : 'normal'
+  const { width: effectiveWidth, height: effectiveHeight, fontWeight: effectiveFontWeight } = getEffectiveDimensions(shape, appearsPivotal)
 
   return (
     <HTMLContainer>
@@ -154,7 +165,7 @@ function EditableStickyComponent({
         onPointerDown={handlePointerDown}
         style={{
           width: effectiveWidth,
-          height: shape.props.h,
+          height: effectiveHeight,
           backgroundColor: colors.fill,
           border: `2px solid ${colors.border}`,
           borderRadius: 4,
@@ -170,7 +181,7 @@ function EditableStickyComponent({
           lineHeight: 1.25,
           wordWrap: 'break-word',
           cursor: isEditing ? 'text' : 'default',
-          transition: `width ${PIVOTAL_TRANSITION_MS}ms ease, font-weight ${PIVOTAL_TRANSITION_MS}ms ease`,
+          transition: `width ${PIVOTAL_TRANSITION_MS}ms ease, height ${PIVOTAL_TRANSITION_MS}ms ease, font-weight ${PIVOTAL_TRANSITION_MS}ms ease`,
         }}
       >
         {isEditing ? (
