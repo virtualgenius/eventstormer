@@ -43,7 +43,7 @@ export const TOOLS = {
   'vertical-line': {
     label: 'Pivotal',
     color: '#cbd5e1',
-    description: 'A pivotal event boundary separating process phases',
+    description: 'A pivotal event boundary separating process phases. Events marked by a line become pivotal events (displayed as larger and bold)',
     modes: ['big-picture', 'process', 'design', 'team-flow'] as WorkshopMode[],
     phases: ['enforce-timeline', 'people-and-systems', 'problems-and-opportunities', 'next-steps'] as FacilitationPhase[],
   },
