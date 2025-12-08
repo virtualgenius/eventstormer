@@ -10,6 +10,7 @@ import {
   useValue,
 } from 'tldraw'
 import { SHAPE_COLORS } from '@/lib/shapeColors'
+import { usePivotalPreviewStore } from '../pivotalPreviewStore'
 
 // Shared props schema - define validators first, then derive types
 const stickyShapeProps = {
@@ -64,8 +65,18 @@ const isShapePivotal = (shape: AnyStickyShape): boolean =>
 const getEffectiveWidth = (shape: AnyStickyShape): number =>
   isShapePivotal(shape) ? PIVOTAL_STICKY_WIDTH : shape.props.w
 
-const getFontWeight = (shape: AnyStickyShape): number | 'normal' =>
-  isShapePivotal(shape) ? PIVOTAL_FONT_WEIGHT : 'normal'
+const isPreviewingPivotal = (shape: AnyStickyShape, previewId: string | null): boolean =>
+  shape.type === 'event-sticky' && previewId === shape.id
+
+const shouldAppearPivotal = (shape: AnyStickyShape, previewId: string | null): boolean =>
+  isShapePivotal(shape) || isPreviewingPivotal(shape, previewId)
+
+function StickyTextDisplay({ text }: { text: string }) {
+  if (text) {
+    return <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{text}</span>
+  }
+  return <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', opacity: 0.5 }}>Double-click to edit</span>
+}
 
 function EditableStickyComponent({
   shape,
@@ -75,8 +86,9 @@ function EditableStickyComponent({
   colors: { fill: string; border: string; text: string }
 }) {
   const editor = useEditor()
+  const previewId = usePivotalPreviewStore((state) => state.previewId)
+  const appearsPivotal = shouldAppearPivotal(shape, previewId)
 
-  // Check if this shape is being edited using tldraw's editing state
   const isEditing = useValue(
     'isEditing',
     () => editor.getEditingShapeId() === shape.id,
@@ -112,17 +124,20 @@ function EditableStickyComponent({
     editor.setEditingShape(null)
   }, [editor, shape.id, shape.type, shape.props.text, text])
 
+  const handleEscapeKey = useCallback(() => {
+    setText(shape.props.text)
+    editor.setEditingShape(null)
+  }, [shape.props.text, editor])
+
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
-      setText(shape.props.text)
-      editor.setEditingShape(null)
-      e.stopPropagation()
+      handleEscapeKey()
     } else if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleBlur()
     }
     e.stopPropagation()
-  }, [shape.props.text, handleBlur, editor])
+  }, [handleEscapeKey, handleBlur])
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     if (isEditing) {
@@ -130,12 +145,15 @@ function EditableStickyComponent({
     }
   }, [isEditing])
 
+  const effectiveWidth = appearsPivotal ? PIVOTAL_STICKY_WIDTH : shape.props.w
+  const effectiveFontWeight = appearsPivotal ? PIVOTAL_FONT_WEIGHT : 'normal'
+
   return (
     <HTMLContainer>
       <div
         onPointerDown={handlePointerDown}
         style={{
-          width: getEffectiveWidth(shape),
+          width: effectiveWidth,
           height: shape.props.h,
           backgroundColor: colors.fill,
           border: `2px solid ${colors.border}`,
@@ -143,7 +161,7 @@ function EditableStickyComponent({
           padding: 8,
           fontSize: 14,
           fontFamily: 'system-ui, -apple-system, sans-serif',
-          fontWeight: getFontWeight(shape),
+          fontWeight: effectiveFontWeight,
           overflow: 'hidden',
           boxSizing: 'border-box',
           display: 'flex',
@@ -152,7 +170,7 @@ function EditableStickyComponent({
           lineHeight: 1.25,
           wordWrap: 'break-word',
           cursor: isEditing ? 'text' : 'default',
-          transition: `width ${PIVOTAL_TRANSITION_MS}ms ease`,
+          transition: `width ${PIVOTAL_TRANSITION_MS}ms ease, font-weight ${PIVOTAL_TRANSITION_MS}ms ease`,
         }}
       >
         {isEditing ? (
@@ -179,9 +197,7 @@ function EditableStickyComponent({
             }}
           />
         ) : (
-          <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-            {shape.props.text || <span style={{ opacity: 0.5 }}>Double-click to edit</span>}
-          </span>
+          <StickyTextDisplay text={shape.props.text} />
         )}
       </div>
     </HTMLContainer>

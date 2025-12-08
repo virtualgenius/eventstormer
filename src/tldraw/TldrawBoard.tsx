@@ -26,6 +26,7 @@ import { useFileOperations } from './useFileOperations'
 import { useTemplateLoader } from './useTemplateLoader'
 import { useCanvasClickPlacement } from './useCanvasClickPlacement'
 import { usePlacementCursor } from './usePlacementCursor'
+import { usePivotalPreview } from './usePivotalPreview'
 import { MAX_SHAPES_PER_PAGE } from './editorHelpers'
 import { registerPivotalSideEffects } from './pivotalDetection'
 import {
@@ -156,6 +157,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
   }, [activeTool])
 
   usePlacementCursor({ activeTool })
+  usePivotalPreview({ editor, activeTool })
 
   const showPhaseSelector = usesPhases(workshopMode)
   const availableTools = getAvailableTools(workshopMode, phase)

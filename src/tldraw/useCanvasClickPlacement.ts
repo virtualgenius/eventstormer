@@ -37,6 +37,29 @@ function shouldSkipPlacement(
   return !activeTool || !editor || !mouseDownPos
 }
 
+function canPlaceAtPoint(
+  activeTool: ToolType,
+  shapeAtPoint: { type: string } | undefined
+): boolean {
+  if (!shapeAtPoint) return true
+  return activeTool === 'vertical-line' && shapeAtPoint.type === 'event-sticky'
+}
+
+function handleShapeCreation(
+  editor: Editor,
+  activeTool: ToolType,
+  pagePoint: { x: number; y: number },
+  onComplete: () => void
+): void {
+  const newId = createShapeAtPoint(editor, activeTool, pagePoint)
+
+  if (EDITABLE_TYPES.includes(activeTool)) {
+    selectAndStartEditing(editor, newId)
+  }
+
+  onComplete()
+}
+
 export function useCanvasClickPlacement({
   editor,
   activeTool,
@@ -60,15 +83,10 @@ export function useCanvasClickPlacement({
 
     const pagePoint = editor!.screenToPage({ x: e.clientX, y: e.clientY })
     const shapeAtPoint = editor!.getShapeAtPoint(pagePoint)
-    if (shapeAtPoint) return
 
-    const newId = createShapeAtPoint(editor!, activeTool!, pagePoint)
+    if (!canPlaceAtPoint(activeTool!, shapeAtPoint)) return
 
-    if (EDITABLE_TYPES.includes(activeTool!)) {
-      selectAndStartEditing(editor!, newId)
-    }
-
-    onPlacementComplete()
+    handleShapeCreation(editor!, activeTool!, pagePoint, onPlacementComplete)
   }, [activeTool, editor, onPlacementComplete])
 
   useEffect(() => {

@@ -1,33 +1,38 @@
-import type { Editor, TLShape } from 'tldraw'
+import type { Editor, TLShape, Box } from 'tldraw'
 
-interface ShapeWithPosition {
-  x: number
-  props: { w: number }
-}
-
-export const doesLineOverlapEvent = (
-  line: ShapeWithPosition,
-  event: ShapeWithPosition
+export const doesBoundsOverlap = (
+  lineBounds: Box,
+  eventBounds: Box
 ): boolean => {
-  const lineRight = line.x + line.props.w
-  const eventRight = event.x + event.props.w
-  return line.x <= eventRight && lineRight >= event.x
+  return lineBounds.x <= eventBounds.maxX && lineBounds.maxX >= eventBounds.x
 }
 
 export const findEventsUnderLine = (
   editor: Editor,
   lineShape: TLShape
 ): TLShape[] => {
+  const lineBounds = editor.getShapePageBounds(lineShape)
+  if (!lineBounds) return []
+
   const events = editor.getCurrentPageShapes().filter((s) => s.type === 'event-sticky')
-  return events.filter((event) => doesLineOverlapEvent(lineShape as ShapeWithPosition, event as ShapeWithPosition))
+  return events.filter((event) => {
+    const eventBounds = editor.getShapePageBounds(event)
+    return eventBounds && doesBoundsOverlap(lineBounds, eventBounds)
+  })
 }
 
 export const findLinesOverEvent = (
   editor: Editor,
   eventShape: TLShape
 ): TLShape[] => {
+  const eventBounds = editor.getShapePageBounds(eventShape)
+  if (!eventBounds) return []
+
   const lines = editor.getCurrentPageShapes().filter((s) => s.type === 'vertical-line')
-  return lines.filter((line) => doesLineOverlapEvent(line as ShapeWithPosition, eventShape as ShapeWithPosition))
+  return lines.filter((line) => {
+    const lineBounds = editor.getShapePageBounds(line)
+    return lineBounds && doesBoundsOverlap(lineBounds, eventBounds)
+  })
 }
 
 export const isEventPivotal = (editor: Editor, eventShape: TLShape): boolean =>
