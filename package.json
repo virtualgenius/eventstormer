@@ -29,6 +29,7 @@
   ],
   "type": "module",
   "scripts": {
+    "predev": "lsof -ti :8800 | xargs kill -9 2>/dev/null; lsof -ti :5173 | xargs kill -9 2>/dev/null; exit 0",
     "dev": "concurrently \"npm run dev:worker\" \"npm run dev:vite\"",
     "dev:vite": "vite --port 5173",
     "dev:worker": "wrangler dev workers/server.ts --port 8800",

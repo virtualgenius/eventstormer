@@ -16,6 +16,7 @@ const stickyShapeProps = {
   text: T.string,
   w: T.number,
   h: T.number,
+  isPivotal: T.boolean,
 }
 
 type StickyProps = RecordPropsType<typeof stickyShapeProps>
@@ -51,8 +52,21 @@ const DEFAULT_STICKY_WIDTH = 120
 const HALF_HEIGHT_STICKY = 50
 const WIDE_STICKY_WIDTH = 240
 
+// Pivotal event styling
+const PIVOTAL_STICKY_WIDTH = 180
+const PIVOTAL_FONT_WEIGHT = 700
+const PIVOTAL_TRANSITION_MS = 200
 
-// Editable sticky component using tldraw's editing state
+
+const isShapePivotal = (shape: AnyStickyShape): boolean =>
+  shape.type === 'event-sticky' && shape.props.isPivotal
+
+const getEffectiveWidth = (shape: AnyStickyShape): number =>
+  isShapePivotal(shape) ? PIVOTAL_STICKY_WIDTH : shape.props.w
+
+const getFontWeight = (shape: AnyStickyShape): number | 'normal' =>
+  isShapePivotal(shape) ? PIVOTAL_FONT_WEIGHT : 'normal'
+
 function EditableStickyComponent({
   shape,
   colors,
@@ -121,7 +135,7 @@ function EditableStickyComponent({
       <div
         onPointerDown={handlePointerDown}
         style={{
-          width: shape.props.w,
+          width: getEffectiveWidth(shape),
           height: shape.props.h,
           backgroundColor: colors.fill,
           border: `2px solid ${colors.border}`,
@@ -129,6 +143,7 @@ function EditableStickyComponent({
           padding: 8,
           fontSize: 14,
           fontFamily: 'system-ui, -apple-system, sans-serif',
+          fontWeight: getFontWeight(shape),
           overflow: 'hidden',
           boxSizing: 'border-box',
           display: 'flex',
@@ -137,6 +152,7 @@ function EditableStickyComponent({
           lineHeight: 1.25,
           wordWrap: 'break-word',
           cursor: isEditing ? 'text' : 'default',
+          transition: `width ${PIVOTAL_TRANSITION_MS}ms ease`,
         }}
       >
         {isEditing ? (
@@ -187,7 +203,7 @@ function createStickyShapeUtil<T extends AnyStickyShape>(
     override canEdit = () => true
 
     getDefaultProps(): T['props'] {
-      return { text: '', w: defaultWidth, h: defaultHeight } as T['props']
+      return { text: '', w: defaultWidth, h: defaultHeight, isPivotal: false } as T['props']
     }
 
     getGeometry(shape: T) {
@@ -208,12 +224,33 @@ function createStickyShapeUtil<T extends AnyStickyShape>(
   }
 }
 
-// Create all sticky shape utils
-export const EventStickyShapeUtil = createStickyShapeUtil<EventStickyShape>(
-  'event-sticky',
-  SHAPE_COLORS.event,
-  DEFAULT_STICKY_HEIGHT
-)
+// EventStickyShapeUtil needs custom geometry/indicator for pivotal width
+export class EventStickyShapeUtil extends ShapeUtil<EventStickyShape> {
+  static override type = 'event-sticky' as const
+  static override props = stickyShapeProps
+
+  override canEdit = () => true
+
+  getDefaultProps(): EventStickyShape['props'] {
+    return { text: '', w: DEFAULT_STICKY_WIDTH, h: DEFAULT_STICKY_HEIGHT, isPivotal: false }
+  }
+
+  getGeometry(shape: EventStickyShape) {
+    return new Rectangle2d({
+      width: getEffectiveWidth(shape),
+      height: shape.props.h,
+      isFilled: true,
+    })
+  }
+
+  component(shape: EventStickyShape) {
+    return <EditableStickyComponent shape={shape} colors={SHAPE_COLORS.event} />
+  }
+
+  indicator(shape: EventStickyShape) {
+    return <rect width={getEffectiveWidth(shape)} height={shape.props.h} rx={4} />
+  }
+}
 
 export const HotspotStickyShapeUtil = createStickyShapeUtil<HotspotStickyShape>(
   'hotspot-sticky',

@@ -27,6 +27,7 @@ import { useTemplateLoader } from './useTemplateLoader'
 import { useCanvasClickPlacement } from './useCanvasClickPlacement'
 import { usePlacementCursor } from './usePlacementCursor'
 import { MAX_SHAPES_PER_PAGE } from './editorHelpers'
+import { registerPivotalSideEffects } from './pivotalDetection'
 import {
   WorkshopMode,
   FacilitationPhase,
@@ -112,6 +113,7 @@ export function TldrawBoard({ roomId, userName, templateFile, renderHeaderRight 
     }
 
     editor.sideEffects.registerAfterCreateHandler('shape', handleBackgroundShapeCreated)
+    registerPivotalSideEffects(editor)
   }, [])
 
   const hasMigratedRef = useRef(false)
