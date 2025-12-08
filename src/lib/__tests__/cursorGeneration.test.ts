@@ -92,7 +92,7 @@ describe('generatePlacementCursor', () => {
       expect(cursor).toContain('height%3D%2220%22')
     })
 
-    it('hotspot-sticky uses speech bubble shape with rotation', () => {
+    it('hotspot-sticky uses speech bubble shape', () => {
       const cursor = generatePlacementCursor('hotspot-sticky')
       // Should contain path element (not rect)
       expect(cursor).toContain('path')
@@ -102,8 +102,7 @@ describe('generatePlacementCursor', () => {
       expect(cursor).toContain('%23ffffff') // URL-encoded #ffffff
       // Should have dark red stroke
       expect(cursor).toContain('%23b91c1c') // URL-encoded #b91c1c
-      // Should have rotation transform
-      expect(cursor).toContain('rotate')
+      // Note: Rotation was removed because browsers reject rotated SVG cursors that overflow viewBox
     })
   })
 })

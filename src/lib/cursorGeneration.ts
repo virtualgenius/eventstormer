@@ -26,10 +26,10 @@ const generateThemeAreaPreviewSvg = (borderColor: string): string =>
 const generateLabelPreviewSvg = (color: string): string =>
   `<svg xmlns="http://www.w3.org/2000/svg" width="${CURSOR_SIZE_PX}" height="${CURSOR_SIZE_PX}" viewBox="0 0 24 24"><text x="12" y="16" font-family="sans-serif" font-size="14" font-weight="bold" fill="${color}" text-anchor="middle">T</text></svg>`
 
-// Speech bubble cursor for hotspot - rotation baked into SVG transform (CSS transforms don't work in cursors)
+// Speech bubble cursor for hotspot - no rotation (browsers reject rotated SVG cursors that overflow viewBox)
 const generateHotspotBubblePreviewSvg = (): string => {
-  const path = 'M 2,2 H 22 Q 24,2 24,4 V 16 Q 24,18 22,18 H 10 L 5,22 L 6,18 H 2 Q 0,18 0,16 V 4 Q 0,2 2,2 Z'
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${CURSOR_SIZE_PX}" height="${CURSOR_SIZE_PX}" viewBox="0 0 24 24"><g transform="rotate(-10, 12, 12)"><path d="${path}" transform="translate(0, 1)" fill="#ffffff" stroke="#b91c1c" stroke-width="1.5"/></g></svg>`
+  const path = 'M 4,3 H 20 Q 21,3 21,4 V 14 Q 21,15 20,15 H 10 L 6,19 L 7,15 H 4 Q 3,15 3,14 V 4 Q 3,3 4,3 Z'
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${CURSOR_SIZE_PX}" height="${CURSOR_SIZE_PX}" viewBox="0 0 24 24"><path d="${path}" fill="#ffffff" stroke="#b91c1c" stroke-width="1.5"/></svg>`
 }
 
 export const buildCursorCssValue = (dataUri: string): string =>
