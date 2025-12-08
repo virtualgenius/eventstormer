@@ -43,9 +43,9 @@ describe('generatePlacementCursor', () => {
       expect(eventCursor).not.toBe(hotspotCursor)
     })
 
-    it('returns cursor with correct color for person-sticky (bright yellow)', () => {
+    it('returns cursor with correct color for person-sticky (light yellow)', () => {
       const cursor = generatePlacementCursor('person-sticky')
-      expect(cursor).toContain('%23ffef00') // URL-encoded #ffef00
+      expect(cursor).toContain('%23fef9c3') // URL-encoded #fef9c3
     })
   })
 
