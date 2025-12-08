@@ -48,6 +48,20 @@ Unlike generic whiteboard tools (Miro, Mural, Excalidraw) or diagramming tools (
 - **Cross-zone insights**: Surface when different zones discover similar events/terms
 - **Zone merge assistant**: Help combine breakout discoveries into main timeline
 
+#### 1.4 Facilitator Dashboard
+
+- **Bird's-eye metrics**: Events/minute, hotspot density, participant engagement at a glance
+- **Participation balance**: See who's contributing vs. who might need encouragement
+- **Board health indicators**: Coverage gaps, unaddressed hotspots, terminology conflicts
+- **Quick actions**: Jump to problem areas, broadcast attention to specific zones
+
+#### 1.5 Voting & Prioritization
+
+- **Dot voting on hotspots**: Built-in voting to prioritize which problems to tackle
+- **Opportunity ranking**: Participants vote on which opportunities have highest value
+- **Anonymous vs. attributed voting**: Choose whether votes are visible
+- **Vote-weighted visualization**: Size hotspots/opportunities by vote count
+
 ---
 
 ### Category 2: Domain Language & Ubiquitous Language Support
@@ -96,6 +110,13 @@ Unlike generic whiteboard tools (Miro, Mural, Excalidraw) or diagramming tools (
 - **Event density heatmap**: Visualize where complexity concentrates
 - **Gap detection**: Find suspiciously empty timeline sections
 - **Cycle detection**: Identify potentially problematic loops in process flow
+
+#### 3.4 Hotspot Lifecycle Tracking
+
+- **Resolution linking**: Connect hotspots to their resolution (another sticky, external ticket, or decision)
+- **Unresolved hotspot dashboard**: Track which problems remain open
+- **Hotspot aging**: Visualize how long hotspots have been unaddressed
+- **Resolution patterns**: Learn what types of hotspots get resolved vs. persist
 
 ---
 
@@ -270,6 +291,8 @@ Unlike generic whiteboard tools (Miro, Mural, Excalidraw) or diagramming tools (
 - **Aggregate view**: Group events by aggregate roots
 - **Actor journey view**: Filter timeline to single actor's path
 - **Hotspot heatmap**: Overlay problem intensity visualization
+- **Story map view**: Transform timeline into user story map format (activities → tasks → stories)
+- **Swimlane auto-suggestion**: Detect actor/system clusters and suggest creating lanes
 
 #### 8.2 Rich Export Formats
 
@@ -277,8 +300,15 @@ Unlike generic whiteboard tools (Miro, Mural, Excalidraw) or diagramming tools (
 - **PowerPoint generator**: Workshop summary as presentation
 - **PDF report**: Comprehensive workshop documentation
 - **Mermaid/PlantUML**: Generate sequence diagrams from flow
+- **Domain model starter code**: Generate aggregate/event/command class stubs in target language
 
-#### 8.3 Presentation Mode
+#### 8.3 Smart Layout Tools
+
+- **Auto-timeline alignment**: Snap events to horizontal baseline; maintain left-to-right temporal flow
+- **Magnetic guides**: Events align to implicit grid during placement
+- **Cluster compaction**: Automatically tighten spacing in dense areas while preserving readability
+
+#### 8.4 Presentation Mode
 
 - **Guided walkthrough**: Step through timeline with annotations
 - **Highlight path**: Trace specific flows for stakeholders
@@ -338,6 +368,9 @@ Unlike generic whiteboard tools (Miro, Mural, Excalidraw) or diagramming tools (
 2. **Export to Issue Trackers** (6.1) - Natural workflow continuation
 3. **Alternative Visualizations** (8.1) - Unique perspectives on same data
 4. **Time-travel Playback** (4.3) - Yjs history already exists
+5. **Facilitator Dashboard** (1.4) - Bird's-eye view makes remote facilitation dramatically easier
+6. **Dot Voting** (1.5) - Built-in prioritization no generic tool offers natively
+7. **Hotspot Lifecycle Tracking** (3.4) - Resolution tracking closes the loop on workshop outputs
 
 ### Community/Ecosystem Plays
 
