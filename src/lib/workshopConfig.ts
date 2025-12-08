@@ -181,17 +181,23 @@ export const TLDRAW_TOOL_SHORTCUTS: Record<string, string> = {
   'x': 'eraser',
 }
 
+export const STANDARD_STICKY_SIZE = 100
+export const HALF_HEIGHT_STICKY = 50
+export const WIDE_STICKY_WIDTH = 200
+export const HOTSPOT_WIDTH = 140
+export const HOTSPOT_HEIGHT = 115
+
 export const SHAPE_DIMENSIONS: Record<string, { w: number; h: number }> = {
-  'event-sticky': { w: 120, h: 100 },
-  'hotspot-sticky': { w: 140, h: 115 },
-  'person-sticky': { w: 120, h: 50 },
-  'system-sticky': { w: 240, h: 100 },
-  'opportunity-sticky': { w: 120, h: 100 },
-  'glossary-sticky': { w: 120, h: 100 },
-  'command-sticky': { w: 120, h: 100 },
-  'policy-sticky': { w: 240, h: 100 },
-  'aggregate-sticky': { w: 240, h: 100 },
-  'readmodel-sticky': { w: 120, h: 100 },
+  'event-sticky': { w: STANDARD_STICKY_SIZE, h: STANDARD_STICKY_SIZE },
+  'hotspot-sticky': { w: HOTSPOT_WIDTH, h: HOTSPOT_HEIGHT },
+  'person-sticky': { w: STANDARD_STICKY_SIZE, h: HALF_HEIGHT_STICKY },
+  'system-sticky': { w: WIDE_STICKY_WIDTH, h: STANDARD_STICKY_SIZE },
+  'opportunity-sticky': { w: STANDARD_STICKY_SIZE, h: STANDARD_STICKY_SIZE },
+  'glossary-sticky': { w: STANDARD_STICKY_SIZE, h: STANDARD_STICKY_SIZE },
+  'command-sticky': { w: STANDARD_STICKY_SIZE, h: STANDARD_STICKY_SIZE },
+  'policy-sticky': { w: WIDE_STICKY_WIDTH, h: STANDARD_STICKY_SIZE },
+  'aggregate-sticky': { w: WIDE_STICKY_WIDTH, h: STANDARD_STICKY_SIZE },
+  'readmodel-sticky': { w: STANDARD_STICKY_SIZE, h: STANDARD_STICKY_SIZE },
   'vertical-line': { w: 8, h: 400 },
   'horizontal-lane': { w: 800, h: 8 },
   'theme-area': { w: 400, h: 300 },

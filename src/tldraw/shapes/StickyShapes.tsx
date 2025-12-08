@@ -10,9 +10,15 @@ import {
   useValue,
 } from 'tldraw'
 import { SHAPE_COLORS } from '@/lib/shapeColors'
+import {
+  STANDARD_STICKY_SIZE,
+  HALF_HEIGHT_STICKY,
+  WIDE_STICKY_WIDTH,
+  HOTSPOT_WIDTH,
+  HOTSPOT_HEIGHT,
+} from '@/lib/workshopConfig'
 import { usePivotalPreviewStore } from '../pivotalPreviewStore'
 
-// Shared props schema - define validators first, then derive types
 const stickyShapeProps = {
   text: T.string,
   w: T.number,
@@ -22,7 +28,6 @@ const stickyShapeProps = {
 
 type StickyProps = RecordPropsType<typeof stickyShapeProps>
 
-// Type definitions for each sticky kind
 type EventStickyShape = TLBaseShape<'event-sticky', StickyProps>
 type HotspotStickyShape = TLBaseShape<'hotspot-sticky', StickyProps>
 type PersonStickyShape = TLBaseShape<'person-sticky', StickyProps>
@@ -34,7 +39,6 @@ type PolicyStickyShape = TLBaseShape<'policy-sticky', StickyProps>
 type AggregateStickyShape = TLBaseShape<'aggregate-sticky', StickyProps>
 type ReadModelStickyShape = TLBaseShape<'readmodel-sticky', StickyProps>
 
-// Union type for any sticky shape
 type AnyStickyShape =
   | EventStickyShape
   | HotspotStickyShape
@@ -47,21 +51,12 @@ type AnyStickyShape =
   | AggregateStickyShape
   | ReadModelStickyShape
 
-// Default shape dimensions
-const STANDARD_STICKY_SIZE = 100
-const HALF_HEIGHT_STICKY = 50
-const WIDE_STICKY_WIDTH = 200
-
-// Hotspot speech bubble dimensions
-const HOTSPOT_WIDTH = 140
-const HOTSPOT_HEIGHT = 115
 const HOTSPOT_ROTATION_DEG = -10
 const HOTSPOT_STROKE_WIDTH = 6
 const HOTSPOT_CORNER_RADIUS = 12
 const HOTSPOT_SVG_PADDING = 4
 const HOTSPOT_TAIL_HEIGHT = 15
 
-// Pivotal event styling
 const PIVOTAL_STICKY_SIZE = 130
 const PIVOTAL_FONT_WEIGHT = 700
 const PIVOTAL_TRANSITION_MS = 200
