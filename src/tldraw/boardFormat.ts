@@ -76,9 +76,8 @@ const KIND_TO_TYPE: Record<string, string> = {
 
 const HALF_HEIGHT_KINDS = ['person']
 const WIDE_KINDS = ['system', 'policy', 'aggregate']
-const DEFAULT_WIDTH = 120
-const WIDE_WIDTH = 240
-const FULL_HEIGHT = 100
+const STANDARD_SIZE = 100
+const WIDE_WIDTH = 200
 const HALF_HEIGHT = 50
 
 export function isEventStormerBoardFormat(data: unknown): data is EventStormerBoard {
@@ -101,8 +100,8 @@ function convertStickyToShape(sticky: BoardSticky): ShapeToCreate | null {
     y: sticky.y,
     props: {
       text: sticky.text,
-      w: isWide ? WIDE_WIDTH : DEFAULT_WIDTH,
-      h: isHalf ? HALF_HEIGHT : FULL_HEIGHT,
+      w: isWide ? WIDE_WIDTH : STANDARD_SIZE,
+      h: isHalf ? HALF_HEIGHT : STANDARD_SIZE,
     },
   }
 }
