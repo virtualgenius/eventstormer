@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotspot Speech Bubble Mockup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f5f5f5;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    h1 {
+      margin: 0;
+      color: #333;
+    }
+
+    h2 {
+      margin: 0 0 20px 0;
+      color: #666;
+      font-size: 16px;
+      font-weight: normal;
+    }
+
+    .board {
+      background: white;
+      padding: 60px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      align-items: flex-start;
+    }
+
+    .hotspot-container {
+      position: relative;
+      width: 150px;
+      height: 130px;
+    }
+
+    .hotspot {
+      position: absolute;
+      transform: rotate(-10deg);
+      transform-origin: center center;
+    }
+
+    .hotspot svg {
+      filter: drop-shadow(2px 3px 3px rgba(0,0,0,0.15));
+    }
+
+    .hotspot-text {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      bottom: 28px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      font-family: 'Bangers', cursive;
+      font-size: 16px;
+      font-weight: 400;
+      color: #1e293b;
+      line-height: 1.3;
+      word-break: break-word;
+      overflow: hidden;
+      padding: 4px;
+      /* Text rotates WITH the bubble - no counter-rotation */
+    }
+
+    .section {
+      width: 100%;
+    }
+
+    .comparison {
+      display: flex;
+      gap: 60px;
+      align-items: flex-start;
+    }
+
+    .comparison-item {
+      text-align: center;
+    }
+
+    .comparison-item p {
+      margin-top: 10px;
+      color: #666;
+      font-size: 12px;
+    }
+
+    /* Old rectangular hotspot for comparison */
+    .old-hotspot {
+      width: 100px;
+      height: 100px;
+      background: #fecaca;
+      border: 2px solid #fca5a5;
+      border-radius: 4px;
+      padding: 8px;
+      font-size: 14px;
+      color: #1e293b;
+      box-sizing: border-box;
+      display: flex;
+      align-items: flex-start;
+      line-height: 1.25;
+      box-shadow: 2px 3px 3px rgba(0,0,0,0.1);
+    }
+
+    .label {
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hotspot Speech Bubble Mockup</h1>
+  <h2>Comparing current rectangular hotspots with Alberto-style speech bubbles</h2>
+
+  <div class="section">
+    <h3>Before vs After</h3>
+    <div class="board">
+      <div class="comparison-item">
+        <div class="label">Current (rectangle)</div>
+        <div class="old-hotspot">
+          Our menu is too long!
+        </div>
+      </div>
+
+      <div class="comparison-item">
+        <div class="label">New (speech bubble)</div>
+        <div class="hotspot-container">
+          <div class="hotspot">
+            <svg width="148" height="122" viewBox="-4 -4 148 122">
+              <path d="M 12,0 H 128 Q 140,0 140,12 V 88 Q 140,100 128,100 H 55 L 35,115 L 40,100 H 12 Q 0,100 0,88 V 12 Q 0,0 12,0 Z"
+              fill="#ffffff" stroke="#b91c1c" stroke-width="6"/>
+            </svg>
+            <div class="hotspot-text">
+              Our menu is too long!
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Various Text Examples</h3>
+    <div class="board">
+      <!-- Short text -->
+      <div class="hotspot-container">
+        <div class="hotspot">
+          <svg width="148" height="122" viewBox="-4 -4 148 122">
+            <path d="M 12,0 H 128 Q 140,0 140,12 V 88 Q 140,100 128,100 H 55 L 35,115 L 40,100 H 12 Q 0,100 0,88 V 12 Q 0,0 12,0 Z"
+            fill="#ffffff" stroke="#b91c1c" stroke-width="6"/>
+          </svg>
+          <div class="hotspot-text">Why?</div>
+        </div>
+      </div>
+
+      <!-- Question -->
+      <div class="hotspot-container">
+        <div class="hotspot">
+          <svg width="148" height="122" viewBox="-4 -4 148 122">
+            <path d="M 12,0 H 128 Q 140,0 140,12 V 88 Q 140,100 128,100 H 55 L 35,115 L 40,100 H 12 Q 0,100 0,88 V 12 Q 0,0 12,0 Z"
+            fill="#ffffff" stroke="#b91c1c" stroke-width="6"/>
+          </svg>
+          <div class="hotspot-text">Or should it be cohort assignment?</div>
+        </div>
+      </div>
+
+      <!-- Another question -->
+      <div class="hotspot-container">
+        <div class="hotspot">
+          <svg width="148" height="122" viewBox="-4 -4 148 122">
+            <path d="M 12,0 H 128 Q 140,0 140,12 V 88 Q 140,100 128,100 H 55 L 35,115 L 40,100 H 12 Q 0,100 0,88 V 12 Q 0,0 12,0 Z"
+            fill="#ffffff" stroke="#b91c1c" stroke-width="6"/>
+          </svg>
+          <div class="hotspot-text">Or both?</div>
+        </div>
+      </div>
+
+      <!-- Longer text -->
+      <div class="hotspot-container">
+        <div class="hotspot">
+          <svg width="148" height="122" viewBox="-4 -4 148 122">
+            <path d="M 12,0 H 128 Q 140,0 140,12 V 88 Q 140,100 128,100 H 55 L 35,115 L 40,100 H 12 Q 0,100 0,88 V 12 Q 0,0 12,0 Z"
+            fill="#ffffff" stroke="#b91c1c" stroke-width="6"/>
+          </svg>
+          <div class="hotspot-text">What happens when payment fails?</div>
+        </div>
+      </div>
+
+      <!-- Risk/problem -->
+      <div class="hotspot-container">
+        <div class="hotspot">
+          <svg width="148" height="122" viewBox="-4 -4 148 122">
+            <path d="M 12,0 H 128 Q 140,0 140,12 V 88 Q 140,100 128,100 H 55 L 35,115 L 40,100 H 12 Q 0,100 0,88 V 12 Q 0,0 12,0 Z"
+            fill="#ffffff" stroke="#b91c1c" stroke-width="6"/>
+          </svg>
+          <div class="hotspot-text">This takes 3 days to process!</div>
+        </div>
+      </div>
+
+      <!-- Uncertainty -->
+      <div class="hotspot-container">
+        <div class="hotspot">
+          <svg width="148" height="122" viewBox="-4 -4 148 122">
+            <path d="M 12,0 H 128 Q 140,0 140,12 V 88 Q 140,100 128,100 H 55 L 35,115 L 40,100 H 12 Q 0,100 0,88 V 12 Q 0,0 12,0 Z"
+            fill="#ffffff" stroke="#b91c1c" stroke-width="6"/>
+          </svg>
+          <div class="hotspot-text">Who owns this decision?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>On a Mock Board (with events)</h3>
+    <div class="board" style="background: #fafafa; position: relative; min-height: 300px;">
+      <!-- Event stickies -->
+      <div style="position: absolute; left: 60px; top: 100px; width: 100px; height: 100px; background: #fed7aa; border: 2px solid #fdba74; border-radius: 4px; padding: 8px; box-sizing: border-box; font-size: 14px; color: #1e293b; box-shadow: 2px 2px 4px rgba(0,0,0,0.1);">
+        Order placed
+      </div>
+
+      <div style="position: absolute; left: 200px; top: 100px; width: 100px; height: 100px; background: #fed7aa; border: 2px solid #fdba74; border-radius: 4px; padding: 8px; box-sizing: border-box; font-size: 14px; color: #1e293b; box-shadow: 2px 2px 4px rgba(0,0,0,0.1);">
+        Payment processed
+      </div>
+
+      <div style="position: absolute; left: 340px; top: 100px; width: 100px; height: 100px; background: #fed7aa; border: 2px solid #fdba74; border-radius: 4px; padding: 8px; box-sizing: border-box; font-size: 14px; color: #1e293b; box-shadow: 2px 2px 4px rgba(0,0,0,0.1);">
+        Order shipped
+      </div>
+
+      <!-- Hotspot bubbles positioned near events -->
+      <div style="position: absolute; left: 150px; top: 10px;">
+        <div class="hotspot">
+          <svg width="148" height="122" viewBox="-4 -4 148 122">
+            <path d="M 12,0 H 128 Q 140,0 140,12 V 88 Q 140,100 128,100 H 55 L 35,115 L 40,100 H 12 Q 0,100 0,88 V 12 Q 0,0 12,0 Z"
+            fill="#ffffff" stroke="#b91c1c" stroke-width="6"/>
+          </svg>
+          <div class="hotspot-text">What if payment fails?</div>
+        </div>
+      </div>
+
+      <div style="position: absolute; left: 380px; top: 20px;">
+        <div class="hotspot">
+          <svg width="148" height="122" viewBox="-4 -4 148 122">
+            <path d="M 12,0 H 128 Q 140,0 140,12 V 88 Q 140,100 128,100 H 55 L 35,115 L 40,100 H 12 Q 0,100 0,88 V 12 Q 0,0 12,0 Z"
+            fill="#ffffff" stroke="#b91c1c" stroke-width="6"/>
+          </svg>
+          <div class="hotspot-text">Takes too long!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Size Variations to Consider</h3>
+    <div class="board">
+      <!-- Smaller bubble -->
+      <div class="comparison-item">
+        <div class="label">Smaller (120×90)</div>
+        <div style="position: relative; width: 130px; height: 110px;">
+          <div style="transform: rotate(-10deg);">
+            <svg width="128" height="105" viewBox="-4 -4 128 105">
+              <path d="M 10,0 H 110 Q 120,0 120,10 V 75 Q 120,85 110,85 H 47 L 30,98 L 34,85 H 10 Q 0,85 0,75 V 10 Q 0,0 10,0 Z"
+              fill="#ffffff" stroke="#b91c1c" stroke-width="6"/>
+            </svg>
+            <div style="position: absolute; top: 10px; left: 10px; right: 10px; bottom: 24px; font-family: 'Bangers', cursive; font-size: 15px; font-weight: 400; color: #1e293b; line-height: 1.3;">
+              Our menu is too long!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Current size -->
+      <div class="comparison-item">
+        <div class="label">Medium (140×100) - Proposed</div>
+        <div class="hotspot-container">
+          <div class="hotspot">
+            <svg width="148" height="122" viewBox="-4 -4 148 122">
+              <path d="M 12,0 H 128 Q 140,0 140,12 V 88 Q 140,100 128,100 H 55 L 35,115 L 40,100 H 12 Q 0,100 0,88 V 12 Q 0,0 12,0 Z"
+              fill="#ffffff" stroke="#b91c1c" stroke-width="6"/>
+            </svg>
+            <div class="hotspot-text">Our menu is too long!</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Larger bubble -->
+      <div class="comparison-item">
+        <div class="label">Larger (160×110)</div>
+        <div style="position: relative; width: 170px; height: 140px;">
+          <div style="transform: rotate(-10deg);">
+            <svg width="168" height="137" viewBox="-4 -4 168 137">
+              <path d="M 14,0 H 146 Q 160,0 160,14 V 96 Q 160,110 146,110 H 63 L 40,125 L 46,110 H 14 Q 0,110 0,96 V 14 Q 0,0 14,0 Z"
+              fill="#ffffff" stroke="#b91c1c" stroke-width="6"/>
+            </svg>
+            <div style="position: absolute; top: 14px; left: 14px; right: 14px; bottom: 30px; font-family: 'Bangers', cursive; font-size: 17px; font-weight: 400; color: #1e293b; line-height: 1.3;">
+              Our menu is too long!
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Rotation Angles</h3>
+    <div class="board">
+      <div class="comparison-item">
+        <div class="label">No rotation (0°)</div>
+        <div style="position: relative; width: 150px; height: 130px;">
+          <div style="transform: rotate(0deg);">
+            <svg width="148" height="122" viewBox="-4 -4 148 122">
+              <path d="M 12,0 H 128 Q 140,0 140,12 V 88 Q 140,100 128,100 H 55 L 35,115 L 40,100 H 12 Q 0,100 0,88 V 12 Q 0,0 12,0 Z"
+              fill="#ffffff" stroke="#b91c1c" stroke-width="6"/>
+            </svg>
+            <div style="position: absolute; top: 12px; left: 12px; right: 12px; bottom: 28px; font-family: 'Bangers', cursive; font-size: 16px; font-weight: 400; color: #1e293b; line-height: 1.3;">
+              Our menu is too long!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="comparison-item">
+        <div class="label">Slight (-6°)</div>
+        <div style="position: relative; width: 150px; height: 130px;">
+          <div style="transform: rotate(-6deg);">
+            <svg width="148" height="122" viewBox="-4 -4 148 122">
+              <path d="M 12,0 H 128 Q 140,0 140,12 V 88 Q 140,100 128,100 H 55 L 35,115 L 40,100 H 12 Q 0,100 0,88 V 12 Q 0,0 12,0 Z"
+              fill="#ffffff" stroke="#b91c1c" stroke-width="6"/>
+            </svg>
+            <div style="position: absolute; top: 12px; left: 12px; right: 12px; bottom: 28px; font-family: 'Bangers', cursive; font-size: 16px; font-weight: 400; color: #1e293b; line-height: 1.3;">
+              Our menu is too long!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="comparison-item">
+        <div class="label">More tilt (-10°) - Proposed</div>
+        <div class="hotspot-container">
+          <div class="hotspot">
+            <svg width="148" height="122" viewBox="-4 -4 148 122">
+              <path d="M 12,0 H 128 Q 140,0 140,12 V 88 Q 140,100 128,100 H 55 L 35,115 L 40,100 H 12 Q 0,100 0,88 V 12 Q 0,0 12,0 Z"
+              fill="#ffffff" stroke="#b91c1c" stroke-width="6"/>
+            </svg>
+            <div class="hotspot-text">Our menu is too long!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Palette & Cursor Icon Options</h3>
+    <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+      The palette shows tool icons at ~24×24px. The cursor uses the same icon when placing shapes.
+      Current hotspot uses a plain red square like other stickies. Here are options for the speech bubble:
+    </p>
+    <div class="board" style="gap: 60px;">
+
+      <!-- Mock palette context -->
+      <div class="comparison-item">
+        <div class="label">Current Palette (for context)</div>
+        <div style="background: white; padding: 6px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 4px;">
+          <!-- Event -->
+          <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0; border-radius: 4px;">
+            <div style="width: 24px; height: 24px; background: #fed7aa; border: 1px solid rgba(0,0,0,0.1); border-radius: 3px;"></div>
+          </div>
+          <!-- Hotspot (current - plain square) -->
+          <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 2px solid #3b82f6; background: #eff6ff; border-radius: 4px;">
+            <div style="width: 24px; height: 24px; background: #fecaca; border: 1px solid rgba(0,0,0,0.1); border-radius: 3px;"></div>
+          </div>
+          <!-- Person -->
+          <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0; border-radius: 4px;">
+            <div style="width: 24px; height: 12px; background: #fef9c3; border: 1px solid rgba(0,0,0,0.1); border-radius: 2px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Option A: Mini speech bubble (simplified, no rotation) -->
+      <div class="comparison-item">
+        <div class="label">Option A: Mini Speech Bubble (flat)</div>
+        <div style="background: white; padding: 6px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 4px;">
+          <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0; border-radius: 4px;">
+            <div style="width: 24px; height: 24px; background: #fed7aa; border: 1px solid rgba(0,0,0,0.1); border-radius: 3px;"></div>
+          </div>
+          <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 2px solid #3b82f6; background: #eff6ff; border-radius: 4px;">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <path d="M 2,2 H 22 Q 24,2 24,4 V 16 Q 24,18 22,18 H 10 L 5,22 L 6,18 H 2 Q 0,18 0,16 V 4 Q 0,2 2,2 Z"
+                transform="translate(0, 1)"
+                fill="#ffffff" stroke="#b91c1c" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0; border-radius: 4px;">
+            <div style="width: 24px; height: 12px; background: #fef9c3; border: 1px solid rgba(0,0,0,0.1); border-radius: 2px;"></div>
+          </div>
+        </div>
+        <p style="max-width: 120px;">Simple, recognizable. No rotation at icon size.</p>
+      </div>
+
+      <!-- Option B: Mini speech bubble with tilt -->
+      <div class="comparison-item">
+        <div class="label">Option B: Mini Speech Bubble (tilted)</div>
+        <div style="background: white; padding: 6px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 4px;">
+          <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0; border-radius: 4px;">
+            <div style="width: 24px; height: 24px; background: #fed7aa; border: 1px solid rgba(0,0,0,0.1); border-radius: 3px;"></div>
+          </div>
+          <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 2px solid #3b82f6; background: #eff6ff; border-radius: 4px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" style="transform: rotate(-10deg);">
+              <path d="M 2,2 H 22 Q 24,2 24,4 V 16 Q 24,18 22,18 H 10 L 5,22 L 6,18 H 2 Q 0,18 0,16 V 4 Q 0,2 2,2 Z"
+                transform="translate(0, 1)"
+                fill="#ffffff" stroke="#b91c1c" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0; border-radius: 4px;">
+            <div style="width: 24px; height: 12px; background: #fef9c3; border: 1px solid rgba(0,0,0,0.1); border-radius: 2px;"></div>
+          </div>
+        </div>
+        <p style="max-width: 120px;">Matches the tilted shape. More playful.</p>
+      </div>
+
+      <!-- Option C: Question mark in bubble -->
+      <div class="comparison-item">
+        <div class="label">Option C: Question Mark Bubble</div>
+        <div style="background: white; padding: 6px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 4px;">
+          <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0; border-radius: 4px;">
+            <div style="width: 24px; height: 24px; background: #fed7aa; border: 1px solid rgba(0,0,0,0.1); border-radius: 3px;"></div>
+          </div>
+          <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 2px solid #3b82f6; background: #eff6ff; border-radius: 4px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" style="transform: rotate(-10deg);">
+              <path d="M 2,2 H 22 Q 24,2 24,4 V 16 Q 24,18 22,18 H 10 L 5,22 L 6,18 H 2 Q 0,18 0,16 V 4 Q 0,2 2,2 Z"
+                transform="translate(0, 1)"
+                fill="#ffffff" stroke="#b91c1c" stroke-width="1.5"/>
+              <text x="12" y="14" font-family="sans-serif" font-size="10" font-weight="bold" fill="#b91c1c" text-anchor="middle">?</text>
+            </svg>
+          </div>
+          <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0; border-radius: 4px;">
+            <div style="width: 24px; height: 12px; background: #fef9c3; border: 1px solid rgba(0,0,0,0.1); border-radius: 2px;"></div>
+          </div>
+        </div>
+        <p style="max-width: 120px;">Conveys "question/problem" semantics directly.</p>
+      </div>
+
+      <!-- Option D: Exclamation mark in bubble -->
+      <div class="comparison-item">
+        <div class="label">Option D: Exclamation Bubble</div>
+        <div style="background: white; padding: 6px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 4px;">
+          <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0; border-radius: 4px;">
+            <div style="width: 24px; height: 24px; background: #fed7aa; border: 1px solid rgba(0,0,0,0.1); border-radius: 3px;"></div>
+          </div>
+          <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 2px solid #3b82f6; background: #eff6ff; border-radius: 4px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" style="transform: rotate(-10deg);">
+              <path d="M 2,2 H 22 Q 24,2 24,4 V 16 Q 24,18 22,18 H 10 L 5,22 L 6,18 H 2 Q 0,18 0,16 V 4 Q 0,2 2,2 Z"
+                transform="translate(0, 1)"
+                fill="#ffffff" stroke="#b91c1c" stroke-width="1.5"/>
+              <text x="12" y="14" font-family="sans-serif" font-size="10" font-weight="bold" fill="#b91c1c" text-anchor="middle">!</text>
+            </svg>
+          </div>
+          <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0; border-radius: 4px;">
+            <div style="width: 24px; height: 12px; background: #fef9c3; border: 1px solid rgba(0,0,0,0.1); border-radius: 2px;"></div>
+          </div>
+        </div>
+        <p style="max-width: 120px;">Conveys "alert/problem" - hotspots are pain points.</p>
+      </div>
+
+      <!-- Option E: Filled red bubble -->
+      <div class="comparison-item">
+        <div class="label">Option E: Filled Bubble</div>
+        <div style="background: white; padding: 6px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 4px;">
+          <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0; border-radius: 4px;">
+            <div style="width: 24px; height: 24px; background: #fed7aa; border: 1px solid rgba(0,0,0,0.1); border-radius: 3px;"></div>
+          </div>
+          <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 2px solid #3b82f6; background: #eff6ff; border-radius: 4px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" style="transform: rotate(-10deg);">
+              <path d="M 2,2 H 22 Q 24,2 24,4 V 16 Q 24,18 22,18 H 10 L 5,22 L 6,18 H 2 Q 0,18 0,16 V 4 Q 0,2 2,2 Z"
+                transform="translate(0, 1)"
+                fill="#fecaca" stroke="#b91c1c" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0; border-radius: 4px;">
+            <div style="width: 24px; height: 12px; background: #fef9c3; border: 1px solid rgba(0,0,0,0.1); border-radius: 2px;"></div>
+          </div>
+        </div>
+        <p style="max-width: 120px;">Uses red fill like other stickies. More visible.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Cursor Preview (when placing)</h3>
+    <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+      After selecting from palette, the cursor changes to show what you're about to place.
+      Here's how each option would look as a cursor (shown at 2× size for visibility):
+    </p>
+    <div class="board" style="gap: 80px; background: #fafafa;">
+
+      <div class="comparison-item">
+        <div class="label">Current (square)</div>
+        <div style="position: relative; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+          <svg width="48" height="48" viewBox="0 0 24 24">
+            <rect x="2" y="2" width="20" height="20" rx="3" fill="#fecaca" stroke="#fca5a5" stroke-width="1"/>
+          </svg>
+          <!-- Crosshair indicator -->
+          <div style="position: absolute; width: 4px; height: 4px; background: #333; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+        </div>
+      </div>
+
+      <div class="comparison-item">
+        <div class="label">Option A: Flat bubble</div>
+        <div style="position: relative; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+          <svg width="48" height="48" viewBox="0 0 24 24">
+            <path d="M 2,2 H 22 Q 24,2 24,4 V 16 Q 24,18 22,18 H 10 L 5,22 L 6,18 H 2 Q 0,18 0,16 V 4 Q 0,2 2,2 Z"
+              transform="translate(0, 1)"
+              fill="#ffffff" stroke="#b91c1c" stroke-width="1.5"/>
+          </svg>
+          <div style="position: absolute; width: 4px; height: 4px; background: #333; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+        </div>
+      </div>
+
+      <div class="comparison-item">
+        <div class="label">Option B: Tilted bubble</div>
+        <div style="position: relative; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+          <svg width="48" height="48" viewBox="0 0 24 24" style="transform: rotate(-10deg);">
+            <path d="M 2,2 H 22 Q 24,2 24,4 V 16 Q 24,18 22,18 H 10 L 5,22 L 6,18 H 2 Q 0,18 0,16 V 4 Q 0,2 2,2 Z"
+              transform="translate(0, 1)"
+              fill="#ffffff" stroke="#b91c1c" stroke-width="1.5"/>
+          </svg>
+          <div style="position: absolute; width: 4px; height: 4px; background: #333; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+        </div>
+      </div>
+
+      <div class="comparison-item">
+        <div class="label">Option C: Question bubble</div>
+        <div style="position: relative; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+          <svg width="48" height="48" viewBox="0 0 24 24" style="transform: rotate(-10deg);">
+            <path d="M 2,2 H 22 Q 24,2 24,4 V 16 Q 24,18 22,18 H 10 L 5,22 L 6,18 H 2 Q 0,18 0,16 V 4 Q 0,2 2,2 Z"
+              transform="translate(0, 1)"
+              fill="#ffffff" stroke="#b91c1c" stroke-width="1.5"/>
+            <text x="12" y="14" font-family="sans-serif" font-size="10" font-weight="bold" fill="#b91c1c" text-anchor="middle">?</text>
+          </svg>
+          <div style="position: absolute; width: 4px; height: 4px; background: #333; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+        </div>
+      </div>
+
+      <div class="comparison-item">
+        <div class="label">Option E: Filled bubble</div>
+        <div style="position: relative; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+          <svg width="48" height="48" viewBox="0 0 24 24" style="transform: rotate(-10deg);">
+            <path d="M 2,2 H 22 Q 24,2 24,4 V 16 Q 24,18 22,18 H 10 L 5,22 L 6,18 H 2 Q 0,18 0,16 V 4 Q 0,2 2,2 Z"
+              transform="translate(0, 1)"
+              fill="#fecaca" stroke="#b91c1c" stroke-width="1.5"/>
+          </svg>
+          <div style="position: absolute; width: 4px; height: 4px; background: #333; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

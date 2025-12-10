@@ -12,9 +12,12 @@
 - [ ] Add exponential backoff for WebSocket reconnection attempts (prevents reconnection storms)
 - [ ] Set up Cloudflare billing alerts at $10, $25, $50 thresholds
 - [ ] Add connection health monitoring/logging
+- [ ] Use tldraw sync instead of my own (docs/TLDRAW-SYNC-ANALYSIS.md)
 
 ### Features
 
+- [ ] Different background colors for themes (not sure how to define this - settings? choose at placement?)
+- [ ] Bounded context shapes. Do we use themes for this, but enable user to mark as a bounded context, or some other method?
 - [ ] Multiple room support
 - [ ] Export/import functionality
 - [ ] Facilitator dashboard
