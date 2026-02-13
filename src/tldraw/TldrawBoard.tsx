@@ -72,7 +72,7 @@ const DEFER_TO_NEXT_TICK_MS = 0
 const TOOLTIP_DELAY_MS = 0
 
 function exposeEditorForTesting(editor: Editor): void {
-  if (typeof window !== 'undefined') {
+  if (import.meta.env.DEV && typeof window !== 'undefined') {
     (window as unknown as { __tldrawEditor: Editor }).__tldrawEditor = editor
   }
 }
