@@ -4,6 +4,7 @@ import { TldrawBoard } from "@/tldraw/TldrawBoard";
 import { NamePrompt } from "@/components/NamePrompt";
 import { addRecentBoard, getBoardName } from "@/components/BoardList";
 import { Home, Download, Upload } from "lucide-react";
+import { isValidRoomId } from "@/lib/roomId";
 
 const USER_NAME_KEY = "eventstormer-user-name";
 const BOARD_ID_DISPLAY_LENGTH = 6;
@@ -162,6 +163,12 @@ export const BoardPage: React.FC = () => {
 
   const [connectionStatus, setConnectionStatus] = useState<string>('loading');
   const [boardHandlers, setBoardHandlers] = useState<{ onExport: () => void; onImport: () => void } | null>(null);
+
+  useEffect(() => {
+    if (boardId && !isValidRoomId(boardId)) {
+      navigate('/', { replace: true });
+    }
+  }, [boardId, navigate]);
 
   const handleGoHome = () => navigate('/');
 

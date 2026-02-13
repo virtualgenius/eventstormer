@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2, Calendar, Clock, Pencil, ChevronRight, BookOpen } from "lucide-react";
 import { nanoid } from "@/lib/nanoid";
+import { isValidRoomId } from "@/lib/roomId";
 
 interface SampleBoard {
   id: string;
@@ -235,6 +236,7 @@ function SampleBoardCard({ sample, onOpen }: SampleBoardCardProps) {
 interface JoinBoardSectionProps {
   showInput: boolean;
   roomIdInput: string;
+  error: string | null;
   onShowInput: () => void;
   onHideInput: () => void;
   onRoomIdChange: (value: string) => void;
@@ -244,6 +246,7 @@ interface JoinBoardSectionProps {
 function JoinBoardSection({
   showInput,
   roomIdInput,
+  error,
   onShowInput,
   onHideInput,
   onRoomIdChange,
@@ -251,31 +254,36 @@ function JoinBoardSection({
 }: JoinBoardSectionProps) {
   if (showInput) {
     return (
-      <form onSubmit={onJoin} className="flex items-center gap-2">
-        <span className="text-sm text-slate-500 dark:text-slate-400">Room ID:</span>
-        <input
-          type="text"
-          value={roomIdInput}
-          onChange={(e) => onRoomIdChange(e.target.value)}
-          placeholder="paste room ID here"
-          autoFocus
-          className="px-3 py-1.5 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm w-48"
-        />
-        <button
-          type="submit"
-          disabled={!roomIdInput.trim()}
-          className="px-3 py-1.5 bg-slate-600 hover:bg-slate-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded text-sm"
-        >
-          Join
-        </button>
-        <button
-          type="button"
-          onClick={onHideInput}
-          className="text-sm text-slate-400 hover:text-slate-600"
-        >
-          Cancel
-        </button>
-      </form>
+      <div>
+        <form onSubmit={onJoin} className="flex items-center gap-2">
+          <span className="text-sm text-slate-500 dark:text-slate-400">Room ID:</span>
+          <input
+            type="text"
+            value={roomIdInput}
+            onChange={(e) => onRoomIdChange(e.target.value)}
+            placeholder="paste room ID here"
+            autoFocus
+            className="px-3 py-1.5 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm w-48"
+          />
+          <button
+            type="submit"
+            disabled={!roomIdInput.trim()}
+            className="px-3 py-1.5 bg-slate-600 hover:bg-slate-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded text-sm"
+          >
+            Join
+          </button>
+          <button
+            type="button"
+            onClick={onHideInput}
+            className="text-sm text-slate-400 hover:text-slate-600"
+          >
+            Cancel
+          </button>
+        </form>
+        {error && (
+          <p className="mt-1.5 text-sm text-red-600 dark:text-red-400">{error}</p>
+        )}
+      </div>
     );
   }
 
@@ -299,6 +307,7 @@ export const BoardList: React.FC = () => {
   const [editingBoardId, setEditingBoardId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
   const [showJoinInput, setShowJoinInput] = useState(false);
+  const [joinError, setJoinError] = useState<string | null>(null);
 
   useEffect(() => {
     setRecentBoards(getRecentBoards());
@@ -352,9 +361,14 @@ export const BoardList: React.FC = () => {
 
   const handleJoinBoard = (e: React.FormEvent) => {
     e.preventDefault();
-    if (roomIdInput.trim()) {
-      navigate(`/board/${roomIdInput.trim()}`);
+    const trimmedId = roomIdInput.trim();
+    if (!trimmedId) return;
+    if (!isValidRoomId(trimmedId)) {
+      setJoinError("Invalid room ID. Only letters, numbers, hyphens, and underscores are allowed.");
+      return;
     }
+    setJoinError(null);
+    navigate(`/board/${trimmedId}`);
   };
 
   if (loading) {
@@ -434,9 +448,10 @@ export const BoardList: React.FC = () => {
           <JoinBoardSection
             showInput={showJoinInput}
             roomIdInput={roomIdInput}
+            error={joinError}
             onShowInput={() => setShowJoinInput(true)}
-            onHideInput={() => { setShowJoinInput(false); setRoomIdInput(""); }}
-            onRoomIdChange={setRoomIdInput}
+            onHideInput={() => { setShowJoinInput(false); setRoomIdInput(""); setJoinError(null); }}
+            onRoomIdChange={(value) => { setRoomIdInput(value); setJoinError(null); }}
             onJoin={handleJoinBoard}
           />
         </div>
