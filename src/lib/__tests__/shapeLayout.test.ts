@@ -28,13 +28,13 @@ describe('calculateFlowShapePosition', () => {
   const sourceShape: SourceShape = {
     x: 100,
     y: 200,
-    props: { w: 120, h: 100 },
+    props: { w: 100, h: 100 },
   }
 
   it('calculates position to the right', () => {
     const result = calculateFlowShapePosition(sourceShape, 'event-sticky', 'right')
     expect(result).toEqual({
-      x: 100 + 120 + GAP,
+      x: 100 + 100 + GAP,
       y: 200,
     })
   })
@@ -42,7 +42,7 @@ describe('calculateFlowShapePosition', () => {
   it('calculates position to the left', () => {
     const result = calculateFlowShapePosition(sourceShape, 'event-sticky', 'left')
     expect(result).toEqual({
-      x: 100 - 120 - GAP,
+      x: 100 - 100 - GAP,
       y: 200,
     })
   })
@@ -50,7 +50,7 @@ describe('calculateFlowShapePosition', () => {
   it('calculates position to the left for wide shape', () => {
     const result = calculateFlowShapePosition(sourceShape, 'system-sticky', 'left')
     expect(result).toEqual({
-      x: 100 - 240 - GAP,
+      x: 100 - 200 - GAP,
       y: 200,
     })
   })
@@ -87,11 +87,11 @@ describe('calculateNextStickyPosition', () => {
     const sourceShape: SourceShape = {
       x: 100,
       y: 200,
-      props: { w: 120, h: 100 },
+      props: { w: 100, h: 100 },
     }
     const result = calculateNextStickyPosition(sourceShape)
     expect(result).toEqual({
-      x: 100 + 120 + GAP,
+      x: 100 + 100 + GAP,
       y: 200,
     })
   })

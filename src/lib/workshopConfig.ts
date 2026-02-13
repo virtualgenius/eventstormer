@@ -233,7 +233,7 @@ export function getTldrawToolForKey(key: string): string | null {
 }
 
 export function getShapeDimensions(type: string): { w: number; h: number } {
-  return SHAPE_DIMENSIONS[type] ?? { w: 120, h: 100 }
+  return SHAPE_DIMENSIONS[type] ?? { w: STANDARD_STICKY_SIZE, h: STANDARD_STICKY_SIZE }
 }
 
 export function getDefaultProps(type: ToolType): { w: number; h: number; text?: string; label?: string; name?: string } {

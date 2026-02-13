@@ -158,15 +158,15 @@ describe('workshopConfig', () => {
 
   describe('getShapeDimensions', () => {
     it('returns correct dimensions for event-sticky', () => {
-      expect(getShapeDimensions('event-sticky')).toEqual({ w: 120, h: 100 })
+      expect(getShapeDimensions('event-sticky')).toEqual({ w: 100, h: 100 })
     })
 
     it('returns correct dimensions for person-sticky (half height)', () => {
-      expect(getShapeDimensions('person-sticky')).toEqual({ w: 120, h: 50 })
+      expect(getShapeDimensions('person-sticky')).toEqual({ w: 100, h: 50 })
     })
 
     it('returns correct dimensions for system-sticky (double wide)', () => {
-      expect(getShapeDimensions('system-sticky')).toEqual({ w: 240, h: 100 })
+      expect(getShapeDimensions('system-sticky')).toEqual({ w: 200, h: 100 })
     })
 
     it('returns correct dimensions for vertical-line', () => {
@@ -174,7 +174,7 @@ describe('workshopConfig', () => {
     })
 
     it('returns default dimensions for unknown type', () => {
-      expect(getShapeDimensions('unknown-type')).toEqual({ w: 120, h: 100 })
+      expect(getShapeDimensions('unknown-type')).toEqual({ w: 100, h: 100 })
     })
   })
 
@@ -182,7 +182,7 @@ describe('workshopConfig', () => {
     it('returns text prop for sticky types', () => {
       const props = getDefaultProps('event-sticky')
       expect(props).toHaveProperty('text', '')
-      expect(props).toHaveProperty('w', 120)
+      expect(props).toHaveProperty('w', 100)
       expect(props).toHaveProperty('h', 100)
     })
 
