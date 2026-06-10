@@ -54,6 +54,12 @@ EventStormer uses a dual-deployment architecture:
 - **Worker**: `https://eventstormer-collab.paul-162.workers.dev`
 - **Config**: `.env.production` with production worker URL
 
+### tldraw License
+- `VITE_TLDRAW_LICENSE_KEY` hides the tldraw watermark on the licensed domain
+- Local builds read it from `.env.local` / `.env.production` (gitignored)
+- CI builds read it from the `TLDRAW_LICENSE_KEY` GitHub Actions secret (see `deploy.yml`)
+- Hobby license, domain-locked to `*.eventstormer.virtualgenius.com`, expires 2027-03-24
+
 ## Development Commands
 
 ```bash
