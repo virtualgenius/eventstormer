@@ -25,11 +25,11 @@
           }
         }
 
-        status.innerHTML = '✅ Storage cleared!<br><br><a href="http://localhost:5173/eventstormer/">Open EventStormer</a>';
+        status.innerHTML = '✅ Storage cleared!<br><br><a href="http://localhost:5273/eventstormer/">Open EventStormer</a>';
 
         // Auto redirect after 2 seconds
         setTimeout(() => {
-          window.location.href = 'http://localhost:5173/eventstormer/';
+          window.location.href = 'http://localhost:5273/eventstormer/';
         }, 2000);
       } catch (error) {
         status.innerHTML = '❌ Error: ' + error.message;

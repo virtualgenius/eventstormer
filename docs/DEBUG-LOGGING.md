@@ -15,7 +15,7 @@ localStorage.setItem('debug', 'true')
 
 ### Method 2: URL Parameter (Temporary)
 ```
-http://localhost:5173/?debug=true
+http://localhost:5273/?debug=true
 ```
 
 ### Method 3: Window Flag (Programmatic)
