@@ -6,97 +6,100 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **EventStormer** is an open-source, purpose-built facilitation tool for EventStorming workshops. It enables remote/hybrid teams to collaboratively visualize and understand complex socio-technical systems using EventStorming methodology.
 
+Live at https://eventstormer.virtualgenius.com (GitHub Pages). Public repo, MIT licensed.
+
 ## Development Commands
 
 ```bash
-npm run dev          # Start frontend + collaboration worker locally
-npm run dev:vite     # Start only Vite dev server
-npm run dev:worker   # Start only Cloudflare worker locally
+npm run dev          # Start frontend (localhost:5273) + collaboration worker (localhost:8800)
+npm run dev:vite     # Start only the Vite dev server
+npm run dev:worker   # Start only the Cloudflare worker locally
 npm run build        # Build for production
-npm run preview      # Preview production build
+npm run preview      # Preview production build (localhost:4273)
 npm run deploy:worker # Deploy worker to Cloudflare
+npm test             # Vitest unit tests
+npm run test:e2e     # Playwright e2e tests (starts npm run dev itself)
+npm run lint         # ESLint (also runs on staged files at pre-commit)
+npm run lint:deadcode # knip: unused exports, files, dependencies
 ```
+
+Ports live in one place, [dev-ports.ts](dev-ports.ts), imported by `vite.config.ts` and `playwright.config.ts`. Vite runs with `strictPort`, so a collision fails instead of sliding to the next free port. `predev` frees 5273 and 8800 before starting.
 
 ## Architecture
 
 ### Tech Stack
 - **Frontend**: React 18 + TypeScript + Vite
-- **Canvas**: react-konva for infinite canvas rendering
+- **Canvas**: tldraw 4.x with custom `ShapeUtil`s for every EventStorming element ([src/tldraw/shapes/](src/tldraw/shapes/))
 - **Styling**: TailwindCSS + PostCSS
-- **State Management**: Zustand + Yjs (CRDT)
-- **Real-time Sync**: Cloudflare Workers + Durable Objects via y-partyserver
-- **Local Persistence**: IndexedDB via Dexie
-- **UI Components**: Radix UI (tooltips), Lucide React (icons)
+- **Routing**: react-router-dom. `/` is the board list, `/board/:boardId` is a board ([src/main.tsx](src/main.tsx))
+- **Real-time sync**: Yjs CRDT over y-partyserver to a Cloudflare Worker with Durable Objects
+- **UI**: Radix UI tooltips, Lucide React icons
+- **Zustand**: one small UI store only ([src/tldraw/pivotalPreviewStore.ts](src/tldraw/pivotalPreviewStore.ts))
 
 ### Real-time Collaboration Stack
 
 ```
-┌─────────────────────────────────────────────────────┐
-│  Frontend (React + Zustand)                         │
-│  useCollabStore.ts - Yjs Y.Doc with Y.Map/Y.Array   │
-└────────────────┬────────────────────────────────────┘
-                 │ YProvider (y-partyserver/provider)
-                 │ WebSocket connection
-┌────────────────┴────────────────────────────────────┐
-│  Cloudflare Worker (workers/server.ts)              │
-│  YjsRoom Durable Object - room state + sync         │
-└─────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│  Frontend (React + tldraw)                              │
+│  useYjsStore.ts mirrors the tldraw TLStore into a       │
+│  Y.Doc (Y.Map 'tldraw-records'); useYjsPresence.ts      │
+│  carries cursors and names                              │
+└────────────────┬────────────────────────────────────────┘
+                 │ YProvider (y-partyserver/provider), party 'yjs-room'
+                 │ WebSocket to VITE_COLLAB_HOST
+┌────────────────┴────────────────────────────────────────┐
+│  Cloudflare Worker (workers/server.ts)                  │
+│  YjsRoom Durable Object: one per board, document saved  │
+│  to Durable Object storage, destroyed when the last     │
+│  client leaves                                          │
+└─────────────────────────────────────────────────────────┘
 ```
 
 Key files:
-- [src/store/useCollabStore.ts](src/store/useCollabStore.ts) - Main collaboration store with Yjs integration
-- [workers/server.ts](workers/server.ts) - Cloudflare Worker with Durable Objects
+- [src/tldraw/useYjsStore.ts](src/tldraw/useYjsStore.ts) - tldraw store <-> Y.Doc sync, custom shape util registration
+- [src/tldraw/TldrawBoard.tsx](src/tldraw/TldrawBoard.tsx) - the board: composes the hooks below around `<Tldraw>`
+- [workers/server.ts](workers/server.ts) - Cloudflare Worker with the `YjsRoom` Durable Object
 - [wrangler.toml](wrangler.toml) - Cloudflare deployment configuration
+
+Persistence is server-side, in the Durable Object. There is no local IndexedDB. `localStorage` holds only the recent-boards list ([src/components/BoardList.tsx](src/components/BoardList.tsx)) and the participant name ([src/pages/BoardPage.tsx](src/pages/BoardPage.tsx)). Undo/redo is tldraw's built-in.
+
+### Board Composition
+
+[TldrawBoard.tsx](src/tldraw/TldrawBoard.tsx) owns workshop mode, phase, and the active palette tool, and wires these hooks:
+- `useYjsStore` / `useYjsPresence` - sync and presence
+- `useCanvasClickPlacement` - palette tool + canvas click places a shape, then starts editing it
+- `useKeyboardShortcuts` - single-letter shortcuts place a shape at the cursor directly (see `SHAPE_SHORTCUTS`); arrow keys in flow mode create the next shape in sequence ([src/lib/flowSequence.ts](src/lib/flowSequence.ts))
+- `usePlacementCursor` - custom cursor previewing the selected tool ([src/lib/cursorGeneration.ts](src/lib/cursorGeneration.ts))
+- `usePivotalPreview` - live detection of pivotal events near vertical lines ([src/tldraw/pivotalDetection.ts](src/tldraw/pivotalDetection.ts))
+- `useFileOperations` - JSON export and import ([src/tldraw/boardFormat.ts](src/tldraw/boardFormat.ts))
+- `useTemplateLoader` - loads a sample board from [public/samples/](public/samples/) when the URL carries `?template=<file>`, once the store reports `synced-remote` and only if the page has no shapes yet
+
+Palette, mode selector, phase selector, and connection status live in [src/tldraw/BoardComponents.tsx](src/tldraw/BoardComponents.tsx). Every palette button carries `data-tool="<type>"` and `data-active`; tests rely on these.
 
 ### Core Domain Model
 
-The application revolves around a **Board** that contains:
-- **Stickies**: Core elements representing events, hotspots, actors, systems, opportunities, and glossary terms
-- **Vertical Lines**: Pivotal event boundaries between sub-processes
-- **Horizontal Lanes**: User-created swimlanes with labels
-- **Theme Areas**: Rectangular zones for grouping work
-- **Labels**: Free-form text annotations
-- **Facilitation Phase**: Controls which sticky types are available in the palette
+[src/lib/workshopConfig.ts](src/lib/workshopConfig.ts) is the single source of truth for what can be placed and when:
+- **14 tool types** (`TOOLS`): ten stickies (`event`, `hotspot`, `person`, `system`, `opportunity`, `glossary`, `command`, `policy`, `aggregate`, `readmodel`, each suffixed `-sticky`) plus `vertical-line`, `horizontal-lane`, `theme-area`, `label`
+- **4 workshop modes** (`WORKSHOP_MODES`): `process` (default), `design`, `big-picture`, `team-flow`. Each tool lists the modes it appears in
+- **5 facilitation phases** (`ALL_PHASES`): `chaotic-exploration`, `enforce-timeline`, `people-and-systems`, `problems-and-opportunities`, `next-steps`. Phases only gate tools in Big Picture and Team Flow (`usesPhases`); the phase selector is not rendered in Process or Design
+- `isToolAvailable(tool, mode, phase)` drives the palette; `getDefaultProps(type)` supplies size and empty text/name at placement (it overrides each `ShapeUtil`'s own `getDefaultProps`)
+- `SHAPE_SHORTCUTS` maps keys to tools; `EDITABLE_TYPES` lists what enters edit mode on placement (everything except the two lines)
 
-All domain types are defined in [src/types/domain.ts](src/types/domain.ts).
-
-### State Management
-
-Dual-layer state management:
-- **Yjs Y.Doc**: Source of truth for collaborative state ([src/store/useCollabStore.ts](src/store/useCollabStore.ts))
-- **Zustand**: React state derived from Yjs via `yboard.observe()`
-- **IndexedDB**: Local persistence with 5-second autosave
-
-All mutations go through Yjs (Y.Array.push, Y.Array.delete, Y.Map.set), which automatically syncs to other clients.
-
-### Component Architecture
-
-**App.tsx**: Top-level layout with header, palette, and canvas.
-
-**FacilitationPalette**: Phase-aware toolbar showing sticky types for current phase.
-
-**KonvaCanvas**: Infinite canvas using react-konva for rendering stickies, lines, lanes.
-
-**Sticky**: Individual sticky note component with type-specific styling.
+Shape colors for the ten stickies come from [src/lib/shapeColors.ts](src/lib/shapeColors.ts). Theme areas, lines, and labels hardcode their colors in their own component files.
 
 ### Visual Grammar (EventStorming Semantics)
 
-- **🟧 Events** (orange): Past-tense domain events
-- **🟥 Hotspots** (red): Problems, risks, uncertainties
-- **🟦 Vertical Lines** (blue): Pivotal boundaries
-- **Horizontal Lines**: Swimlanes for process separation
-- **🟨 Actors** (yellow, half-height): People initiating actions
-- **🟪 Systems** (lilac, half-height): External systems
-- **🟩 Opportunities** (green): Improvement ideas
-- **🟫 Glossary** (brown): Term definitions
-
-### Facilitation Flow
-
-The app implements a **guided facilitation model**:
-1. Facilitator progresses through phases sequentially
-2. Palette automatically updates to show only appropriate sticky types
-3. Participants can create stickies once their type is introduced
-4. Future: zone assignment, breakout groups, facilitator dashboard
+- **Events** (orange): past-tense domain events
+- **Hotspots** (white, red hand-drawn stroke, rotated): problems, risks, uncertainties
+- **Person** (yellow, half-height): people initiating actions
+- **System** (pink, double-wide): external systems
+- **Opportunity** (green): improvement ideas
+- **Glossary** (dark): term definitions
+- **Command** (blue), **Policy** (purple, double-wide), **Aggregate** (yellow, double-wide), **Read model** (green): Process and Design mode elements
+- **Vertical line**: pivotal boundary between sub-processes; events placed on one render as pivotal squares
+- **Horizontal lane**: swimlane
+- **Theme area**: dashed rectangle grouping related elements; shapes dragged in are reparented to it
+- **Label**: free text
 
 ## Design Principles
 
@@ -116,47 +119,28 @@ The app implements a **guided facilitation model**:
 ## Implementation Notes
 
 ### ID Generation
-Use [src/lib/nanoid.ts](src/lib/nanoid.ts) for generating unique IDs for all entities.
-
-### Timestamps
-All timestamps use ISO 8601 format via `new Date().toISOString()`.
-
-### Facilitation Phases
-Phase progression is linear and controlled. The palette component filters available sticky types based on current phase:
-- `chaotic-exploration`: Events + hotspots
-- `enforce-timeline`: Events + hotspots + vertical lines
-- `people-and-systems`: All previous + actors + systems + lanes
-- `problems-and-opportunities`: All previous + opportunities
-- `glossary`: All elements available
+New board ids come from [src/lib/nanoid.ts](src/lib/nanoid.ts) (used by `BoardList`) and are validated by [src/lib/roomId.ts](src/lib/roomId.ts) before a room is joined. tldraw shape ids come from `createShapeId()`.
 
 ### Environment Variables
-- `VITE_COLLAB_HOST`: Collaboration server URL (default: `localhost:8800` for dev)
+- `VITE_COLLAB_HOST`: collaboration worker host (`localhost:8800` in `.env.local`; the deployed worker in `.env.production` and the deploy workflow)
+- `VITE_TLDRAW_LICENSE_KEY`: tldraw hobby license, domain-locked to `*.eventstormer.virtualgenius.com`. Lives in the gitignored `.env.local` / `.env.production` for local use and in the GitHub Actions secret `TLDRAW_LICENSE_KEY` for the production build. The hobby tier shows tldraw's small watermark even when valid; that is not an expiry.
+
+### Deployment
+Push to `main` builds and deploys the frontend to GitHub Pages via [.github/workflows/deploy.yml](.github/workflows/deploy.yml). The worker deploys separately with `npm run deploy:worker`. Details in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ## Documentation
 
-Comprehensive documentation in [docs/](docs/):
-- [VISION.md](docs/VISION.md): Product vision, target audience, guiding principles
-- [SPEC.md](docs/SPEC.md): Core behavior, visual grammar, semantic validation
-- [PLAN.md](docs/PLAN.md): Milestone breakdown and roadmap
-- [DEPLOYMENT.md](docs/DEPLOYMENT.md): Cloudflare Workers deployment guide
-
-## Current State
-
-Core infrastructure complete:
-- ✅ Type definitions for domain model
-- ✅ Zustand + Yjs store with CRDT sync
-- ✅ Real-time collaboration via Cloudflare Workers
-- ✅ Phase-based facilitation system
-- ✅ Canvas rendering with react-konva
-- ✅ User presence tracking
-- ✅ Local persistence (IndexedDB)
-- ✅ Undo/redo via Yjs UndoManager
-- 🚧 Export/import functionality
-- 🚧 Multiple room support
+- [VISION.md](docs/VISION.md): product vision, target audience, guiding principles
+- [PLAN.md](docs/PLAN.md): milestones, roadmap, differentiators backlog
+- [FEATURE_IDEAS.md](docs/FEATURE_IDEAS.md): differentiation brainstorm with priority assessment
+- [TODO.md](docs/TODO.md): near-term backlog
+- [DEPLOYMENT.md](docs/DEPLOYMENT.md): Cloudflare Workers and GitHub Pages deployment
+- [DEBUG-LOGGING.md](docs/DEBUG-LOGGING.md): `?debug=true` logging
+- [TESTING.md](docs/TESTING.md): testing notes
 
 ## Code Clarity (Enforced by ESLint)
 
-Pre-commit hooks block commits with ESLint warnings. Claude should proactively fix these patterns:
+Pre-commit hooks (husky + lint-staged) block commits with ESLint warnings on staged `.ts`/`.tsx` files. Root-level config files (`*.config.ts`) are excluded from lint; anything else outside `src/` and `tests/` must be added to `tsconfig.json` `include` or the typed parser rejects it. Claude should proactively fix these patterns:
 
 ### Timing Workarounds
 
@@ -219,7 +203,12 @@ Extract when functions exceed 25 lines. Each extracted function should have a de
 
 ## Testing
 
-E2E tests using Playwright in [tests/e2e/](tests/e2e/):
+**Unit tests** (Vitest) sit beside the code in `__tests__` folders under `src/lib/` and `src/tldraw/`, covering the pure modules: `workshopConfig`, `flowSequence`, `shapeLayout`, `shapeColors`, `cursorGeneration`, `roomId`, `boardFormat`, `pivotalDetection`, `keyboardHandlers`, `editorHelpers`, `useYjsStore`, `placementCursor`.
+
+**E2E tests** (Playwright) in [tests/e2e/](tests/e2e/), with the page object [tests/pages/CanvasPage.ts](tests/pages/CanvasPage.ts) (`goto`, `selectTool`, `createShapeAt`, `selectWorkshopMode`, `selectPhase`, zoom and pan) and store helpers in [tests/utils/tldraw.ts](tests/utils/tldraw.ts) (`getShapesByType`, `waitForShapeCount`, `clearAllShapes`). The Playwright `webServer` runs `npm run dev`, so the worker is up for sync tests; each run uses a fresh board id.
+
+tldraw renders every shape inside `.tl-shape[data-shape-type="<type>"][data-shape-id]`. A shape util with a `backgroundComponent` (currently only `theme-area`) gets a second wrapper with class `tl-shape-background`, so locate rendered content with `.tl-shape:not(.tl-shape-background)[data-shape-type="<type>"] .tl-html-container`.
+
 ```bash
 npm run test:e2e        # Run all tests
 npm run test:e2e:ui     # Interactive UI mode
